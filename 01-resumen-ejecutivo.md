@@ -2,7 +2,7 @@
 
 ### 1.1 Visión General
 
-El presente documento especifica un **sistema de evaluación y recomendación adaptativa** basado en la Teoría de Espacios de Conocimiento Procedimental (PKST) para el Vocational Federate Dataspace. El sistema revoluciona la evaluación en Formación Profesional al:
+El presente documento especifica un **sistema de evaluación y recomendación adaptativa** basado en la Teoría de Espacios de Conocimiento Procedimental (PKST) para el Vocational Federated Dataspace. El sistema revoluciona la evaluación en Formación Profesional al:
 
 - **Mapear competencias procedimentales** en un espacio de conocimiento formal
 - **Evaluar procesos, no solo resultados** mediante rúbricas automatizadas
