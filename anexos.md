@@ -43,11 +43,3 @@ docker-compose logs -f pkst-api
 - **DS4Skills:** info@skillsdataspace.eu
 - **Prometheus-X:** contact@prometheus-x.org
 
----
-
-**FIN DEL DOCUMENTO**
-
----
-
-**Historial de revisiones:**
-- v1.0 (2026-02-08): Versión inicial completa
