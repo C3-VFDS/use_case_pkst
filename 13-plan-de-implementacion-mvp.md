@@ -129,7 +129,7 @@
 | Deploy en servidor demo | DevOps | URL pública accesible |
 
 **Entregable final 31 marzo:**
-1. ✅ Prototipo funcional (URL: https://demo-pkst.vocational-dataspace.es)
+1. ✅ Prototipo funcional (URL: https://demo-eac.vocational-dataspace.es)
 2. ✅ Video demo (5 min)
 3. ✅ Documentación técnica (PDF)
 4. ✅ Código fuente (GitHub privado)
@@ -144,7 +144,7 @@
 | Rol | Dedicación | Responsabilidades |
 |-----|------------|-------------------|
 | **Líder Técnico** | 100% (6 semanas) | Arquitectura, coordinación, documentación |
-| **Backend Developer** | 100% | Python, FastAPI, PKST engine, LLM integration |
+| **Backend Developer** | 100% | Python, FastAPI, EAC engine, LLM integration |
 | **Frontend Developer** | 100% | React, visualización de grafos, UX |
 | **Pedagogo/Experto FP** | 50% | Mapeo CE→Habilidades, validación de problemas |
 | **DevOps** | 25% | Deploy FIWARE, Docker, CI/CD |

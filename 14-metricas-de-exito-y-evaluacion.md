@@ -20,17 +20,17 @@
 | **Tasa de finalización de problemas** | ≥70% de problemas iniciados se completan | `completed / started` |
 | **Progreso medible** | ≥20% aumento en competence_score en 1 mes | Análisis longitudinal |
 
-### 14.3 Validación del Modelo PKST
+### 14.3 Validación del Modelo EAC
 
 **Experimento de validación:**
 
 1. **Grupo control:** Evaluación tradicional (exámenes tipo test)
-2. **Grupo experimental:** Evaluación con PKST
+2. **Grupo experimental:** Evaluación con EAC
 
 **Hipótesis a contrastar:**
-- H1: PKST identifica lagunas de conocimiento con mayor precisión
-- H2: Recomendaciones PKST mejoran el ritmo de aprendizaje vs. secuencia fija
-- H3: Estudiantes perciben PKST como más justo y personalizado
+- H1: EAC identifica lagunas de conocimiento con mayor precisión
+- H2: Recomendaciones EAC mejoran el ritmo de aprendizaje vs. secuencia fija
+- H3: Estudiantes perciben EAC como más justo y personalizado
 
 **Metodología:**
 - Pre-test para ambos grupos (baseline)

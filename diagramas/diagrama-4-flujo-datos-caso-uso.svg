@@ -1,0 +1,1380 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1400 1100"
+   version="1.1"
+   id="svg157"
+   sodipodi:docname="diagrama-4-flujo-datos-caso-uso.svg"
+   inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview157"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true"
+     inkscape:zoom="0.56711483"
+     inkscape:cx="834.04625"
+     inkscape:cy="668.29499"
+     inkscape:window-width="1854"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg157">
+    <sodipodi:guide
+       position="0,171.78678"
+       orientation="0,-1"
+       id="guide157"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="23.440726,590.6671"
+       orientation="1,0"
+       id="guide158"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="1351,581.00001"
+       orientation="1,0"
+       id="guide159"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <style
+       id="style1">
+      .title { font: bold 24px Arial, sans-serif; fill: #1a237e; }
+      .subtitle { font: 16px Arial, sans-serif; fill: #424242; }
+      .phase-title { font: bold 14px Arial, sans-serif; fill: #d32f2f; }
+      .actor-label { font: bold 13px Arial, sans-serif; fill: #1a237e; }
+      .text-label { font: 12px Arial, sans-serif; fill: #424242; }
+      .small-text { font: 10px Arial, sans-serif; fill: #616161; }
+      .data-label { font: 11px Arial, sans-serif; fill: #1976d2; font-style: italic; }
+      
+      .actor { fill: #e3f2fd; stroke: #1976d2; stroke-width: 2; }
+      .system { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; }
+      .central { fill: #e8eaf6; stroke: #5c6bc0; stroke-width: 2; }
+      .data-local { fill: #c8e6c9; stroke: #388e3c; stroke-width: 2; }
+      .data-federated { fill: #b3e5fc; stroke: #0288d1; stroke-width: 2; }
+      
+      .flow-local { stroke: #388e3c; stroke-width: 3; fill: none; marker-end: url(#arrow-green); }
+      .flow-federated { stroke: #0288d1; stroke-width: 3; fill: none; marker-end: url(#arrow-blue); stroke-dasharray: 8,4; }
+      .flow-user { stroke: #424242; stroke-width: 2; fill: none; marker-end: url(#arrow-black); }
+      .flow-llm { stroke: #ff6f00; stroke-width: 2; fill: none; marker-end: url(#arrow-orange); stroke-dasharray: 4,4; }
+      
+      .phase-box { fill: none; stroke: #d32f2f; stroke-width: 2; stroke-dasharray: 10,5; }
+    </style>
+    <marker
+       id="arrow-green"
+       markerWidth="12"
+       markerHeight="12"
+       refX="10"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#388e3c"
+         id="polygon1" />
+    </marker>
+    <marker
+       id="arrow-blue"
+       markerWidth="12"
+       markerHeight="12"
+       refX="10"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#0288d1"
+         id="polygon2" />
+    </marker>
+    <marker
+       id="arrow-black"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3, 0 6"
+         fill="#424242"
+         id="polygon3" />
+    </marker>
+    <marker
+       id="arrow-orange"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3, 0 6"
+         fill="#ff6f00"
+         id="polygon4" />
+    </marker>
+  </defs>
+  <!-- Título -->
+  <text
+     x="700"
+     y="40"
+     text-anchor="middle"
+     class="title"
+     id="text4">Flujo de Datos - Caso de Uso EAC en VFDS</text>
+  <text
+     x="700"
+     y="65"
+     text-anchor="middle"
+     class="subtitle"
+     id="text5">Desde la resolución de un problema hasta la recomendación adaptativa</text>
+  <!-- FASE 1: Interacción Estudiante -->
+  <rect
+     x="50"
+     y="100"
+     width="600"
+     height="180"
+     rx="10"
+     class="phase-box"
+     id="rect5" />
+  <text
+     x="70"
+     y="125"
+     class="phase-title"
+     id="text6">FASE 1: ESTUDIANTE RESUELVE PROBLEMA</text>
+  <g
+     id="phase1">
+    <rect
+       x="80"
+       y="140"
+       width="120"
+       height="120"
+       rx="8"
+       class="actor"
+       id="rect6" />
+    <text
+       x="140"
+       y="185"
+       text-anchor="middle"
+       class="actor-label"
+       id="text7">👨‍🎓 Estudiante</text>
+    <text
+       x="140"
+       y="203"
+       text-anchor="middle"
+       class="small-text"
+       id="text8">María García</text>
+    <text
+       x="140"
+       y="217"
+       text-anchor="middle"
+       class="small-text"
+       id="text9">ID: std_12345</text>
+    <text
+       x="140"
+       y="231"
+       text-anchor="middle"
+       class="small-text"
+       id="text10">Módulo: TBM</text>
+    <text
+       x="140"
+       y="245"
+       text-anchor="middle"
+       class="small-text"
+       id="text11">FP Comercio</text>
+    <rect
+       x="240"
+       y="140"
+       width="180"
+       height="120"
+       rx="8"
+       class="system"
+       id="rect11" />
+    <text
+       x="330"
+       y="170"
+       text-anchor="middle"
+       class="actor-label"
+       id="text12">Moodle LMS</text>
+    <text
+       x="330"
+       y="190"
+       text-anchor="middle"
+       class="small-text"
+       id="text13">Problema asignado:</text>
+    <text
+       x="330"
+       y="204"
+       text-anchor="middle"
+       class="small-text"
+       id="text14">&quot;Diseñar escaparate&quot;</text>
+    <text
+       x="330"
+       y="218"
+       text-anchor="middle"
+       class="small-text"
+       id="text15">Tipo: Procedural</text>
+    <text
+       x="330"
+       y="232"
+       text-anchor="middle"
+       class="small-text"
+       id="text16">Skills: [s1, s3, s5]</text>
+    <text
+       x="330"
+       y="246"
+       text-anchor="middle"
+       class="small-text"
+       id="text17">Dificultad: Media</text>
+    <rect
+       x="460"
+       y="140"
+       width="170"
+       height="120"
+       rx="8"
+       class="data-local"
+       id="rect17" />
+    <text
+       x="545"
+       y="165"
+       text-anchor="middle"
+       class="actor-label"
+       id="text18">Submission</text>
+    <text
+       x="545"
+       y="185"
+       text-anchor="middle"
+       class="small-text"
+       id="text19">submission_789</text>
+    <text
+       x="545"
+       y="199"
+       text-anchor="middle"
+       class="data-label"
+       id="text20">Datos locales:</text>
+    <text
+       x="545"
+       y="213"
+       text-anchor="middle"
+       class="small-text"
+       id="text21">• Respuesta (texto/img)</text>
+    <text
+       x="545"
+       y="227"
+       text-anchor="middle"
+       class="small-text"
+       id="text22">• Timestamp inicio/fin</text>
+    <text
+       x="545"
+       y="241"
+       text-anchor="middle"
+       class="small-text"
+       id="text23">• Secuencia de pasos</text>
+    <text
+       x="545"
+       y="255"
+       text-anchor="middle"
+       class="small-text"
+       id="text24">• Metadata proceso</text>
+  </g>
+  <!-- Flechas Fase 1 -->
+  <path
+     d="M 200 200 L 240 200"
+     class="flow-user"
+     id="path24" />
+  <text
+     x="220"
+     y="195"
+     text-anchor="middle"
+     class="small-text"
+     id="text25">interactúa</text>
+  <path
+     d="M 420 200 L 460 200"
+     class="flow-local"
+     id="path25" />
+  <text
+     x="440"
+     y="195"
+     text-anchor="middle"
+     class="small-text"
+     id="text26">envía</text>
+  <!-- FASE 2: Evaluación Backend -->
+  <!-- Flechas Fase 2 -->
+  <path
+     d="M 545 280 L 180 340"
+     class="flow-local"
+     id="path64" />
+  <g
+     id="g164">
+    <rect
+       x="50"
+       y="300"
+       width="1301"
+       height="194.90047"
+       rx="10"
+       class="phase-box"
+       id="rect26" />
+    <text
+       x="70"
+       y="325"
+       class="phase-title"
+       id="text27">FASE 2: EVALUACIÓN AUTOMÁTICA CON RÚBRICAS (BACKEND EAC)</text>
+    <g
+       id="g163">
+      <rect
+         x="80"
+         y="340"
+         width="200"
+         height="140"
+         rx="8"
+         class="system"
+         id="rect27" />
+      <text
+         x="180"
+         y="365"
+         text-anchor="middle"
+         class="actor-label"
+         id="text28"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Rubric Evaluator</text>
+      <text
+         x="180"
+         y="385"
+         text-anchor="middle"
+         class="small-text"
+         id="text29"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Criterios evaluados:</text>
+      <text
+         x="180"
+         y="399"
+         text-anchor="middle"
+         class="small-text"
+         id="text30"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Corrección técnica</text>
+      <text
+         x="180"
+         y="413"
+         text-anchor="middle"
+         class="small-text"
+         id="text31"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Seguridad procedimental</text>
+      <text
+         x="180"
+         y="427"
+         text-anchor="middle"
+         class="small-text"
+         id="text32"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Eficiencia del proceso</text>
+      <text
+         x="180"
+         y="441"
+         text-anchor="middle"
+         class="small-text"
+         id="text33"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Creatividad/estética</text>
+      <text
+         x="180"
+         y="460"
+         text-anchor="middle"
+         class="data-label"
+         id="text34"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Score: 7.5/10</text>
+    </g>
+    <g
+       id="g162"
+       transform="translate(46.863525)">
+      <rect
+         x="300"
+         y="340"
+         width="200"
+         height="140"
+         rx="8"
+         class="system"
+         id="rect34" />
+      <text
+         x="400"
+         y="365"
+         text-anchor="middle"
+         class="actor-label"
+         id="text35"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">LLM Assistant</text>
+      <text
+         x="400"
+         y="385"
+         text-anchor="middle"
+         class="small-text"
+         id="text36"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Claude API (externa)</text>
+      <text
+         x="400"
+         y="399"
+         text-anchor="middle"
+         class="small-text"
+         id="text37"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Análisis de respuesta:</text>
+      <text
+         x="400"
+         y="413"
+         text-anchor="middle"
+         class="small-text"
+         id="text38"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">&quot;El diseño cumple requisitos</text>
+      <text
+         x="400"
+         y="427"
+         text-anchor="middle"
+         class="small-text"
+         id="text39"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">pero falta contraste. Revisar</text>
+      <text
+         x="400"
+         y="441"
+         text-anchor="middle"
+         class="small-text"
+         id="text40"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">principio de jerarquía visual&quot;</text>
+      <text
+         x="400"
+         y="460"
+         text-anchor="middle"
+         class="data-label"
+         id="text41"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Feedback generado</text>
+    </g>
+    <g
+       id="g161"
+       transform="translate(93.727051)">
+      <rect
+         x="520"
+         y="340"
+         width="200"
+         height="140"
+         rx="8"
+         class="data-local"
+         id="rect41" />
+      <text
+         x="620"
+         y="365"
+         text-anchor="middle"
+         class="actor-label"
+         id="text42"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Student State</text>
+      <text
+         x="620"
+         y="385"
+         text-anchor="middle"
+         class="small-text"
+         id="text43"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">knowledge_state_456</text>
+      <text
+         x="620"
+         y="399"
+         text-anchor="middle"
+         class="data-label"
+         id="text44"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Actualización local:</text>
+      <text
+         x="620"
+         y="413"
+         text-anchor="middle"
+         class="small-text"
+         id="text45"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• s1: mastered (0.85)</text>
+      <text
+         x="620"
+         y="427"
+         text-anchor="middle"
+         class="small-text"
+         id="text46"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• s3: progress (0.65)</text>
+      <text
+         x="620"
+         y="441"
+         text-anchor="middle"
+         class="small-text"
+         id="text47"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• s5: learning (0.40)</text>
+      <text
+         x="620"
+         y="455"
+         text-anchor="middle"
+         class="small-text"
+         id="text48"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Outer fringe: [s6, s8]</text>
+      <text
+         x="620"
+         y="469"
+         text-anchor="middle"
+         class="small-text"
+         id="text49"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">🔒 RGPD protected</text>
+    </g>
+    <g
+       id="g159"
+       transform="translate(140.59058)">
+      <rect
+         x="740"
+         y="340"
+         width="190"
+         height="140"
+         rx="8"
+         class="system"
+         id="rect49" />
+      <text
+         x="835"
+         y="365"
+         text-anchor="middle"
+         class="actor-label"
+         id="text50"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Recom. Engine</text>
+      <text
+         x="835"
+         y="385"
+         text-anchor="middle"
+         class="small-text"
+         id="text51"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Análisis ZDP:</text>
+      <text
+         x="835"
+         y="399"
+         text-anchor="middle"
+         class="small-text"
+         id="text52"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Estado actual: K = {s1,s3}</text>
+      <text
+         x="835"
+         y="413"
+         text-anchor="middle"
+         class="small-text"
+         id="text53"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Franja exterior: {s6,s8}</text>
+      <text
+         x="835"
+         y="427"
+         text-anchor="middle"
+         class="small-text"
+         id="text54"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Recomendación:</text>
+      <text
+         x="835"
+         y="441"
+         text-anchor="middle"
+         class="small-text"
+         id="text55"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">&quot;Problema P_042:</text>
+      <text
+         x="835"
+         y="455"
+         text-anchor="middle"
+         class="small-text"
+         id="text56"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Aplicar normativa</text>
+      <text
+         x="835"
+         y="469"
+         text-anchor="middle"
+         class="small-text"
+         id="text57"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">seguridad en visual&quot;</text>
+    </g>
+    <g
+       id="g160">
+      <rect
+         x="1137.4541"
+         y="340"
+         width="180"
+         height="140"
+         rx="8"
+         class="system"
+         id="rect57" />
+      <text
+         x="1227.4541"
+         y="365"
+         text-anchor="middle"
+         class="actor-label"
+         id="text58"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">PostgreSQL</text>
+      <text
+         x="1227.4541"
+         y="385"
+         text-anchor="middle"
+         class="data-label"
+         id="text59"
+         style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Datos persistidos:</text>
+      <text
+         x="1227.4541"
+         y="399"
+         text-anchor="middle"
+         class="small-text"
+         id="text60"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">submissions table</text>
+      <text
+         x="1227.4541"
+         y="413"
+         text-anchor="middle"
+         class="small-text"
+         id="text61"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">knowledge_states</text>
+      <text
+         x="1227.4541"
+         y="427"
+         text-anchor="middle"
+         class="small-text"
+         id="text62"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">evaluations</text>
+      <text
+         x="1227.4541"
+         y="441"
+         text-anchor="middle"
+         class="small-text"
+         id="text63"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">recommendations</text>
+      <text
+         x="1227.4541"
+         y="460"
+         text-anchor="middle"
+         class="small-text"
+         id="text64"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">🔒 Centro local</text>
+    </g>
+    <path
+       d="m 280,410 h 66.86352"
+       class="flow-llm"
+       id="path65"
+       sodipodi:nodetypes="cc" />
+    <text
+       x="290"
+       y="405"
+       text-anchor="middle"
+       class="small-text"
+       id="text65">API</text>
+    <path
+       d="m 546.86352,410 h 66.86353"
+       class="flow-local"
+       id="path66"
+       sodipodi:nodetypes="cc" />
+    <path
+       d="m 813.72705,410 h 66.86353"
+       class="flow-local"
+       id="path67"
+       sodipodi:nodetypes="cc" />
+    <path
+       d="m 1070.5906,410 h 66.8635"
+       class="flow-local"
+       id="path68"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <!-- FASE 3: Sincronización Federada -->
+  <rect
+     x="50"
+     y="520"
+     width="1300"
+     height="200"
+     rx="10"
+     class="phase-box"
+     id="rect68" />
+  <text
+     x="70"
+     y="545"
+     class="phase-title"
+     id="text68">FASE 3: SINCRONIZACIÓN CON NODO CENTRAL (DATOS ANONIMIZADOS)</text>
+  <g
+     id="phase3">
+    <rect
+       x="104.09466"
+       y="559.89465"
+       width="191.81068"
+       height="140.21068"
+       rx="6.3936896"
+       class="system"
+       id="rect69" />
+    <text
+       x="200"
+       y="585"
+       text-anchor="middle"
+       class="actor-label"
+       id="text69">Aggregator Service</text>
+    <text
+       x="200"
+       y="605"
+       text-anchor="middle"
+       class="small-text"
+       id="text70">Procesa datos locales:</text>
+    <text
+       x="200"
+       y="619"
+       text-anchor="middle"
+       class="small-text"
+       id="text71">• Elimina PII (RGPD)</text>
+    <text
+       x="200"
+       y="633"
+       text-anchor="middle"
+       class="small-text"
+       id="text72">• Anonimiza: std_12345</text>
+    <text
+       x="200"
+       y="647"
+       text-anchor="middle"
+       class="small-text"
+       id="text73">  → anonymous_hash_xyz</text>
+    <text
+       x="200"
+       y="661"
+       text-anchor="middle"
+       class="small-text"
+       id="text74">• Agrega métricas:</text>
+    <text
+       x="200"
+       y="675"
+       text-anchor="middle"
+       class="small-text"
+       id="text75">  skill_mastery_stats</text>
+    <text
+       x="200"
+       y="689"
+       text-anchor="middle"
+       class="data-label"
+       id="text76">Safe to federate ✓</text>
+    <rect
+       x="364.09467"
+       y="559.89465"
+       width="191.81068"
+       height="140.21068"
+       rx="6.3936896"
+       class="system"
+       id="rect76" />
+    <text
+       x="460"
+       y="585"
+       text-anchor="middle"
+       class="actor-label"
+       id="text77">Conector IDS/EDC</text>
+    <text
+       x="460"
+       y="605"
+       text-anchor="middle"
+       class="small-text"
+       id="text78">Negociación:</text>
+    <text
+       x="460"
+       y="619"
+       text-anchor="middle"
+       class="small-text"
+       id="text79">• Política de uso (ODRL)</text>
+    <text
+       x="460"
+       y="633"
+       text-anchor="middle"
+       class="small-text"
+       id="text80">• Contrato digital</text>
+    <text
+       x="460"
+       y="647"
+       text-anchor="middle"
+       class="small-text"
+       id="text81">• Propósito: &quot;Shared skills</text>
+    <text
+       x="460"
+       y="661"
+       text-anchor="middle"
+       class="small-text"
+       id="text82">  ontology improvement&quot;</text>
+    <text
+       x="460"
+       y="675"
+       text-anchor="middle"
+       class="small-text"
+       id="text83">• Trazabilidad activada</text>
+    <text
+       x="460"
+       y="689"
+       text-anchor="middle"
+       class="data-label"
+       id="text84">Transaction ID: tx_abc</text>
+    <rect
+       x="628.09473"
+       y="559.89471"
+       width="223.81056"
+       height="140.21056"
+       rx="6.3945875"
+       class="data-federated"
+       id="rect84" />
+    <text
+       x="740"
+       y="585"
+       text-anchor="middle"
+       class="actor-label"
+       id="text85">Entidades NGSI-LD</text>
+    <text
+       x="740"
+       y="605"
+       text-anchor="middle"
+       class="data-label"
+       id="text86">Publicadas en Orion-LD Hub:</text>
+    <text
+       x="740"
+       y="622"
+       text-anchor="middle"
+       class="small-text"
+       id="text87">VocationalSkill {</text>
+    <text
+       x="740"
+       y="636"
+       text-anchor="middle"
+       class="small-text"
+       id="text88">  id: &quot;urn:skill:s3&quot;</text>
+    <text
+       x="740"
+       y="650"
+       text-anchor="middle"
+       class="small-text"
+       id="text89">  masteryRate: 0.65 ±0.12</text>
+    <text
+       x="740"
+       y="664"
+       text-anchor="middle"
+       class="small-text"
+       id="text90">  sampleSize: 47 (anon)</text>
+    <text
+       x="740"
+       y="678"
+       text-anchor="middle"
+       class="small-text"
+       id="text91">}</text>
+    <text
+       x="740"
+       y="692"
+       text-anchor="middle"
+       class="data-label"
+       id="text92">🌐 Federado en VFDS</text>
+    <rect
+       x="922.0946"
+       y="559.89459"
+       width="175.81076"
+       height="140.21077"
+       rx="6.3931189"
+       class="central"
+       id="rect92" />
+    <text
+       x="1010"
+       y="585"
+       text-anchor="middle"
+       class="actor-label"
+       id="text93">Orion-LD Hub</text>
+    <text
+       x="1010"
+       y="605"
+       text-anchor="middle"
+       class="small-text"
+       id="text94">Context Broker</text>
+    <text
+       x="1010"
+       y="619"
+       text-anchor="middle"
+       class="small-text"
+       id="text95">Recibe actualización</text>
+    <text
+       x="1010"
+       y="633"
+       text-anchor="middle"
+       class="small-text"
+       id="text96">desde Nodo FP 1</text>
+    <text
+       x="1010"
+       y="652"
+       text-anchor="middle"
+       class="small-text"
+       id="text97">Notifica a suscriptores:</text>
+    <text
+       x="1010"
+       y="666"
+       text-anchor="middle"
+       class="small-text"
+       id="text98">• CKAN Catálogo</text>
+    <text
+       x="1010"
+       y="680"
+       text-anchor="middle"
+       class="small-text"
+       id="text99">• Sistema Analítica</text>
+    <text
+       x="1010"
+       y="694"
+       text-anchor="middle"
+       class="small-text"
+       id="text100">• Otros nodos FP</text>
+    <rect
+       x="1159.0946"
+       y="559.89453"
+       width="151.81091"
+       height="140.21091"
+       rx="6.3920383"
+       class="central"
+       id="rect100" />
+    <text
+       x="1235"
+       y="585"
+       text-anchor="middle"
+       class="actor-label"
+       id="text101">CKAN Catalog</text>
+    <text
+       x="1235"
+       y="605"
+       text-anchor="middle"
+       class="small-text"
+       id="text102">Actualiza catálogo:</text>
+    <text
+       x="1235"
+       y="624"
+       text-anchor="middle"
+       class="small-text"
+       id="text103">Dataset:</text>
+    <text
+       x="1235"
+       y="638"
+       text-anchor="middle"
+       class="small-text"
+       id="text104">&quot;Skills Mastery</text>
+    <text
+       x="1235"
+       y="652"
+       text-anchor="middle"
+       class="small-text"
+       id="text105">TBM Module&quot;</text>
+    <text
+       x="1235"
+       y="671"
+       text-anchor="middle"
+       class="small-text"
+       id="text106">Metadatos DCAT-AP</text>
+    <text
+       x="1235"
+       y="685"
+       text-anchor="middle"
+       class="small-text"
+       id="text107">Acceso: público</text>
+  </g>
+  <!-- Flechas Fase 3 -->
+  <path
+     d="m 295.90533,630 h 68.18934"
+     class="flow-federated"
+     id="path107"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="m 555.90533,630 h 72.1894"
+     class="flow-federated"
+     id="path108"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="m 851.90527,630 70.18933,-3e-5"
+     class="flow-federated"
+     id="path109"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="m 1097.9054,629.99997 61.1892,3e-5"
+     class="flow-federated"
+     id="path110"
+     sodipodi:nodetypes="cc" />
+  <!-- FASE 4: Consumo por Otros Nodos -->
+  <rect
+     x="50"
+     y="740"
+     width="1300"
+     height="180"
+     rx="10"
+     class="phase-box"
+     id="rect110" />
+  <text
+     x="70"
+     y="765"
+     class="phase-title"
+     id="text110">FASE 4: CONSUMO Y MEJORA COLABORATIVA DEL DATASPACE</text>
+  <g
+     id="phase4">
+    <rect
+       x="80"
+       y="780"
+       width="260"
+       height="120"
+       rx="8"
+       class="system"
+       id="rect111" />
+    <text
+       x="210"
+       y="805"
+       text-anchor="middle"
+       class="actor-label"
+       id="text111">Nodo FP 2 - CIFP Carlos III</text>
+    <text
+       x="210"
+       y="825"
+       text-anchor="middle"
+       class="small-text"
+       id="text112">Consulta Orion-LD Hub:</text>
+    <text
+       x="210"
+       y="839"
+       text-anchor="middle"
+       class="small-text"
+       id="text113">&quot;¿Qué skills son críticos</text>
+    <text
+       x="210"
+       y="853"
+       text-anchor="middle"
+       class="small-text"
+       id="text114">para estudiantes TBM?&quot;</text>
+    <text
+       x="210"
+       y="872"
+       text-anchor="middle"
+       class="data-label"
+       id="text115">Recibe: stats agregadas</text>
+    <text
+       x="210"
+       y="886"
+       text-anchor="middle"
+       class="small-text"
+       id="text116">Ajusta su currículo ✓</text>
+    <rect
+       x="360"
+       y="780"
+       width="260"
+       height="120"
+       rx="8"
+       class="system"
+       id="rect116" />
+    <text
+       x="490"
+       y="805"
+       text-anchor="middle"
+       class="actor-label"
+       id="text117">Sistema de Analítica</text>
+    <text
+       x="490"
+       y="825"
+       text-anchor="middle"
+       class="small-text"
+       id="text118">Dashboard en tiempo real:</text>
+    <text
+       x="490"
+       y="839"
+       text-anchor="middle"
+       class="small-text"
+       id="text119">• Mapa de calor de skills</text>
+    <text
+       x="490"
+       y="853"
+       text-anchor="middle"
+       class="small-text"
+       id="text120">• Identificación gaps</text>
+    <text
+       x="490"
+       y="867"
+       text-anchor="middle"
+       class="small-text"
+       id="text121">• Predicción abandono</text>
+    <text
+       x="490"
+       y="886"
+       text-anchor="middle"
+       class="data-label"
+       id="text122">Insights para profesores</text>
+    <rect
+       x="640"
+       y="780"
+       width="260"
+       height="120"
+       rx="8"
+       class="system"
+       id="rect122" />
+    <text
+       x="770"
+       y="805"
+       text-anchor="middle"
+       class="actor-label"
+       id="text123">Generador Problemas</text>
+    <text
+       x="770"
+       y="825"
+       text-anchor="middle"
+       class="small-text"
+       id="text124">Entrena con datos federados:</text>
+    <text
+       x="770"
+       y="839"
+       text-anchor="middle"
+       class="small-text"
+       id="text125">&quot;Skills con baja mastery</text>
+    <text
+       x="770"
+       y="853"
+       text-anchor="middle"
+       class="small-text"
+       id="text126">requieren más problemas&quot;</text>
+    <text
+       x="770"
+       y="872"
+       text-anchor="middle"
+       class="data-label"
+       id="text127">Genera 10 problemas</text>
+    <text
+       x="770"
+       y="886"
+       text-anchor="middle"
+       class="small-text"
+       id="text128">enfocados en s5 y s8 ✓</text>
+    <rect
+       x="920"
+       y="780"
+       width="260"
+       height="120"
+       rx="8"
+       class="system"
+       id="rect128" />
+    <text
+       x="1050"
+       y="805"
+       text-anchor="middle"
+       class="actor-label"
+       id="text129">Investigadores / Auditores</text>
+    <text
+       x="1050"
+       y="825"
+       text-anchor="middle"
+       class="small-text"
+       id="text130">Acceso controlado vía</text>
+    <text
+       x="1050"
+       y="839"
+       text-anchor="middle"
+       class="small-text"
+       id="text131">Keycloak (rol: researcher)</text>
+    <text
+       x="1050"
+       y="858"
+       text-anchor="middle"
+       class="small-text"
+       id="text132">Estudios longitudinales:</text>
+    <text
+       x="1050"
+       y="872"
+       text-anchor="middle"
+       class="small-text"
+       id="text133">&quot;Efectividad de EAC</text>
+    <text
+       x="1050"
+       y="886"
+       text-anchor="middle"
+       class="small-text"
+       id="text134">en FP 2025-2026&quot; 📊</text>
+    <rect
+       x="1200"
+       y="780"
+       width="130"
+       height="120"
+       rx="8"
+       class="central"
+       id="rect134" />
+    <text
+       x="1265"
+       y="810"
+       text-anchor="middle"
+       class="actor-label"
+       id="text135">Audit Trail</text>
+    <text
+       x="1265"
+       y="830"
+       text-anchor="middle"
+       class="small-text"
+       id="text136">Registra:</text>
+    <text
+       x="1265"
+       y="844"
+       text-anchor="middle"
+       class="small-text"
+       id="text137">• Quién</text>
+    <text
+       x="1265"
+       y="858"
+       text-anchor="middle"
+       class="small-text"
+       id="text138">• Qué</text>
+    <text
+       x="1265"
+       y="872"
+       text-anchor="middle"
+       class="small-text"
+       id="text139">• Cuándo</text>
+    <text
+       x="1265"
+       y="886"
+       text-anchor="middle"
+       class="small-text"
+       id="text140">• Propósito</text>
+  </g>
+  <!-- Flechas Fase 4 - todos consumen del hub -->
+  <path
+     d="M 1010 700 L 210 780"
+     class="flow-federated"
+     id="path140" />
+  <path
+     d="M 1010 700 L 490 780"
+     class="flow-federated"
+     id="path141" />
+  <path
+     d="M 1010 700 L 770 780"
+     class="flow-federated"
+     id="path142" />
+  <path
+     d="M 1010 700 L 1050 780"
+     class="flow-federated"
+     id="path143" />
+  <!-- Feedback loop -->
+  <path
+     d="m 770,900 -0.67239,28.21322 H 23.440726 l 0,-519.20307 L 80,410"
+     class="flow-federated"
+     id="path144"
+     sodipodi:nodetypes="ccccc" />
+  <text
+     x="-782.36993"
+     y="34.721001"
+     class="small-text"
+     fill="#0288d1"
+     id="text144"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"
+     transform="rotate(-90)">Ciclo de mejora continua</text>
+  <!-- Leyenda -->
+  <g
+     id="leyenda"
+     transform="translate(50, 950)">
+    <text
+       x="0"
+       y="0"
+       class="actor-label"
+       id="text145">Leyenda de Flujos:</text>
+    <line
+       x1="0"
+       y1="20"
+       x2="80"
+       y2="20"
+       class="flow-local"
+       id="line145" />
+    <text
+       x="90"
+       y="25"
+       class="small-text"
+       id="text146">Datos locales (protegidos RGPD)</text>
+    <line
+       x1="300"
+       y1="20"
+       x2="380"
+       y2="20"
+       class="flow-federated"
+       id="line146" />
+    <text
+       x="390"
+       y="25"
+       class="small-text"
+       id="text147">Datos federados (anonimizados, NGSI-LD)</text>
+    <line
+       x1="650"
+       y1="20"
+       x2="730"
+       y2="20"
+       class="flow-user"
+       id="line147" />
+    <text
+       x="740"
+       y="25"
+       class="small-text"
+       id="text148">Interacción usuario</text>
+    <line
+       x1="900"
+       y1="20"
+       x2="980"
+       y2="20"
+       class="flow-llm"
+       id="line148" />
+    <text
+       x="990"
+       y="25"
+       class="small-text"
+       id="text149">Llamada API externa (LLM)</text>
+    <rect
+       x="0"
+       y="40"
+       width="30"
+       height="20"
+       class="data-local"
+       id="rect149" />
+    <text
+       x="40"
+       y="55"
+       class="small-text"
+       id="text150">Dato local sensible</text>
+    <rect
+       x="200"
+       y="40"
+       width="30"
+       height="20"
+       class="data-federated"
+       id="rect150" />
+    <text
+       x="240"
+       y="55"
+       class="small-text"
+       id="text151">Dato federado público</text>
+    <rect
+       x="400"
+       y="40"
+       width="30"
+       height="20"
+       class="system"
+       id="rect151" />
+    <text
+       x="440"
+       y="55"
+       class="small-text"
+       id="text152">Componente Nodo FP</text>
+    <rect
+       x="600"
+       y="40"
+       width="30"
+       height="20"
+       class="central"
+       id="rect152" />
+    <text
+       x="640"
+       y="55"
+       class="small-text"
+       id="text153">Componente Nodo Central</text>
+  </g>
+  <!-- Resumen clave -->
+  <g
+     id="key-points"
+     transform="translate(50, 1030)">
+    <text
+       x="0"
+       y="0"
+       class="actor-label"
+       id="text154">🔑 Puntos Clave del Flujo:</text>
+    <text
+       x="0"
+       y="20"
+       class="small-text"
+       id="text155">1. Estudiante resuelve en plataforma local (LMS) → 2. Evaluación automática con rúbricas + LLM → 3. Estado de conocimiento se actualiza localmente (RGPD)</text>
+    <text
+       x="0"
+       y="38"
+       class="small-text"
+       id="text156">4. Datos anonimizados se publican vía IDS/EDC → 5. Orion-LD Hub sincroniza entre nodos → 6. Otros centros y sistemas consumen datos agregados</text>
+    <text
+       x="0"
+       y="56"
+       class="small-text"
+       id="text157">7. Generación de problemas mejora con feedback federado → 8. Ciclo de recomendación adaptativa continuo → 9. Auditoría completa + trazabilidad</text>
+  </g>
+</svg>

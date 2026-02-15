@@ -4,36 +4,36 @@
 
 #### **11.1.1 Contexto JSON-LD**
 
-Definimos un contexto específico para PKST:
+Definimos un contexto específico para EAC:
 
-**URL:** `https://vocational-dataspace.es/contexts/pkst-context.jsonld`
+**URL:** `https://vocational-dataspace.es/contexts/eac-context.jsonld`
 
 ```json
 {
   "@context": {
-    "pkst": "https://vocational-dataspace.es/ontology/pkst#",
+    "eac": "https://vocational-dataspace.es/ontology/eac#",
     "esco": "http://data.europa.eu/esco/",
     "schema": "https://schema.org/",
     
-    "Skill": "pkst:Skill",
-    "KnowledgeState": "pkst:KnowledgeState",
-    "Problem": "pkst:Problem",
-    "Submission": "pkst:Submission",
+    "Skill": "eac:Skill",
+    "KnowledgeState": "eac:KnowledgeState",
+    "Problem": "eac:Problem",
+    "Submission": "eac:Submission",
     
     "masteredSkills": {
-      "@id": "pkst:masteredSkills",
+      "@id": "eac:masteredSkills",
       "@type": "@id"
     },
     "outerFringe": {
-      "@id": "pkst:outerFringe",
+      "@id": "eac:outerFringe",
       "@type": "@id"
     },
     "requiredSkills": {
-      "@id": "pkst:requiredSkills",
+      "@id": "eac:requiredSkills",
       "@type": "@id"
     },
     "competenceScore": {
-      "@id": "pkst:competenceScore",
+      "@id": "eac:competenceScore",
       "@type": "xsd:float"
     }
   }
@@ -72,7 +72,7 @@ Definimos un contexto específico para PKST:
   },
   "@context": [
     "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-    "https://vocational-dataspace.es/contexts/pkst-context.jsonld"
+    "https://vocational-dataspace.es/contexts/eac-context.jsonld"
   ]
 }
 ```
@@ -128,7 +128,7 @@ Definimos un contexto específico para PKST:
   },
   "@context": [
     "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-    "https://vocational-dataspace.es/contexts/pkst-context.jsonld"
+    "https://vocational-dataspace.es/contexts/eac-context.jsonld"
   ]
 }
 ```
@@ -154,7 +154,7 @@ def create_subscription_on_knowledge_state_updates():
         "watchedAttributes": ["masteredSkills", "competenceScore"],
         "notification": {
             "endpoint": {
-                "uri": "https://pkst-engine.vocational-dataspace.es/api/v1/webhooks/orion-ld",
+                "uri": "https://eac-engine.vocational-dataspace.es/api/v1/webhooks/orion-ld",
                 "accept": "application/json"
             }
         },
@@ -220,7 +220,7 @@ def verify_token(token: str = Depends(oauth2_scheme)):
             token,
             key=KEYCLOAK_PUBLIC_KEY,
             algorithms=["RS256"],
-            audience="pkst-api"
+            audience="eac-api"
         )
         return payload
     

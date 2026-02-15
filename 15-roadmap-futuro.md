@@ -1,6 +1,6 @@
 ## 15. Roadmap Futuro
 
-### 15.1 Capa 2: PKST Probabilístico (Año 1-2)
+### 15.1 Capa 2: EAC Probabilístico (Año 1-2)
 
 **Objetivos:**
 - Implementar modelos BLIM (Basic Local Independence Model)

@@ -265,7 +265,7 @@ class KnowledgeSpaceBuilder:
             },
             "@context": [
                 "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-                "https://vocational-dataspace.es/contexts/pkst-context.jsonld"
+                "https://vocational-dataspace.es/contexts/eac-context.jsonld"
             ]
         }
         return entity

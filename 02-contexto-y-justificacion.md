@@ -22,7 +22,7 @@ La evaluación tradicional en Formación Profesional presenta limitaciones crít
 - Cada centro tiene su propio banco de problemas
 - No existe una estructura formal para intercambiar recursos educativos
 
-### 2.2 Solución Propuesta: PKST + Dataspace Federado
+### 2.2 Solución Propuesta: EAC + Dataspace Federado
 
 Nuestro sistema aborda estos problemas mediante:
 
@@ -35,7 +35,7 @@ Nuestro sistema aborda estos problemas mediante:
    - Captura parcial de la traza procedimental
 
 3. **Recomendación adaptativa fundamentada**
-   - Algoritmo basado en la franja exterior (outer fringe) de PKST
+   - Algoritmo basado en la franja exterior (outer fringe) de EAC
    - Garantías matemáticas de progreso óptimo
 
 4. **Federación de conocimiento**

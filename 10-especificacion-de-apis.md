@@ -1,8 +1,8 @@
 ## 10. Especificación de APIs
 
-### 10.1 API REST del Sistema PKST
+### 10.1 API REST del Sistema EAC
 
-#### **Base URL:** `https://pkst-engine.vocational-dataspace.es/api/v1`
+#### **Base URL:** `https://eac-engine.vocational-dataspace.es/api/v1`
 
 #### **Autenticación:** Bearer Token (JWT desde Keycloak)
 
@@ -283,10 +283,10 @@ Obtiene el grafo de conocimiento completo (para visualización).
 
 **POST https://external-platform.com/webhooks/problem-completed**
 
-El sistema PKST envía resultados a la plataforma externa tras la evaluación.
+El sistema EAC envía resultados a la plataforma externa tras la evaluación.
 
 ```json
-// Request enviado por PKST
+// Request enviado por EAC
 {
   "event": "problem_completed",
   "timestamp": "2026-02-08T10:35:00Z",
@@ -316,7 +316,7 @@ El sistema PKST envía resultados a la plataforma externa tras la evaluación.
 
 **POST /api/v1/external-problems/register**
 
-Permite a plataformas externas registrar sus problemas en el sistema PKST.
+Permite a plataformas externas registrar sus problemas en el sistema EAC.
 
 ```json
 // Request

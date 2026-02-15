@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1200 950"
+   version="1.1"
+   id="svg94"
+   sodipodi:docname="diagrama-3-nodo-central-coordinador.svg"
+   inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview94"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.84445753"
+     inkscape:cx="643.01635"
+     inkscape:cy="412.09888"
+     inkscape:window-width="1854"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg94" />
+  <defs
+     id="defs3">
+    <style
+       id="style1">
+      .title { font: bold 24px Arial, sans-serif; fill: #1a237e; }
+      .subtitle { font: 16px Arial, sans-serif; fill: #424242; }
+      .section-title { font: bold 16px Arial, sans-serif; fill: #1976d2; }
+      .component-label { font: bold 13px Arial, sans-serif; fill: #1a237e; }
+      .text-label { font: 12px Arial, sans-serif; fill: #424242; }
+      .small-text { font: 10px Arial, sans-serif; fill: #616161; }
+      
+      .container { fill: #e3f2fd; stroke: #1976d2; stroke-width: 4; }
+      .layer { fill: #fafafa; stroke: #9e9e9e; stroke-width: 2; stroke-dasharray: 5,5; }
+      .core-service { fill: #bbdefb; stroke: #1976d2; stroke-width: 2; }
+      .support-service { fill: #e8eaf6; stroke: #5c6bc0; stroke-width: 2; }
+      .governance { fill: #fff9c4; stroke: #f9a825; stroke-width: 2; }
+      .external-node { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; }
+      
+      .arrow { stroke: #424242; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-bidirectional { stroke: #1976d2; stroke-width: 2; fill: none; marker-end: url(#arrowhead-blue); marker-start: url(#arrowstart-blue); }
+    </style>
+    <marker
+       id="arrowhead"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3, 0 6"
+         fill="#424242"
+         id="polygon1" />
+    </marker>
+    <marker
+       id="arrowhead-blue"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3, 0 6"
+         fill="#1976d2"
+         id="polygon2" />
+    </marker>
+    <marker
+       id="arrowstart-blue"
+       markerWidth="10"
+       markerHeight="10"
+       refX="1"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="10 0, 0 3, 10 6"
+         fill="#1976d2"
+         id="polygon3" />
+    </marker>
+  </defs>
+  <!-- Título -->
+  <text
+     x="600"
+     y="40"
+     text-anchor="middle"
+     class="title"
+     id="text3">Nodo Central Coordinador - VFDS</text>
+  <text
+     x="600"
+     y="65"
+     text-anchor="middle"
+     class="subtitle"
+     id="text4">Servicios Habilitadores Centralizados del Vocational Federated Data Space</text>
+  <!-- Contenedor principal -->
+  <rect
+     x="50"
+     y="90"
+     width="1100"
+     height="800"
+     rx="15"
+     class="container"
+     id="rect4" />
+  <text
+     x="600"
+     y="120"
+     text-anchor="middle"
+     class="section-title"
+     id="text5">🏛️ NODO CENTRAL - Autoridad de Gobierno + Servicios Compartidos</text>
+  <!-- CAPA 1: Servicios Core FIWARE -->
+  <rect
+     x="80"
+     y="145"
+     width="1040"
+     height="140"
+     rx="8"
+     class="layer"
+     id="rect5" />
+  <text
+     x="100"
+     y="170"
+     class="component-label"
+     id="text6">1️⃣ SERVICIOS CORE FIWARE</text>
+  <g
+     id="core-fiware">
+    <rect
+       x="100"
+       y="185"
+       width="246"
+       height="85"
+       rx="4.0999999"
+       class="core-service"
+       id="rect6" />
+    <text
+       x="226"
+       y="207"
+       text-anchor="middle"
+       class="component-label"
+       id="text7"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Orion-LD Context Broker Hub</text>
+    <text
+       x="226"
+       y="227"
+       text-anchor="middle"
+       class="small-text"
+       id="text8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">FIWARE Orion-LD v1.5.1</text>
+    <text
+       x="226"
+       y="241"
+       text-anchor="middle"
+       class="small-text"
+       id="text9"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Puerto: 1026 • NGSI-LD API v1.6.1</text>
+    <text
+       x="226"
+       y="255"
+       text-anchor="middle"
+       class="small-text"
+       id="text10"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Funciones: Agregación de contexto federado,</text>
+    <text
+       x="226"
+       y="268"
+       text-anchor="middle"
+       class="small-text"
+       id="text11"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">suscripciones, queries distribuidas</text>
+    <rect
+       x="422.43811"
+       y="185"
+       width="300"
+       height="85"
+       rx="5"
+       class="core-service"
+       id="rect11" />
+    <text
+       x="570"
+       y="207"
+       text-anchor="middle"
+       class="component-label"
+       id="text12">MongoDB Context Store</text>
+    <text
+       x="570"
+       y="227"
+       text-anchor="middle"
+       class="small-text"
+       id="text13">MongoDB v6.0+</text>
+    <text
+       x="570"
+       y="241"
+       text-anchor="middle"
+       class="small-text"
+       id="text14">Bases: orion, orion-tenants</text>
+    <text
+       x="570"
+       y="255"
+       text-anchor="middle"
+       class="small-text"
+       id="text15">Persistencia de entidades NGSI-LD:</text>
+    <text
+       x="626.58795"
+       y="242.68433"
+       text-anchor="middle"
+       class="small-text"
+       id="text16"
+       transform="scale(0.90553849,1.1043153)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif;stroke-width:0.905538">Skills, Modules, AggregatedMetrics</text>
+    <rect
+       x="798.87622"
+       y="185"
+       width="295.20001"
+       height="85"
+       rx="4.0999999"
+       class="core-service"
+       id="rect16" />
+    <text
+       x="920"
+       y="207"
+       text-anchor="middle"
+       class="component-label"
+       id="text17">Mintaka Temporal API (Opcional)</text>
+    <text
+       x="920"
+       y="227"
+       text-anchor="middle"
+       class="small-text"
+       id="text18">FIWARE Mintaka + TimescaleDB</text>
+    <text
+       x="920"
+       y="241"
+       text-anchor="middle"
+       class="small-text"
+       id="text19">Queries temporales sobre entidades</text>
+    <text
+       x="920"
+       y="255"
+       text-anchor="middle"
+       class="small-text"
+       id="text20">Análisis de evolución de skills en el tiempo</text>
+    <text
+       x="920"
+       y="268"
+       text-anchor="middle"
+       class="small-text"
+       id="text21">Endpoint: /temporal/entities</text>
+  </g>
+  <!-- Flecha bidireccional Orion <-> MongoDB -->
+  <path
+     d="m 346,227 76.43811,0.5"
+     class="arrow-bidirectional"
+     id="path21"
+     sodipodi:nodetypes="cc" />
+  <!-- CAPA 2: Identidad y Acceso -->
+  <rect
+     x="80"
+     y="305"
+     width="1040"
+     height="140"
+     rx="8"
+     class="layer"
+     id="rect21" />
+  <text
+     x="100"
+     y="330"
+     class="component-label"
+     id="text22">2️⃣ IDENTIDAD Y GESTIÓN DE ACCESO</text>
+  <g
+     id="identity">
+    <rect
+       x="132.0952"
+       y="344.8952"
+       width="255.8096"
+       height="85.20961"
+       rx="3.997025"
+       class="support-service"
+       id="rect22" />
+    <text
+       x="260"
+       y="367"
+       text-anchor="middle"
+       class="component-label"
+       id="text23">Keycloak Identity Provider</text>
+    <text
+       x="260"
+       y="387"
+       text-anchor="middle"
+       class="small-text"
+       id="text24">Keycloak v23+ • Puerto: 8080</text>
+    <text
+       x="260"
+       y="401"
+       text-anchor="middle"
+       class="small-text"
+       id="text25">Protocolos: OAuth2, OIDC, SAML 2.0</text>
+    <text
+       x="260"
+       y="415"
+       text-anchor="middle"
+       class="small-text"
+       id="text26">Realms: VFDS-Master, VFDS-FP</text>
+    <text
+       x="260"
+       y="428"
+       text-anchor="middle"
+       class="small-text"
+       id="text27">Roles: Admin, Teacher, Student, Auditor</text>
+    <rect
+       x="472.09518"
+       y="344.8952"
+       width="255.8096"
+       height="85.20961"
+       rx="3.997025"
+       class="support-service"
+       id="rect27" />
+    <text
+       x="600"
+       y="367"
+       text-anchor="middle"
+       class="component-label"
+       id="text28">Wilma PEP Proxy</text>
+    <text
+       x="600"
+       y="387"
+       text-anchor="middle"
+       class="small-text"
+       id="text29">FIWARE Wilma • Puerto: 1027</text>
+    <text
+       x="600"
+       y="401"
+       text-anchor="middle"
+       class="small-text"
+       id="text30">Policy Enforcement Point</text>
+    <text
+       x="600"
+       y="415"
+       text-anchor="middle"
+       class="small-text"
+       id="text31">Intercepta requests al Context Broker</text>
+    <text
+       x="600"
+       y="428"
+       text-anchor="middle"
+       class="small-text"
+       id="text32">Valida tokens + aplica políticas</text>
+    <rect
+       x="812.09521"
+       y="344.8952"
+       width="255.8096"
+       height="85.20961"
+       rx="3.997025"
+       class="support-service"
+       id="rect32" />
+    <text
+       x="940"
+       y="367"
+       text-anchor="middle"
+       class="component-label"
+       id="text33">Authzforce PDP</text>
+    <text
+       x="940"
+       y="387"
+       text-anchor="middle"
+       class="small-text"
+       id="text34">FIWARE Authzforce • Puerto: 8080</text>
+    <text
+       x="940"
+       y="401"
+       text-anchor="middle"
+       class="small-text"
+       id="text35">Policy Decision Point (XACML 3.0)</text>
+    <text
+       x="940"
+       y="415"
+       text-anchor="middle"
+       class="small-text"
+       id="text36">Políticas ABAC complejas</text>
+    <text
+       x="940"
+       y="428"
+       text-anchor="middle"
+       class="small-text"
+       id="text37">Decisiones: Permit/Deny/NotApplicable</text>
+  </g>
+  <!-- Flechas IAM -->
+  <path
+     d="m 387.9048,387 h 84.19038"
+     class="arrow"
+     id="path37"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="m 727.90479,387 h 84.19042"
+     class="arrow"
+     id="path38"
+     sodipodi:nodetypes="cc" />
+  <!-- CAPA 3: Catálogo y Descubrimiento -->
+  <rect
+     x="80"
+     y="465"
+     width="1040"
+     height="140"
+     rx="8"
+     class="layer"
+     id="rect38" />
+  <text
+     x="100"
+     y="490"
+     class="component-label"
+     id="text38">3️⃣ CATÁLOGO Y DESCUBRIMIENTO DE RECURSOS</text>
+  <g
+     id="catalog">
+    <rect
+       x="140.09526"
+       y="504.89526"
+       width="319.80948"
+       height="85.209473"
+       rx="3.9976184"
+       class="support-service"
+       id="rect39" />
+    <text
+       x="300"
+       y="527"
+       text-anchor="middle"
+       class="component-label"
+       id="text39">CKAN Data Catalog</text>
+    <text
+       x="300"
+       y="547"
+       text-anchor="middle"
+       class="small-text"
+       id="text40">CKAN v2.10+ • Puerto: 5000</text>
+    <text
+       x="300"
+       y="561"
+       text-anchor="middle"
+       class="small-text"
+       id="text41">Estándar: DCAT-AP 2.1</text>
+    <text
+       x="300"
+       y="575"
+       text-anchor="middle"
+       class="small-text"
+       id="text42">Catálogo de: Skills ontology, Problemas públicos,</text>
+    <text
+       x="300"
+       y="588"
+       text-anchor="middle"
+       class="small-text"
+       id="text43">Módulos FP, Rúbricas compartidas, Datasets</text>
+    <rect
+       x="549.09515"
+       y="504.89517"
+       width="231.80968"
+       height="85.209679"
+       rx="3.9967186"
+       class="support-service"
+       id="rect43" />
+    <text
+       x="665"
+       y="527"
+       text-anchor="middle"
+       class="component-label"
+       id="text44">PostgreSQL (CKAN DB)</text>
+    <text
+       x="665"
+       y="547"
+       text-anchor="middle"
+       class="small-text"
+       id="text45">PostgreSQL 16</text>
+    <text
+       x="665"
+       y="561"
+       text-anchor="middle"
+       class="small-text"
+       id="text46">Base: ckan_default</text>
+    <text
+       x="665"
+       y="575"
+       text-anchor="middle"
+       class="small-text"
+       id="text47">Metadatos de datasets</text>
+    <text
+       x="665"
+       y="588"
+       text-anchor="middle"
+       class="small-text"
+       id="text48">+ Solr para búsqueda</text>
+    <rect
+       x="857.09515"
+       y="504.89514"
+       width="215.80972"
+       height="85.209732"
+       rx="3.9964764"
+       class="support-service"
+       id="rect48" />
+    <text
+       x="965"
+       y="527"
+       text-anchor="middle"
+       class="component-label"
+       id="text49">Schema Registry</text>
+    <text
+       x="965"
+       y="547"
+       text-anchor="middle"
+       class="small-text"
+       id="text50">JSON-LD @context</text>
+    <text
+       x="965"
+       y="561"
+       text-anchor="middle"
+       class="small-text"
+       id="text51">Vocabularios NGSI-LD:</text>
+    <text
+       x="965"
+       y="575"
+       text-anchor="middle"
+       class="small-text"
+       id="text52">VocationalSkill, LearningModule,</text>
+    <text
+       x="965"
+       y="588"
+       text-anchor="middle"
+       class="small-text"
+       id="text53">LearningProblem, StudentProfile</text>
+  </g>
+  <!-- Flecha CKAN -> DB -->
+  <path
+     d="m 459.90474,547 h 89.19041"
+     class="arrow"
+     id="path53"
+     sodipodi:nodetypes="cc" />
+  <!-- CAPA 4: Observabilidad y Auditoría -->
+  <rect
+     x="80"
+     y="625"
+     width="1040"
+     height="180"
+     rx="8"
+     class="layer"
+     id="rect53" />
+  <text
+     x="100"
+     y="650"
+     class="component-label"
+     id="text54">4️⃣ OBSERVABILIDAD, AUDITORÍA Y CONTROL OPERATIVO</text>
+  <g
+     id="observability"
+     transform="translate(0,-6)">
+    <rect
+       x="123.09472"
+       y="664.89471"
+       width="183.81056"
+       height="125.21056"
+       rx="3.9958818"
+       class="support-service"
+       id="rect54" />
+    <text
+       x="215"
+       y="685"
+       text-anchor="middle"
+       class="component-label"
+       id="text55"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Prometheus</text>
+    <text
+       x="215"
+       y="705"
+       text-anchor="middle"
+       class="small-text"
+       id="text56"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Prometheus v2.45+</text>
+    <text
+       x="215"
+       y="719"
+       text-anchor="middle"
+       class="small-text"
+       id="text57"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Puerto: 9090</text>
+    <text
+       x="215"
+       y="733"
+       text-anchor="middle"
+       class="small-text"
+       id="text58"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Scraping métricas:</text>
+    <text
+       x="215"
+       y="747"
+       text-anchor="middle"
+       class="small-text"
+       id="text59"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Orion /metrics</text>
+    <text
+       x="215"
+       y="761"
+       text-anchor="middle"
+       class="small-text"
+       id="text60"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Keycloak /metrics</text>
+    <text
+       x="215"
+       y="775"
+       text-anchor="middle"
+       class="small-text"
+       id="text61"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Nodos FP /health</text>
+    <rect
+       x="373.09473"
+       y="664.89471"
+       width="183.81056"
+       height="125.21056"
+       rx="3.9958818"
+       class="support-service"
+       id="rect61" />
+    <text
+       x="465"
+       y="685"
+       text-anchor="middle"
+       class="component-label"
+       id="text62"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Grafana</text>
+    <text
+       x="465"
+       y="705"
+       text-anchor="middle"
+       class="small-text"
+       id="text63"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Grafana v10.2+</text>
+    <text
+       x="465"
+       y="719"
+       text-anchor="middle"
+       class="small-text"
+       id="text64"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Puerto: 3001</text>
+    <text
+       x="465"
+       y="733"
+       text-anchor="middle"
+       class="small-text"
+       id="text65"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Dashboards:</text>
+    <text
+       x="465"
+       y="747"
+       text-anchor="middle"
+       class="small-text"
+       id="text66"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Estado global VFDS</text>
+    <text
+       x="465"
+       y="761"
+       text-anchor="middle"
+       class="small-text"
+       id="text67"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• SLIs/SLOs por nodo</text>
+    <text
+       x="465"
+       y="775"
+       text-anchor="middle"
+       class="small-text"
+       id="text68"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Uso de catálogo</text>
+    <rect
+       x="623.09473"
+       y="664.89471"
+       width="183.81056"
+       height="125.21056"
+       rx="3.9958818"
+       class="support-service"
+       id="rect68" />
+    <text
+       x="715"
+       y="685"
+       text-anchor="middle"
+       class="component-label"
+       id="text69"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">ELK Stack</text>
+    <text
+       x="715"
+       y="705"
+       text-anchor="middle"
+       class="small-text"
+       id="text70"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Elasticsearch + Logstash</text>
+    <text
+       x="715"
+       y="719"
+       text-anchor="middle"
+       class="small-text"
+       id="text71"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">+ Kibana v8.11</text>
+    <text
+       x="715"
+       y="733"
+       text-anchor="middle"
+       class="small-text"
+       id="text72"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Logging centralizado:</text>
+    <text
+       x="715"
+       y="747"
+       text-anchor="middle"
+       class="small-text"
+       id="text73"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Logs Orion-LD</text>
+    <text
+       x="715"
+       y="761"
+       text-anchor="middle"
+       class="small-text"
+       id="text74"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Audit trails (accesos)</text>
+    <text
+       x="715"
+       y="775"
+       text-anchor="middle"
+       class="small-text"
+       id="text75"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Security events</text>
+    <rect
+       x="875.09473"
+       y="664.89478"
+       width="199.81049"
+       height="125.21049"
+       rx="3.9962099"
+       class="support-service"
+       id="rect75" />
+    <text
+       x="975"
+       y="685"
+       text-anchor="middle"
+       class="component-label"
+       id="text76"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Alertmanager</text>
+    <text
+       x="975"
+       y="705"
+       text-anchor="middle"
+       class="small-text"
+       id="text77"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Prometheus Alertmanager</text>
+    <text
+       x="975"
+       y="719"
+       text-anchor="middle"
+       class="small-text"
+       id="text78"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Puerto: 9093</text>
+    <text
+       x="975"
+       y="733"
+       text-anchor="middle"
+       class="small-text"
+       id="text79"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Alertas:</text>
+    <text
+       x="975"
+       y="747"
+       text-anchor="middle"
+       class="small-text"
+       id="text80"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Nodo FP down</text>
+    <text
+       x="975"
+       y="761"
+       text-anchor="middle"
+       class="small-text"
+       id="text81"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Alta latencia NGSI-LD</text>
+    <text
+       x="975"
+       y="775"
+       text-anchor="middle"
+       class="small-text"
+       id="text82"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">• Violaciones políticas</text>
+  </g>
+  <!-- Flechas observabilidad -->
+  <path
+     d="m 306.90528,727 h 66.18945"
+     class="arrow"
+     id="path82"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="M 215,784.10528 V 816 h 760 v -31.89471"
+     class="arrow"
+     id="path83"
+     sodipodi:nodetypes="cccc" />
+  <!-- CAPA 5: Gobernanza y Confianza -->
+  <rect
+     x="80"
+     y="825"
+     width="510"
+     height="55"
+     rx="8"
+     class="governance"
+     id="rect83" />
+  <text
+     x="335"
+     y="855"
+     text-anchor="middle"
+     class="component-label"
+     id="text83">🛡️ SERVICIOS DE CONFIANZA Y GOBERNANZA</text>
+  <text
+     x="335"
+     y="872"
+     text-anchor="middle"
+     class="small-text"
+     id="text84">Contratos digitales • Certificación participantes • Resolución disputas • Compliance RGPD</text>
+  <rect
+     x="610"
+     y="825"
+     width="510"
+     height="55"
+     rx="8"
+     class="governance"
+     id="rect84" />
+  <text
+     x="865"
+     y="855"
+     text-anchor="middle"
+     class="component-label"
+     id="text85">📊 ANALÍTICA DEL DATASPACE</text>
+  <text
+     x="865"
+     y="872"
+     text-anchor="middle"
+     class="small-text"
+     id="text86">Métricas agregadas de uso • Insights de skills mastery • Reporte de calidad de datos</text>
+  <!-- Nodos FP conectados -->
+  <g
+     id="external-nodes"
+     transform="translate(0, 0)">
+    <rect
+       x="150"
+       y="30"
+       width="180"
+       height="50"
+       rx="5"
+       class="external-node"
+       id="rect86" />
+    <text
+       x="240"
+       y="52"
+       text-anchor="middle"
+       class="text-label"
+       id="text87">📚 Nodo FP 1</text>
+    <text
+       x="240"
+       y="67"
+       text-anchor="middle"
+       class="small-text"
+       id="text88"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif;text-anchor:middle;fill:#616161"><tspan
+         sodipodi:role="line"
+         id="tspan94">IES LuisSimarro</tspan></text>
+    <rect
+       x="870"
+       y="30"
+       width="180"
+       height="50"
+       rx="5"
+       class="external-node"
+       id="rect88" />
+    <text
+       x="960"
+       y="52"
+       text-anchor="middle"
+       class="text-label"
+       id="text89">📚 Nodo FP 2</text>
+    <text
+       x="960"
+       y="67"
+       text-anchor="middle"
+       class="small-text"
+       id="text90"
+       style="-inkscape-font-specification:'Sans, Normal';font-family:Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:10px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;line-height:normal;text-anchor:middle;fill:#616161"><tspan
+         sodipodi:role="line"
+         id="tspan95">IES Ribera del TajoI</tspan></text>
+    <!-- Flechas desde nodos FP al hub -->
+    <path
+       d="M 240,80 223,185"
+       class="arrow"
+       id="path90"
+       sodipodi:nodetypes="cc"
+       style="fill:none;fill-opacity:1;stroke:#616161;stroke-opacity:1" />
+    <text
+       x="208.39116"
+       y="134.3642"
+       class="small-text"
+       id="text91"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">IDS/EDC + NGSI-LD</text>
+    <path
+       d="M 960,80 946.4762,185"
+       class="arrow"
+       id="path91"
+       sodipodi:nodetypes="cc"
+       style="fill:none;fill-opacity:1;stroke:#616161;stroke-opacity:1" />
+    <text
+       x="877.03625"
+       y="134.3642"
+       class="small-text"
+       id="text92"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">IDS/EDC + NGSI-LD</text>
+  </g>
+  <!-- Notas footer -->
+  <text
+     x="600"
+     y="925"
+     text-anchor="middle"
+     class="small-text"
+     fill="#1976d2"
+     id="text93">Servicios centralizados reducen complejidad operativa • Escalabilidad horizontal vía nodos FP autónomos</text>
+  <text
+     x="600"
+     y="942"
+     text-anchor="middle"
+     class="small-text"
+     fill="#616161"
+     id="text94">Cumplimiento: UNE 0087:2025 • ETSI NGSI-LD • Gaia-X • IDS RAM 4.0 • RGPD • Ley de Gobernanza de Datos</text>
+</svg>

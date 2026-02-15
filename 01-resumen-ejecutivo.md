@@ -2,7 +2,7 @@
 
 ### 1.1 Visión General
 
-El presente documento especifica un **sistema de evaluación y recomendación adaptativa** basado en la Teoría de Espacios de Conocimiento Procedimental (PKST) para el Vocational Federated Dataspace. El sistema revoluciona la evaluación en Formación Profesional al:
+El presente documento especifica el **Modelo de Espacio de Aprendizaje Competencial** basado en la Teoría de Espacios de Conocimiento Procedimental (PKST) para el Vocational Federated Dataspace. El sistema revoluciona la evaluación en Formación Profesional al:
 
 - **Mapear competencias procedimentales** en un espacio de conocimiento formal
 - **Evaluar procesos, no solo resultados** mediante rúbricas automatizadas
@@ -13,7 +13,7 @@ El presente documento especifica un **sistema de evaluación y recomendación ad
 
 **Valor único frente a otros dataspaces educativos:**
 
-| Aspecto | DS4Skills / Prometheus-X / Merlot | **Nuestro Sistema (PKST-FP)** |
+| Aspecto | DS4Skills / Prometheus-X / Merlot | **Nuestro Sistema (EAC-FP)** |
 |---------|-----------------------------------|-------------------------------|
 | Foco | Competencias declarativas (skills inventory) | **Competencias procedimentales (cómo se resuelven problemas)** |
 | Evaluación | Resultado binario (pass/fail) | **Secuencia de pasos + rúbricas multi-criterio** |
@@ -23,7 +23,7 @@ El presente documento especifica un **sistema de evaluación y recomendación ad
 
 ### 1.3 Objetivos del MVP (Marzo 2026)
 
-1. ✅ Implementar PKST Capa 1 (determinista) para 1 módulo completo
+1. ✅ Implementar EAC Capa 1 (determinista) para 1 módulo completo
 2. ✅ Generar automáticamente 100+ problemas con Claude/GPT-4
 3. ✅ Demostrar recomendación adaptativa con 100 estudiantes sintéticos
 4. ✅ Integrar con FIWARE Orion-LD y Keycloak
