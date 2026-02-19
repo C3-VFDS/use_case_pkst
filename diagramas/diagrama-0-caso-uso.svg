@@ -1,0 +1,2022 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1600 1200"
+   version="1.1"
+   id="svg145"
+   sodipodi:docname="diagrama-0-caso-uso-v2.svg"
+   inkscape:version="1.4.3 (fcd0343856, 2026-01-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview145"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true"
+     inkscape:zoom="0.58106261"
+     inkscape:cx="820.04932"
+     inkscape:cy="600.62374"
+     inkscape:window-width="1854"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg145" />
+  <defs
+     id="defs5">
+    <style
+       id="style1">
+      .title { font: bold 26px Arial, sans-serif; fill: #1a237e; }
+      .subtitle { font: 16px Arial, sans-serif; fill: #424242; }
+      .section-title { font: bold 15px Arial, sans-serif; fill: #d32f2f; }
+      .component-label { font: bold 13px Arial, sans-serif; fill: #1a237e; }
+      .text-label { font: 12px Arial, sans-serif; fill: #424242; }
+      .small-text { font: 10px Arial, sans-serif; fill: #616161; }
+      .flow-label { font: italic 11px Arial, sans-serif; fill: #1976d2; }
+      .actor-label { font: bold 12px Arial, sans-serif; fill: #ffffff; }
+      .gaia-x-label { font: bold 11px Arial, sans-serif; fill: #003399; }
+      
+      .actor-student { fill: #4caf50; stroke: #2e7d32; stroke-width: 2.5; }
+      .actor-teacher { fill: #2196f3; stroke: #1565c0; stroke-width: 2.5; }
+      .actor-operator { fill: #ff9800; stroke: #e65100; stroke-width: 2.5; }
+      .actor-auditor { fill: #9c27b0; stroke: #6a1b9a; stroke-width: 2.5; }
+      
+      .vc-component { fill: #fff3e0; stroke: #f57c00; stroke-width: 2.5; }
+      .marketplace { fill: #fce4ec; stroke: #c2185b; stroke-width: 3; }
+      .gaia-x { fill: #e3f2fd; stroke: #1976d2; stroke-width: 3; stroke-dasharray: 8,4; }
+      .service-box { fill: #f5f5f5; stroke: #616161; stroke-width: 2; }
+      .backend-eac { fill: #e8f5e9; stroke: #43a047; stroke-width: 2.5; }
+      .connector { fill: #e0f2f1; stroke: #00897b; stroke-width: 2.5; }
+      .nodo-central { fill: #e3f2fd; stroke: #1976d2; stroke-width: 3; }
+      
+      .arrow { stroke: #424242; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-vc { stroke: #f57c00; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead-orange); stroke-dasharray: 6,3; }
+      .arrow-data { stroke: #4caf50; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead-green); stroke-dasharray: 5,5; }
+      .arrow-marketplace { stroke: #c2185b; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead-pink); }
+      .arrow-gaia-x { stroke: #1976d2; stroke-width: 3; fill: none; marker-end: url(#arrowhead-blue); stroke-dasharray: 10,5; }
+    </style>
+    <marker
+       id="arrowhead"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3, 0 6"
+         fill="#424242"
+         id="polygon1" />
+    </marker>
+    <marker
+       id="arrowhead-orange"
+       markerWidth="7"
+       markerHeight="7"
+       refX="11"
+       refY="3"
+       orient="auto"
+       markerUnits="strokeWidth"
+       preserveAspectRatio="xMidYMid"
+       viewBox="0 0 12 6">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#f57c00"
+         id="polygon2" />
+    </marker>
+    <marker
+       id="arrowhead-green"
+       markerWidth="12"
+       markerHeight="12"
+       refX="10"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#4caf50"
+         id="polygon3" />
+    </marker>
+    <marker
+       id="arrowhead-pink"
+       markerWidth="12"
+       markerHeight="12"
+       refX="10"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#c2185b"
+         id="polygon4" />
+    </marker>
+    <marker
+       id="arrowhead-blue"
+       markerWidth="8"
+       markerHeight="4"
+       refX="10"
+       refY="3"
+       orient="auto"
+       viewBox="0 0 12 6"
+       preserveAspectRatio="xMidYMid">
+      <polygon
+         points="0 0, 12 3, 0 6"
+         fill="#1976d2"
+         id="polygon5" />
+    </marker>
+  </defs>
+  <!-- Título -->
+  <text
+     x="800"
+     y="40"
+     text-anchor="middle"
+     class="title"
+     id="text5">Caso de Uso: VFDS-EAC con Credenciales Verificables</text>
+  <text
+     x="800"
+     y="65"
+     text-anchor="middle"
+     class="subtitle"
+     id="text6">Evaluación Automática Competencial en Dataspace Federado + Gaia-X</text>
+  <!-- ZONA 1: ACTORES Y ROLES -->
+  <rect
+     x="50"
+     y="100"
+     width="1500"
+     height="140"
+     rx="10"
+     fill="none"
+     stroke="#d32f2f"
+     stroke-width="2"
+     stroke-dasharray="10,5"
+     id="rect6" />
+  <text
+     x="70"
+     y="125"
+     class="section-title"
+     id="text7">ZONA 1: ACTORES Y ROLES EN EL DATASPACE</text>
+  <!-- Actor: Estudiante -->
+  <rect
+     x="80"
+     y="145"
+     width="180"
+     height="75"
+     rx="8"
+     class="actor-student"
+     id="rect7" />
+  <text
+     x="170"
+     y="178.34766"
+     text-anchor="middle"
+     class="actor-label"
+     id="text8"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">ESTUDIANTE</text>
+  <text
+     x="170"
+     y="189.78027"
+     text-anchor="middle"
+     class="small-text"
+     fill="#1b5e20"
+     id="text10"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan145"
+       x="170"
+       y="189.78027">✓ Resolver problemas EAC</tspan><tspan
+       sodipodi:role="line"
+       id="tspan146"
+       x="170"
+       y="202.44016">✓ Ver resultados propios</tspan></text>
+  <text
+     x="170"
+     y="215"
+     text-anchor="middle"
+     class="small-text"
+     fill="#1b5e20"
+     id="text11"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- Actor: Docente -->
+  <rect
+     x="280"
+     y="145"
+     width="180"
+     height="75"
+     rx="8"
+     class="actor-teacher"
+     id="rect11" />
+  <text
+     x="370"
+     y="178.5"
+     text-anchor="middle"
+     class="actor-label"
+     id="text12"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">DOCENTE</text>
+  <text
+     x="370.37231"
+     y="189.6582"
+     text-anchor="middle"
+     class="small-text"
+     fill="#0d47a1"
+     id="text14"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan147"
+       x="370.37231"
+       y="189.6582">✓ Ver grupos y analytics</tspan><tspan
+       sodipodi:role="line"
+       id="tspan148"
+       x="370.37231"
+       y="202.31808">✓ Configurar evaluaciones</tspan></text>
+  <text
+     x="370"
+     y="215"
+     text-anchor="middle"
+     class="small-text"
+     fill="#0d47a1"
+     id="text15"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- Actor: Operador -->
+  <g
+     id="actor-operator">
+    <rect
+       x="480"
+       y="145"
+       width="200"
+       height="75"
+       rx="8"
+       class="actor-operator"
+       id="rect15" />
+    <text
+       x="580"
+       y="178.5"
+       text-anchor="middle"
+       class="actor-label"
+       id="text16"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">OPERADOR DATASPACE</text>
+    <text
+       x="580"
+       y="189.78027"
+       text-anchor="middle"
+       class="small-text"
+       fill="#e65100"
+       id="text18"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan149"
+         x="580"
+         y="189.78027">✓ Gestionar servicios</tspan><tspan
+         sodipodi:role="line"
+         id="tspan150"
+         x="580"
+         y="202.44016">✓ Auditar transacciones</tspan></text>
+    <text
+       x="580"
+       y="215"
+       text-anchor="middle"
+       class="small-text"
+       fill="#e65100"
+       id="text19"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Actor: Auditor/Investigador -->
+  <rect
+     x="700"
+     y="145"
+     width="180"
+     height="75"
+     rx="8"
+     class="actor-auditor"
+     id="rect19"
+     style="fill:#a16cb0;fill-opacity:1" />
+  <text
+     x="790"
+     y="178.5"
+     text-anchor="middle"
+     class="actor-label"
+     id="text20"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">INVESTIGADOR</text>
+  <text
+     x="790"
+     y="189.6582"
+     text-anchor="middle"
+     class="small-text"
+     fill="#4a148c"
+     id="text22"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan151"
+       x="790"
+       y="189.6582">✓ Datos anonimizados</tspan><tspan
+       sodipodi:role="line"
+       id="tspan152"
+       x="790"
+       y="202.31808">✓ Solo lectura</tspan></text>
+  <text
+     x="790"
+     y="215"
+     text-anchor="middle"
+     class="small-text"
+     fill="#4a148c"
+     id="text23"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- Nota sobre permisos -->
+  <rect
+     x="900"
+     y="145"
+     width="630"
+     height="75"
+     rx="8"
+     fill="#fff8e1"
+     stroke="#f57f17"
+     stroke-width="2"
+     id="rect23" />
+  <text
+     x="1215"
+     y="165"
+     text-anchor="middle"
+     class="component-label"
+     id="text24">Autenticación con Credenciales Verificables</text>
+  <text
+     x="1215"
+     y="185"
+     text-anchor="middle"
+     class="small-text"
+     id="text25"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan447"
+       x="1215"
+       y="185">Los centros FP actúan como <tspan
+   font-weight="bold"
+   id="tspan24">VC Issuers</tspan></tspan><tspan
+       sodipodi:role="line"
+       id="tspan448"
+       x="1215"
+       y="197.5">Los usuarios almacenan sus VCs en Wallets digitales</tspan><tspan
+       sodipodi:role="line"
+       x="1215"
+       y="210"
+       id="tspan449">El Nodo Central actúa como VC Verifier</tspan></text>
+  <text
+     x="1215"
+     y="200"
+     text-anchor="middle"
+     class="small-text"
+     id="text26"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan446"
+       x="1215"
+       y="200" /></text>
+  <text
+     x="1215"
+     y="215"
+     text-anchor="middle"
+     class="small-text"
+     id="text27"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- ZONA 2: EMISIÓN DE CREDENCIALES VERIFICABLES -->
+  <rect
+     x="50.325596"
+     y="260.314"
+     width="449.34879"
+     height="412.98727"
+     rx="9.9855289"
+     fill="none"
+     stroke="#f57c00"
+     stroke-width="3.64079"
+     stroke-dasharray="8, 4"
+     id="rect27" />
+  <text
+     x="70"
+     y="285"
+     class="section-title"
+     id="text28">ZONA 2: EMISIÓN DE CREDENCIALES (Centro FP)</text>
+  <!-- VC Issuer -->
+  <g
+     id="vc-issuer">
+    <rect
+       x="80"
+       y="305"
+       width="390"
+       height="110"
+       rx="8"
+       class="vc-component"
+       id="rect28" />
+    <text
+       x="275"
+       y="330"
+       text-anchor="middle"
+       class="component-label"
+       id="text29">🏛️ Centro FP - VC Issuer</text>
+    <text
+       x="275"
+       y="350"
+       text-anchor="middle"
+       class="text-label"
+       id="text30"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">CIFPCarlosIII</text>
+    <text
+       x="275"
+       y="370"
+       text-anchor="middle"
+       class="small-text"
+       id="text31">DID: did:web:ies-cierva.edu.es</text>
+    <text
+       x="275"
+       y="390"
+       text-anchor="middle"
+       class="small-text"
+       id="text32">Emite Credenciales Verificables (W3C VC):</text>
+    <text
+       x="275"
+       y="405"
+       text-anchor="middle"
+       class="small-text"
+       id="text33">• StudentCredential • TeacherCredential</text>
+  </g>
+  <!-- Wallet -->
+  <g
+     id="wallet"
+     transform="translate(0,90)">
+    <rect
+       x="80"
+       y="430"
+       width="180"
+       height="90"
+       rx="8"
+       class="vc-component"
+       id="rect33" />
+    <text
+       x="170"
+       y="455"
+       text-anchor="middle"
+       class="component-label"
+       id="text34"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">📱 Wallet Usuario</text>
+    <text
+       x="170"
+       y="475"
+       text-anchor="middle"
+       class="small-text"
+       id="text35"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan455"
+         x="170"
+         y="475">Almacena VCs</tspan><tspan
+         sodipodi:role="line"
+         id="tspan456"
+         x="170"
+         y="487.5">Presenta al Verifier</tspan><tspan
+         sodipodi:role="line"
+         x="170"
+         y="500"
+         id="tspan457">Control del usuario</tspan></text>
+    <text
+       x="170"
+       y="490"
+       text-anchor="middle"
+       class="small-text"
+       id="text36"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan454"
+         x="170"
+         y="490" /></text>
+    <text
+       x="170"
+       y="505"
+       text-anchor="middle"
+       class="small-text"
+       id="text37"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Ejemplo VC -->
+  <g
+     id="vc-example"
+     transform="translate(0,90)">
+    <rect
+       x="280"
+       y="430"
+       width="190"
+       height="90"
+       rx="8"
+       fill="#fffde7"
+       stroke="#f57c00"
+       stroke-width="2"
+       id="rect37" />
+    <text
+       x="375"
+       y="450"
+       text-anchor="middle"
+       class="small-text"
+       font-weight="bold"
+       id="text38"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan478"
+         x="375"
+         y="450">Ejemplo VC:</tspan><tspan
+         sodipodi:role="line"
+         id="tspan479"
+         x="375"
+         y="462.5">Type: StudentCredential</tspan><tspan
+         sodipodi:role="line"
+         x="375"
+         y="475"
+         id="tspan480">Subject: std_12345</tspan><tspan
+         sodipodi:role="line"
+         x="375"
+         y="487.5"
+         id="tspan481">Issuer: IES Cierva</tspan><tspan
+         sodipodi:role="line"
+         x="375"
+         y="500"
+         id="tspan482">Valid: 2026-09-01</tspan><tspan
+         sodipodi:role="line"
+         x="375"
+         y="512.5"
+         id="tspan483">Signature: Ed25519</tspan></text>
+    <text
+       x="375"
+       y="465"
+       text-anchor="middle"
+       class="small-text"
+       id="text39"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="375"
+         y="465"
+         id="tspan474" /></text>
+    <text
+       x="375"
+       y="478"
+       text-anchor="middle"
+       class="small-text"
+       id="text40"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="375"
+         y="478"
+         id="tspan467" /></text>
+    <text
+       x="375"
+       y="491"
+       text-anchor="middle"
+       class="small-text"
+       id="text41"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="375"
+         y="491"
+         id="tspan462" /></text>
+    <text
+       x="375"
+       y="504"
+       text-anchor="middle"
+       class="small-text"
+       id="text42"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan459"
+         x="375"
+         y="504" /></text>
+    <text
+       x="375"
+       y="517"
+       text-anchor="middle"
+       class="small-text"
+       id="text43"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Flecha: Issuer → Wallet -->
+  <path
+     d="m 275,415 0,49.47128 -105,0 V 520"
+     class="arrow-vc"
+     id="path43"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="174"
+     y="460.47128"
+     class="flow-label"
+     id="text44"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Emite VC</text>
+  <!-- ZONA 3: NODO CENTRAL CON MARKETPLACE GAIA-X -->
+  <rect
+     x="520"
+     y="260"
+     width="1030"
+     height="500"
+     rx="10"
+     class="nodo-central"
+     id="rect44" />
+  <text
+     x="1035"
+     y="285"
+     text-anchor="middle"
+     class="component-label"
+     id="text45">🏛️ NODO CENTRAL COORDINADOR</text>
+  <!-- Gaia-X Badge -->
+  <rect
+     x="1420"
+     y="270"
+     width="110"
+     height="30"
+     rx="5"
+     class="gaia-x"
+     id="rect45" />
+  <text
+     x="1475"
+     y="290"
+     text-anchor="middle"
+     class="gaia-x-label"
+     id="text46"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Gaia-X</text>
+  <!-- VC Verifier -->
+  <g
+     id="vc-verifier">
+    <rect
+       x="550"
+       y="310"
+       width="220"
+       height="90"
+       rx="8"
+       class="vc-component"
+       id="rect46" />
+    <text
+       x="660"
+       y="335"
+       text-anchor="middle"
+       class="component-label"
+       id="text47">🔐 VC Verifier</text>
+    <text
+       x="660"
+       y="355"
+       text-anchor="middle"
+       class="text-label"
+       id="text48"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan441"
+         x="660"
+         y="355">Keycloak + VC Plugin</tspan><tspan
+         sodipodi:role="line"
+         id="tspan442"
+         x="660"
+         y="370">Valida VCs de usuarios</tspan><tspan
+         sodipodi:role="line"
+         x="660"
+         y="385"
+         id="tspan443">Extrae claims (role, institution)</tspan></text>
+    <text
+       x="660"
+       y="375"
+       text-anchor="middle"
+       class="small-text"
+       id="text49"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan440"
+         x="660"
+         y="375" /></text>
+    <text
+       x="660"
+       y="390"
+       text-anchor="middle"
+       class="small-text"
+       id="text50"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Gaia-X Trust Framework -->
+  <g
+     id="gaia-x-trust">
+    <rect
+       x="790"
+       y="310"
+       width="240"
+       height="90"
+       rx="8"
+       class="gaia-x"
+       id="rect50" />
+    <text
+       x="910"
+       y="335"
+       text-anchor="middle"
+       class="component-label"
+       id="text51">⭐ Gaia-X Trust Framework</text>
+    <text
+       x="910"
+       y="355"
+       text-anchor="middle"
+       class="small-text"
+       id="text52"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan402"
+         x="910"
+         y="355">• Compliance Service</tspan><tspan
+         sodipodi:role="line"
+         id="tspan403"
+         x="910"
+         y="367.5">• Self-Descriptions Registry</tspan><tspan
+         sodipodi:role="line"
+         x="910"
+         y="380"
+         id="tspan404">• Trust Anchors</tspan></text>
+    <text
+       x="910"
+       y="370"
+       text-anchor="middle"
+       class="small-text"
+       id="text53"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan401"
+         x="910"
+         y="370" /></text>
+    <text
+       x="910"
+       y="385"
+       text-anchor="middle"
+       class="small-text"
+       id="text54"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Marketplace / Federated Catalogue -->
+  <text
+     x="675"
+     y="515"
+     text-anchor="middle"
+     class="small-text"
+     id="text58"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       x="675"
+       y="515"
+       id="tspan431" /></text>
+  <text
+     x="675"
+     y="528"
+     text-anchor="middle"
+     class="small-text"
+     id="text59"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       x="675"
+       y="528"
+       id="tspan426" /></text>
+  <text
+     x="675"
+     y="541"
+     text-anchor="middle"
+     class="small-text"
+     id="text60"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan423"
+       x="675"
+       y="541" /></text>
+  <text
+     x="675"
+     y="554"
+     text-anchor="middle"
+     class="small-text"
+     id="text61"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <g
+     id="g451">
+    <rect
+       x="625.69647"
+       y="420.26233"
+       width="328.60706"
+       height="290.94638"
+       rx="6.8459802"
+       class="marketplace"
+       id="rect54" />
+    <text
+       x="790.32373"
+       y="445"
+       text-anchor="middle"
+       class="component-label"
+       id="text55"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">MARKETPLACE / FEDERATED CATALOGUE</text>
+    <text
+       x="789.9502"
+       y="465"
+       text-anchor="middle"
+       class="text-label"
+       id="text56"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">CKAN + Gaia-X Federated Catalogue</text>
+    <g
+       id="g450"
+       transform="translate(115,15)">
+      <rect
+         x="570.14587"
+         y="459.02557"
+         width="209.70822"
+         height="130.02391"
+         rx="4.993053"
+         fill="#ffffff"
+         stroke="#c2185b"
+         stroke-width="2.47189"
+         id="rect56" />
+      <text
+         x="675"
+         y="472"
+         text-anchor="middle"
+         class="small-text"
+         font-weight="bold"
+         id="text57"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+           sodipodi:role="line"
+           x="675"
+           y="472"
+           id="tspan436"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial, sans-serif;-inkscape-font-specification:'Arial, sans-serif Bold'">Backend EAC v1.2.3</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="484.5"
+           id="tspan521">• Rubric Evaluator</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="497"
+           id="tspan522">• Recommendation Engine</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="509.5"
+           id="tspan523">• Problem Generator</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="522"
+           id="tspan524">• Student Model</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="534.5"
+           id="tspan525">Registrado en Marketplace</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="547"
+           id="tspan520">Provider: IES Luis Simarro</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="559.5"
+           id="tspan484">Category: Learning Analytics</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="572"
+           id="tspan437">Standard: NGSI-LD, LTI</tspan><tspan
+           sodipodi:role="line"
+           x="675"
+           y="584.5"
+           id="tspan438">SLA: 99.5% uptime</tspan></text>
+    </g>
+    <g
+       id="g449"
+       transform="translate(-115,123.57849)">
+      <rect
+         x="800"
+         y="492"
+         width="210"
+         height="85"
+         rx="5"
+         fill="#ffffff"
+         stroke="#c2185b"
+         stroke-width="2"
+         id="rect61" />
+      <text
+         x="905"
+         y="512"
+         text-anchor="middle"
+         class="small-text"
+         font-weight="bold"
+         id="text62"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+           sodipodi:role="line"
+           id="tspan417"
+           x="905"
+           y="512">Skills Analytics API</tspan><tspan
+           sodipodi:role="line"
+           id="tspan418"
+           x="905"
+           y="524.5">Provider: CIFP Carlos III</tspan><tspan
+           sodipodi:role="line"
+           x="905"
+           y="537"
+           id="tspan419">Category: Analytics</tspan><tspan
+           sodipodi:role="line"
+           x="905"
+           y="549.5"
+           id="tspan420">Datos agregados</tspan><tspan
+           sodipodi:role="line"
+           x="905"
+           y="562"
+           id="tspan421">Access: Restricted</tspan></text>
+    </g>
+  </g>
+  <text
+     x="905"
+     y="515"
+     text-anchor="middle"
+     class="small-text"
+     id="text63"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       x="905"
+       y="515"
+       id="tspan414" /></text>
+  <text
+     x="905"
+     y="528"
+     text-anchor="middle"
+     class="small-text"
+     id="text64"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       x="905"
+       y="528"
+       id="tspan409" /></text>
+  <text
+     x="905"
+     y="541"
+     text-anchor="middle"
+     class="small-text"
+     id="text65"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan406"
+       x="905"
+       y="541" /></text>
+  <text
+     x="905"
+     y="554"
+     text-anchor="middle"
+     class="small-text"
+     id="text66"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- Gaia-X Self-Description -->
+  <g
+     id="self-description">
+    <rect
+       x="1050"
+       y="310"
+       width="240"
+       height="90"
+       rx="8"
+       class="gaia-x"
+       id="rect66" />
+    <text
+       x="1170"
+       y="335"
+       text-anchor="middle"
+       class="component-label"
+       id="text67"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Self-Descriptions</text>
+    <text
+       x="1170"
+       y="355"
+       text-anchor="middle"
+       class="small-text"
+       id="text68"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan389"
+         x="1170"
+         y="355">Metadatos Gaia-X de cada</tspan><tspan
+         sodipodi:role="line"
+         id="tspan390"
+         x="1170"
+         y="367.5">servicio publicado:</tspan><tspan
+         sodipodi:role="line"
+         x="1170"
+         y="380"
+         id="tspan391">• Proveedor • SLA • Compliance</tspan></text>
+    <text
+       x="1170"
+       y="370"
+       text-anchor="middle"
+       class="small-text"
+       id="text69"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan388"
+         x="1170"
+         y="370" /></text>
+    <text
+       x="1170"
+       y="385"
+       text-anchor="middle"
+       class="small-text"
+       id="text70"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Policy Engine -->
+  <g
+     id="policy-engine">
+    <rect
+       x="1050"
+       y="420"
+       width="240"
+       height="80"
+       rx="8"
+       class="service-box"
+       id="rect70" />
+    <text
+       x="1170"
+       y="445"
+       text-anchor="middle"
+       class="component-label"
+       id="text71"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Policy Engine</text>
+    <text
+       x="1170"
+       y="465"
+       text-anchor="middle"
+       class="text-label"
+       id="text72"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan394"
+         x="1170"
+         y="465">Authzforce PDP</tspan><tspan
+         sodipodi:role="line"
+         id="tspan395"
+         x="1170"
+         y="480">Políticas ABAC</tspan><tspan
+         sodipodi:role="line"
+         x="1170"
+         y="495"
+         id="tspan396">Decisiones: Permit/Deny</tspan></text>
+    <text
+       x="1170"
+       y="480"
+       text-anchor="middle"
+       class="small-text"
+       id="text73"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan393"
+         x="1170"
+         y="480" /></text>
+    <text
+       x="1170"
+       y="493"
+       text-anchor="middle"
+       class="small-text"
+       id="text74"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Orion-LD Hub -->
+  <g
+     id="orion-ld">
+    <rect
+       x="1050"
+       y="520"
+       width="240"
+       height="80"
+       rx="8"
+       class="service-box"
+       id="rect74" />
+    <text
+       x="1170"
+       y="545"
+       text-anchor="middle"
+       class="component-label"
+       id="text75"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Orion-LD Hub</text>
+    <text
+       x="1170"
+       y="565"
+       text-anchor="middle"
+       class="text-label"
+       id="text76"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan397"
+         x="1170"
+         y="565">Context Broker</tspan><tspan
+         sodipodi:role="line"
+         id="tspan398"
+         x="1170"
+         y="580">Agregación de skills</tspan><tspan
+         sodipodi:role="line"
+         x="1170"
+         y="595"
+         id="tspan399">NGSI-LD API</tspan></text>
+    <text
+       x="1170"
+       y="580"
+       text-anchor="middle"
+       class="small-text"
+       id="text77"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan154"
+         x="1170"
+         y="580" /></text>
+    <text
+       x="1170"
+       y="593"
+       text-anchor="middle"
+       class="small-text"
+       id="text78"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Observability -->
+  <g
+     id="observability">
+    <rect
+       x="1310"
+       y="310"
+       width="220"
+       height="290"
+       rx="8"
+       fill="#f1f8e9"
+       stroke="#689f38"
+       stroke-width="2"
+       id="rect78" />
+    <text
+       x="1420"
+       y="335"
+       text-anchor="middle"
+       class="component-label"
+       id="text79"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">Observabilidad</text>
+    <text
+       x="1420"
+       y="360"
+       text-anchor="middle"
+       class="small-text"
+       id="text80"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan369"
+         x="1420"
+         y="360">Prometheus + Grafana</tspan><tspan
+         sodipodi:role="line"
+         id="tspan370"
+         x="1420"
+         y="372.5" /><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="385"
+         id="tspan371">Métricas:</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="397.5"
+         id="tspan372">• Request rate</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="410"
+         id="tspan373">• Success rate: 99.2%</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="422.5"
+         id="tspan374">• Latency p95: 142ms</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="435"
+         id="tspan375">• Active services: 8</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="447.5"
+         id="tspan376">• Nodos activos: 3/3</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="460"
+         id="tspan377"></tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="472.5"
+         id="tspan378">ELK Stack:</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="485"
+         id="tspan379">• Audit logs</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="497.5"
+         id="tspan380">• Security events</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="510"
+         id="tspan381">• Compliance reports</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="522.5"
+         id="tspan382"></tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="535"
+         id="tspan383">Alertas:</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="547.5"
+         id="tspan384">• Nodo down: Email+SMS</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="560"
+         id="tspan385">• Policy violation: Log</tspan><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="572.5"
+         id="tspan386">• High latency: Warning</tspan></text>
+    <text
+       x="1420"
+       y="380"
+       text-anchor="middle"
+       class="small-text"
+       font-weight="bold"
+       id="text81"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="380"
+         id="tspan354" /></text>
+    <text
+       x="1420"
+       y="395"
+       text-anchor="middle"
+       class="small-text"
+       id="text82"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="395"
+         id="tspan325" /></text>
+    <text
+       x="1420"
+       y="408"
+       text-anchor="middle"
+       class="small-text"
+       id="text83"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="408"
+         id="tspan298" /></text>
+    <text
+       x="1420"
+       y="421"
+       text-anchor="middle"
+       class="small-text"
+       id="text84"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="421"
+         id="tspan273" /></text>
+    <text
+       x="1420"
+       y="434"
+       text-anchor="middle"
+       class="small-text"
+       id="text85"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="434"
+         id="tspan250" /></text>
+    <text
+       x="1420"
+       y="447"
+       text-anchor="middle"
+       class="small-text"
+       id="text86"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="447"
+         id="tspan229" /></text>
+    <text
+       x="1420"
+       y="470"
+       text-anchor="middle"
+       class="small-text"
+       font-weight="bold"
+       id="text87"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="470"
+         id="tspan211" /></text>
+    <text
+       x="1420"
+       y="485"
+       text-anchor="middle"
+       class="small-text"
+       id="text88"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="485"
+         id="tspan196" /></text>
+    <text
+       x="1420"
+       y="498"
+       text-anchor="middle"
+       class="small-text"
+       id="text89"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="498"
+         id="tspan183" /></text>
+    <text
+       x="1420"
+       y="511"
+       text-anchor="middle"
+       class="small-text"
+       id="text90"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="511"
+         id="tspan171" /></text>
+    <text
+       x="1420"
+       y="534"
+       text-anchor="middle"
+       class="small-text"
+       font-weight="bold"
+       id="text91"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="534"
+         id="tspan164" /></text>
+    <text
+       x="1420"
+       y="549"
+       text-anchor="middle"
+       class="small-text"
+       id="text92"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="1420"
+         y="549"
+         id="tspan159" /></text>
+    <text
+       x="1420"
+       y="562"
+       text-anchor="middle"
+       class="small-text"
+       id="text93"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan156"
+         x="1420"
+         y="562" /></text>
+    <text
+       x="1420"
+       y="575"
+       text-anchor="middle"
+       class="small-text"
+       id="text94"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- ZONA 4: BACKEND EAC Y CONNECTOR -->
+  <rect
+     x="242.3614"
+     y="779.77521"
+     width="507.85684"
+     height="260.44943"
+     rx="7.2550979"
+     fill="none"
+     stroke="#43a047"
+     stroke-width="2.55751"
+     stroke-dasharray="8, 4"
+     id="rect94" />
+  <text
+     x="282.94238"
+     y="805"
+     class="section-title"
+     id="text95"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:15px;line-height:normal;font-family:Arial, sans-serif">ZONA 4: SERVICIO BACKEND EAC (Nodo FP)</text>
+  <!-- LMS con EAC -->
+  <g
+     id="lms-eac"
+     transform="translate(-23.968386)">
+    <rect
+       x="80"
+       y="825"
+       width="180"
+       height="100"
+       rx="8"
+       class="service-box"
+       id="rect95" />
+    <text
+       x="170"
+       y="850"
+       text-anchor="middle"
+       class="component-label"
+       id="text96"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">📚 LMS Moodle</text>
+    <text
+       x="170"
+       y="870"
+       text-anchor="middle"
+       class="text-label"
+       id="text97"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">+ Plugin EAC</text>
+    <text
+       x="170"
+       y="890"
+       text-anchor="middle"
+       class="small-text"
+       id="text98"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Evaluación automática</text>
+    <text
+       x="170"
+       y="905"
+       text-anchor="middle"
+       class="small-text"
+       id="text99"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">con LTI 1.3</text>
+    <text
+       x="170"
+       y="920"
+       text-anchor="middle"
+       class="small-text"
+       id="text100"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Interfaz estudiante</text>
+  </g>
+  <!-- Backend EAC -->
+  <g
+     id="backend-eac">
+    <rect
+       x="279.70636"
+       y="824.70636"
+       width="200.5873"
+       height="75.872345"
+       rx="8.0234919"
+       class="backend-eac"
+       id="rect100" />
+    <text
+       x="380"
+       y="850"
+       text-anchor="middle"
+       class="component-label"
+       id="text101">⚙️ Backend EAC</text>
+    <text
+       x="380"
+       y="856"
+       text-anchor="middle"
+       class="text-label"
+       id="text102"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan510"
+         x="380"
+         y="856" /><tspan
+         sodipodi:role="line"
+         x="380"
+         y="871"
+         id="tspan515">•Evaluación automática</tspan><tspan
+         sodipodi:role="line"
+         x="380"
+         y="886"
+         id="tspan519">Feedback</tspan></text>
+    <text
+       x="380"
+       y="890"
+       text-anchor="middle"
+       class="small-text"
+       id="text103"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="380"
+         y="890"
+         id="tspan506" /></text>
+    <text
+       x="380"
+       y="903"
+       text-anchor="middle"
+       class="small-text"
+       id="text104"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="380"
+         y="903"
+         id="tspan499" /></text>
+    <text
+       x="380"
+       y="916"
+       text-anchor="middle"
+       class="small-text"
+       id="text105"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         x="380"
+         y="916"
+         id="tspan494" /></text>
+    <text
+       x="380"
+       y="929"
+       text-anchor="middle"
+       class="small-text"
+       id="text106"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan491"
+         x="380"
+         y="929" /></text>
+    <text
+       x="380"
+       y="945"
+       text-anchor="middle"
+       class="small-text"
+       font-weight="bold"
+       id="text107"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  </g>
+  <!-- Aggregator / Anonymizer -->
+  <g
+     id="g530"
+     transform="translate(0,68.891633)">
+    <rect
+       x="500"
+       y="825"
+       width="220"
+       height="80"
+       rx="8"
+       class="service-box"
+       id="rect107" />
+    <text
+       x="610"
+       y="850"
+       text-anchor="middle"
+       class="component-label"
+       id="text108"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">🔒 Aggregator</text>
+    <text
+       x="610"
+       y="870"
+       text-anchor="middle"
+       class="text-label"
+       id="text109"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif"><tspan
+         sodipodi:role="line"
+         id="tspan528"
+         x="610"
+         y="870">Anonimizador</tspan><tspan
+         sodipodi:role="line"
+         id="tspan529"
+         x="610"
+         y="885">Elimina PII (RGPD)</tspan><tspan
+         sodipodi:role="line"
+         x="610"
+         y="900"
+         id="tspan530">Prepara datos federados</tspan></text>
+  </g>
+  <text
+     x="610"
+     y="885"
+     text-anchor="middle"
+     class="small-text"
+     id="text110"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan527"
+       x="610"
+       y="885" /></text>
+  <text
+     x="610"
+     y="898"
+     text-anchor="middle"
+     class="small-text"
+     id="text111"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- IDS/EDC Connector -->
+  <g
+     id="ids-connector"
+     transform="translate(866.21314,-288.23285)">
+    <rect
+       x="170.17882"
+       y="944.81183"
+       width="459.64236"
+       height="80.376366"
+       rx="5.7455297"
+       class="connector"
+       id="rect111" />
+    <text
+       x="400"
+       y="970"
+       text-anchor="middle"
+       class="component-label"
+       id="text112"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13px;line-height:normal;font-family:Arial, sans-serif">🔗 FIWARE Dataspace Connector (IDS/EDC)</text>
+    <text
+       x="400"
+       y="990"
+       text-anchor="middle"
+       class="text-label"
+       id="text113"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:normal;font-family:Arial, sans-serif">Eclipse Dataspace Connector + Gaia-X Extensions</text>
+    <text
+       x="400"
+       y="1005"
+       text-anchor="middle"
+       class="small-text"
+       id="text114"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Negociación de contratos • Políticas ODRL • Trazabilidad completa • Compliance Gaia-X</text>
+    <text
+       x="400"
+       y="1018"
+       text-anchor="middle"
+       class="small-text"
+       id="text115"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Self-Description del nodo • Trust Anchors validation</text>
+  </g>
+  <!-- ZONA 5: FLUJOS DE INTERACCIÓN -->
+  <!-- Flujo 1: Usuario → Wallet (presentar VC) -->
+  <path
+     d="M 132.53809,220 V 520"
+     class="arrow-vc"
+     id="path115"
+     sodipodi:nodetypes="cc" />
+  <text
+     x="-508.24338"
+     y="125.97706"
+     class="flow-label"
+     id="text116"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif"
+     transform="rotate(-90)">Usuario presenta VC</text>
+  <!-- Flujo 2: Wallet → VC Verifier -->
+  <path
+     d="m 217.68147,520 0,-36.14366 h 312.513 l 0,-105.58487 L 550,380"
+     class="arrow-vc"
+     id="path116"
+     sodipodi:nodetypes="ccccc"
+     style="marker-end:url(#arrowhead-orange)" />
+  <text
+     x="319.65265"
+     y="481.67032"
+     class="flow-label"
+     id="text117"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Presenta VC para autenticación</text>
+  <!-- Flujo 3: VC Verifier → Gaia-X Trust -->
+  <g
+     id="g445">
+    <path
+       d="M 660,310 V 280.58171 H 910 V 310"
+       class="arrow-gaia-x"
+       id="path117"
+       sodipodi:nodetypes="cccc"
+       style="marker-end:url(#arrowhead-blue)" />
+    <text
+       x="723.75549"
+       y="278.39566"
+       class="flow-label"
+       fill="#1976d2"
+       id="text118"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Verifica Compliance</text>
+  </g>
+  <!-- Flujo 4: Marketplace → Self-Descriptions -->
+  <path
+     d="M 954.30353,493.53421 1050,380"
+     class="arrow-gaia-x"
+     id="path118"
+     sodipodi:nodetypes="cc" />
+  <text
+     x="346.3866"
+     y="1036.3644"
+     class="flow-label"
+     fill="#1976d2"
+     id="text119"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif"
+     transform="rotate(-45)">Consulta metadata</text>
+  <!-- Flujo 5: Docente → Marketplace (descubre servicio) -->
+  <path
+     d="m 370,220 v 60 l 255.69647,230.04602"
+     class="arrow-marketplace"
+     id="path119"
+     sodipodi:nodetypes="ccc" />
+  <text
+     x="440"
+     y="330"
+     class="flow-label"
+     fill="#c2185b"
+     id="text120">Busca servicio EAC</text>
+  <!-- Flujo 6: Marketplace → Policy Engine (solicita acceso) -->
+  <path
+     d="M 954.30353,565.73553 1050,460"
+     class="arrow-marketplace"
+     id="path120"
+     sodipodi:nodetypes="cc" />
+  <text
+     x="309.28787"
+     y="1087.6428"
+     class="flow-label"
+     fill="#c2185b"
+     id="text121"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif"
+     transform="rotate(-45)">Solicita acceso</text>
+  <!-- Flujo 7: Estudiante → LMS (interactúa) -->
+  <path
+     d="M 80,182.5 H 32.063227 V 875 h 23.968387"
+     class="arrow"
+     id="path121"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="-528.75"
+     y="28.063229"
+     class="flow-label"
+     transform="rotate(-90)"
+     id="text122"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Resuelve problema</text>
+  <!-- Flujo 8: LMS → Backend EAC (submission) -->
+  <path
+     d="m 146.03161,925 v 70.48944 H 380 v -94.9107"
+     class="arrow-data"
+     id="path122"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="249.94698"
+     y="989.32867"
+     class="flow-label"
+     fill="#4caf50"
+     id="text123"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Submission</text>
+  <!-- Flujo 9: Backend EAC → Aggregator (resultado) -->
+  <path
+     d="M 480.07843,843.41803 610,842.20984 v 51.68179"
+     class="arrow-data"
+     id="path123"
+     sodipodi:nodetypes="ccc" />
+  <text
+     x="499.65005"
+     y="833.69061"
+     class="flow-label"
+     fill="#4caf50"
+     id="text124"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Evaluation result</text>
+  <!-- Flujo 10: Backend EAC → LMS (respuesta estudiante) -->
+  <path
+     d="m 445.47648,900.5787 0,117.3103 H 95.678425 L 95.360025,925"
+     class="arrow"
+     id="path124"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="192.65262"
+     y="1015.7601"
+     class="flow-label"
+     id="text125"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Resultado + feedback</text>
+  <!-- Flujo 11: Aggregator → IDS Connector (datos anonimizados) -->
+  <path
+     d="m 610,973.89163 -0.79807,42.97077 657.01117,-1.25 V 736.95534"
+     class="arrow-data"
+     id="path125"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="620"
+     y="925"
+     class="flow-label"
+     fill="#4caf50"
+     id="text126"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- Flujo 12: IDS Connector → Nodo Central (POST federado) -->
+  <path
+     d="m 1170.6085,736.95534 0,9.15317 -380.6085,0 v -34.89977"
+     class="arrow-data"
+     id="path126"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="908.13751"
+     y="983.98352"
+     class="flow-label"
+     fill="#4caf50"
+     id="text127"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan487"
+       x="908.13751"
+       y="983.98352">POST con contrato IDS</tspan><tspan
+       sodipodi:role="line"
+       id="tspan488"
+       x="908.13751"
+       y="997.73352">+ Self-Description</tspan><tspan
+       sodipodi:role="line"
+       x="908.13751"
+       y="1011.4835"
+       id="tspan489">Datos anonimizados</tspan></text>
+  <text
+     x="810"
+     y="865"
+     class="flow-label"
+     fill="#4caf50"
+     id="text128"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif"><tspan
+       sodipodi:role="line"
+       id="tspan486"
+       x="810"
+       y="865" /></text>
+  <!-- Flujo 13: Orion-LD → Otros consumidores -->
+  <path
+     d="m 1170,600 v 44.57069 l 250,0 V 600"
+     class="arrow-data"
+     id="path128"
+     sodipodi:nodetypes="cccc" />
+  <text
+     x="1270.2131"
+     y="640.4364"
+     class="flow-label"
+     fill="#4caf50"
+     id="text129"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Skills federados</text>
+  <!-- Flujo 14: Backend EAC → Marketplace (registro servicio) -->
+  <path
+     d="M 380,824.92157 625.69647,585.38816"
+     class="arrow-marketplace"
+     id="path129"
+     sodipodi:nodetypes="cc" />
+  <text
+     x="-136.47133"
+     y="859.38861"
+     class="flow-label"
+     fill="#c2185b"
+     id="text130"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif;text-align:center;text-anchor:middle"
+     transform="rotate(-47.638343)"><tspan
+       sodipodi:role="line"
+       id="tspan451"
+       x="-136.47133"
+       y="859.38861">Publica servicio</tspan><tspan
+       sodipodi:role="line"
+       id="tspan452"
+       x="-136.47133"
+       y="873.13861">con Self-Description</tspan></text>
+  <text
+     x="526.07733"
+     y="720.71704"
+     class="flow-label"
+     fill="#c2185b"
+     id="text131"
+     style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif" />
+  <!-- LEYENDA -->
+  <g
+     id="leyenda">
+    <rect
+       x="50"
+       y="1060"
+       width="1500"
+       height="120"
+       rx="8"
+       fill="#fafafa"
+       stroke="#424242"
+       stroke-width="2"
+       id="rect131" />
+    <text
+       x="70"
+       y="1085"
+       class="component-label"
+       id="text132">LEYENDA DE FLUJOS Y COMPONENTES</text>
+    <!-- Fila 1: Tipos de flechas -->
+    <line
+       x1="70"
+       y1="1105"
+       x2="130"
+       y2="1105"
+       class="arrow-vc"
+       id="line132" />
+    <text
+       x="140"
+       y="1110"
+       class="small-text"
+       id="text133">Credenciales Verificables (VC)</text>
+    <line
+       x1="320"
+       y1="1105"
+       x2="380"
+       y2="1105"
+       class="arrow-marketplace"
+       id="line133" />
+    <text
+       x="390"
+       y="1110"
+       class="small-text"
+       id="text134">Interacción con Marketplace</text>
+    <line
+       x1="600"
+       y1="1105"
+       x2="660"
+       y2="1105"
+       class="arrow-data"
+       id="line134" />
+    <text
+       x="670"
+       y="1110"
+       class="small-text"
+       id="text135">Datos de evaluación (federados)</text>
+    <line
+       x1="880"
+       y1="1105"
+       x2="940"
+       y2="1105"
+       class="arrow-gaia-x"
+       id="line135" />
+    <text
+       x="950"
+       y="1110"
+       class="small-text"
+       id="text136">Componentes Gaia-X</text>
+    <line
+       x1="1120"
+       y1="1105"
+       x2="1180"
+       y2="1105"
+       class="arrow"
+       id="line136" />
+    <text
+       x="1190"
+       y="1110"
+       class="small-text"
+       id="text137">Interacción estándar</text>
+    <!-- Fila 2: Componentes especiales -->
+    <rect
+       x="70"
+       y="1125"
+       width="30"
+       height="20"
+       class="gaia-x"
+       id="rect137" />
+    <text
+       x="110"
+       y="1140"
+       class="small-text"
+       id="text138">Componente Gaia-X</text>
+    <rect
+       x="280"
+       y="1125"
+       width="30"
+       height="20"
+       class="vc-component"
+       id="rect138" />
+    <text
+       x="320"
+       y="1140"
+       class="small-text"
+       id="text139">Credenciales Verificables</text>
+    <rect
+       x="520"
+       y="1125"
+       width="30"
+       height="20"
+       class="marketplace"
+       id="rect139" />
+    <text
+       x="560"
+       y="1140"
+       class="small-text"
+       id="text140">Marketplace/Catálogo</text>
+    <rect
+       x="750"
+       y="1125"
+       width="30"
+       height="20"
+       class="backend-eac"
+       id="rect140" />
+    <text
+       x="790"
+       y="1140"
+       class="small-text"
+       id="text141">Backend EAC (servicio)</text>
+    <rect
+       x="980"
+       y="1125"
+       width="30"
+       height="20"
+       class="connector"
+       id="rect141" />
+    <text
+       x="1020"
+       y="1140"
+       class="small-text"
+       id="text142">Dataspace Connector</text>
+    <!-- Nota final -->
+    <text
+       x="70"
+       y="1165"
+       class="small-text"
+       font-weight="bold"
+       id="text143">Componentes Gaia-X en el sistema:</text>
+    <text
+       x="70"
+       y="1178"
+       class="small-text"
+       id="text144">⭐ Trust Framework (validación identidad) • ⭐ Federated Catalogue (marketplace interoperable) • ⭐ Self-Descriptions (metadata servicios) • ⭐ IDS Connectors (negociación segura)</text>
+  </g>
+  <!-- Nota de cumplimiento -->
+  <text
+     x="1269.2227"
+     y="1053.0127"
+     text-anchor="middle"
+     class="small-text"
+     fill="#1976d2"
+     font-weight="bold"
+     id="text145"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:normal;font-family:Arial, sans-serif">Cumplimiento: Gaia-X Trust Framework • W3C Verifiable Credentials • ETSI NGSI-LD • IDS RAM 4.0 • RGPD • UNE 0087:2025</text>
+</svg>

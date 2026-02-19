@@ -9,12 +9,13 @@
 
 ## 📋 Índice de Diagramas
 
-Este paquete contiene 4 diagramas SVG que documentan la arquitectura completa del sistema:
+Este paquete contiene 5 diagramas SVG que documentan la arquitectura completa del sistema:
 
-1. **[Diagrama 1](#diagrama-1-arquitectura-federada-vfds)** - Vista de Alto Nivel: Arquitectura Federada
-2. **[Diagrama 2](#diagrama-2-nodo-fp-individual)** - Componentes Detallados de un Nodo FP
-3. **[Diagrama 3](#diagrama-3-nodo-central-coordinador)** - Servicios Habilitadores del Nodo Central
-4. **[Diagrama 4](#diagrama-4-flujo-de-datos)** - Flujo de Datos del Caso de Uso PKST
+1. **[Diagrama 0](./GUIA-diagrama-0-caso-uso.md)** - Esquema operativo del caso de uso PKST (EAC) con flujos de datos y actores
+2. **[Diagrama 1](#diagrama-1-arquitectura-federada-vfds)** - Vista de Alto Nivel: Arquitectura Federada
+3. **[Diagrama 2](#diagrama-2-nodo-fp-individual)** - Componentes Detallados de un Nodo FP
+4. **[Diagrama 3](#diagrama-3-nodo-central-coordinador)** - Servicios Habilitadores del Nodo Central
+5. **[Diagrama 4](#diagrama-4-flujo-de-datos)** - Flujo de Datos del Caso de Uso PKST
 
 ---
 
