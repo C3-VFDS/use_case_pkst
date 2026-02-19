@@ -28,6 +28,7 @@ Nuestro sistema aborda estos problemas mediante:
 
 1. **Modelado formal del conocimiento procedimental**
    - Mapeo explícito: CE → Habilidades atómicas → Problemas
+      o Situación de Competencia (SC) → Nodos de Requisito (Base) → Problemas
    - Grafo de prerrequisitos que garantiza coherencia pedagógica
 
 2. **Evaluación mediante rúbricas multi-criterio**

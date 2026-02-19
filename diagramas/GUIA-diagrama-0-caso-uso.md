@@ -11,8 +11,8 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 ### Modelo Arquitectónico: Backend EAC Centralizado
 
 **Decisión de diseño:**
-- El **Backend EAC** es un **servicio centralizado** operado en el nodo central
-- Los centros FP **NO operan su propio Backend EAC localmente**
+- El **Backend EAC Dataspace** es un **servicio centralizado** operado en el nodo central
+- Los centros FP operan los módulos de EAC correspondientes al frontend con las vistas de estudiante y docente, así como el motor de evaluación y feedback, pero **no alojan el Backend EAC completo**. 
 - Los centros actúan como **consumidores del servicio** publicado en el Marketplace
 - El **FIWARE Dataspace Connector** actúa como **API Gateway único** del servicio
 
@@ -34,8 +34,6 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 
 ### ZONA 1: Actores y Roles en el Dataspace
 
-*[Sin cambios respecto a v2.0]*
-
 #### 👨‍🎓 Estudiante (End User / Learner)
 **Color:** Verde  
 **Permisos:**
@@ -47,6 +45,7 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 **Credencial Verificable:**
 - **Type:** `StudentCredential`
 - **Issuer:** Centro FP donde está matriculado
+- **Claims:** `studentId`, `institution`, `enrolledPrograms`, `validUntil`
 - **Almacenamiento:** Wallet digital del estudiante
 
 ---
@@ -59,6 +58,12 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 - ✅ Acceder a dashboards de analítica educativa
 - ✅ **Solicitar acceso al servicio Backend EAC central**
 - ❌ NO puede acceder a datos individuales sin consentimiento
+
+**Credencial Verificable:**
+- **Type:** `TeacherCredential`
+- **Issuer:** Centro FP empleador
+- **Claims:** `teacherId`, `institution`, `subjects`, `adminLevel`, `validUntil`
+- **Almacenamiento:** Wallet digital del docente
 
 **Flujo de integración con el servicio:**
 1. Docente descubre "Backend EAC" en Marketplace
@@ -78,6 +83,11 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 - ✅ Auditar transacciones del Dataspace Connector
 - ✅ Monitorear métricas de observabilidad
 
+**Credencial Verificable:**
+- **Type:** `OperatorCredential`
+- **Issuer:** Autoridad de Gobierno del VFDS
+- **Claims:** `operatorId`, `organization`, `role: ["dataspace_admin"]`, `validUntil`
+
 **Responsabilidades adicionales:**
 - Mantener operativo el Backend EAC central (SLA 99.5%)
 - Gestionar API Keys de los centros consumidores
@@ -87,17 +97,100 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 ---
 
 #### 🔍 Investigador / Auditor (Auditor / Researcher)
-**Color:** Morado  
+**Color:** Morado
+**Permisos:**
+- ✅ Acceso a datasets anonimizados aprobados
+- ✅ Consultar métricas agregadas (skills mastery)
+- ✅ Exportar datos para estudios longitudinales
+- ❌ Solo lectura (no puede modificar datos)
+- ❌ NO acceso a PII ni datos no anonimizados
 
-*[Sin cambios respecto a v2.0]*
+**Credencial Verificable:**
+- **Type:** `ResearcherCredential`
+- **Issuer:** Institución académica acreditada
+- **Claims:** `researcherId`, `institution`, `projectId`, `approvedDatasets`, `validUntil`
+
+**Proceso de acceso:**
+1. Investigador solicita acceso a dataset específico
+2. Comité ético del VFDS revisa solicitud
+3. Si aprobado, se emite `ResearcherCredential` con scope limitado
+4. Accede solo a datos agregados vía APIs NGSI-LD
 
 ---
 
 ### ZONA 2: Emisión de Credenciales Verificables (Centro FP)
 
-*[Sin cambios respecto a v2.0]*
-
 Los centros FP siguen actuando como **VC Issuers** para emitir `StudentCredential` y `TeacherCredential`.
+
+**Rol:** Emisor de Credenciales Verificables  
+**Ejemplo:** IES Ingeniero de la Cierva (Murcia)  
+**DID:** `did:web:ies-cierva.edu.es`
+
+**¿Qué son las Credenciales Verificables (W3C VC)?**
+- Estándar del W3C para identidad digital descentralizada
+- Permiten probar afirmaciones (claims) sin depender de un proveedor centralizado
+- Criptográficamente firmadas (el receptor puede verificar autenticidad)
+- Control total del usuario (almacenadas en su wallet)
+
+**Tipos de VCs emitidas por el centro:**
+
+1. **StudentCredential**
+```json
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://vfds.org/credentials/student/v1"
+  ],
+  "id": "https://ies-cierva.edu.es/credentials/std_12345",
+  "type": ["VerifiableCredential", "StudentCredential"],
+  "issuer": "did:web:ies-cierva.edu.es",
+  "issuanceDate": "2025-09-01T00:00:00Z",
+  "expirationDate": "2026-09-01T23:59:59Z",
+  "credentialSubject": {
+    "id": "did:web:student-wallet.example.com:std_12345",
+    "studentId": "std_12345",
+    "institution": "ies_cierva",
+    "enrolledProgram": "FP Comercio - TBM",
+    "academicYear": "2025-2026"
+  },
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2025-09-01T10:00:00Z",
+    "verificationMethod": "did:web:ies-cierva.edu.es#key-1",
+    "proofPurpose": "assertionMethod",
+    "jws": "eyJhbGc...signature..."
+  }
+}
+```
+
+2. **TeacherCredential**
+```json
+{
+  "@context": [...],
+  "type": ["VerifiableCredential", "TeacherCredential"],
+  "issuer": "did:web:ies-cierva.edu.es",
+  "credentialSubject": {
+    "teacherId": "teacher_789",
+    "subjects": ["TBM", "Marketing"],
+    "adminLevel": "coordinator"
+  },
+  ...
+}
+```
+
+**Proceso de emisión:**
+1. Centro FP verifica identidad del estudiante/docente (matrícula oficial)
+2. Genera VC firmada con su clave privada
+3. Publica VC o la entrega al usuario para que la almacene
+4. Usuario importa VC a su wallet digital
+
+**Wallet del Usuario:**
+- **Opciones:** 
+  - Móvil: Wallet apps compatibles con W3C VC
+  - Navegador: Extensiones de navegador
+  - Hardware: YubiKey con soporte VC
+- **Función:** Almacenar VCs de forma segura y presentarlas cuando se requiera
+- **Control:** Usuario decide cuándo y a quién presenta sus credenciales
 
 ---
 
@@ -105,19 +198,133 @@ Los centros FP siguen actuando como **VC Issuers** para emitir `StudentCredentia
 
 #### 🔐 VC Verifier (Keycloak + VC Plugin)
 
-*[Sin cambios respecto a v2.0]*
+**Función:** Verificar Credenciales Verificables de usuarios que acceden al sistema
+
+**Flujo de autenticación:**
+
+```
+1. Usuario intenta acceder al VFDS
+   ↓
+2. Sistema redirige a VC Verifier (Keycloak)
+   ↓
+3. Usuario presenta VC desde su wallet
+   [Protocolo: DIDComm o OIDC4VC]
+   ↓
+4. VC Verifier valida:
+   - Firma criptográfica (usando DID del issuer)
+   - Fecha de expiración
+   - Revocation status (opcional)
+   - Claims requeridos (role, institution)
+   ↓
+5. Si válido, extrae claims y genera token JWT interno:
+   {
+     "sub": "did:web:student-wallet.example.com:std_12345",
+     "role": "student",
+     "institution": "ies_cierva",
+     "scope": "eac:submit eac:results:read"
+   }
+   ↓
+6. Token JWT usado para autenticación en servicios internos
+```
+
+**Ventajas vs. OAuth2 tradicional:**
+- ✅ No requiere configuración compleja del LMS
+- ✅ Usuario controla sus credenciales (no el proveedor)
+- ✅ Interoperable entre múltiples plataformas
+- ✅ Revocación descentralizada
+- ✅ Cumplimiento eIDAS 2.0
+
+**Tecnología:**
+- **Keycloak** con plugin `keycloak-vc-issuer` o similar
+- **Validación DID:** Resolución de DIDs vía universal resolver
+- **Storage:** Credenciales verificadas cacheadas temporalmente
 
 ---
 
 #### ⭐ Gaia-X Trust Framework
 
-*[Sin cambios respecto a v2.0]*
+**¿Qué es Gaia-X?**
+Iniciativa europea para crear una infraestructura de datos soberana, segura e interoperable. Define estándares y servicios para dataspaces federados.
+
+**Componentes Gaia-X en el VFDS:**
+
+1. **Gaia-X Compliance Service**
+   - Valida que los servicios cumplen requisitos Gaia-X
+   - Emite certificados de compliance
+   - Verifica: Transparencia, Portabilidad, Soberanía, Seguridad
+
+2. **Self-Descriptions Registry**
+   - Almacena metadatos (Self-Descriptions) de servicios/participantes
+   - Formato JSON-LD con vocabulario Gaia-X
+   - Firmados criptográficamente
+
+3. **Trust Anchors**
+   - Entidades raíz de confianza (ej: autoridades certificadoras)
+   - Validan identidad de participantes
+   - Necesarios para ingresar al dataspace
+
+**Flujo de validación Gaia-X:**
+```
+Servicio Backend EAC quiere publicarse
+   ↓
+1. Genera Self-Description (metadatos del servicio)
+   ↓
+2. Envía a Gaia-X Compliance Service
+   ↓
+3. Compliance Service verifica:
+   - Identidad del proveedor (IES Cierva)
+   - Cumplimiento de políticas GDPR
+   - Transparencia en SLAs
+   - Portabilidad de datos
+   ↓
+4. Si cumple, emite certificado de compliance
+   ↓
+5. Servicio se publica en Federated Catalogue con badge ⭐
+```
+
+**Self-Description del Backend EAC (ejemplo simplificado):**
+```json
+{
+  "@context": "https://www.w3.org/2018/credentials/v1",
+  "type": "gx:ServiceOffering",
+  "gx:providedBy": {
+    "gx:legalName": "IES Ingeniero de la Cierva",
+    "gx:legalAddress": {
+      "gx:countryCode": "ES",
+      "gx:city": "Murcia"
+    }
+  },
+  "gx:name": "Backend EAC v1.2.3",
+  "gx:description": "Sistema de Evaluación Automática Competencial con PKST",
+  "gx:dataAccountExport": {
+    "gx:requestType": "API",
+    "gx:format": "JSON-LD"
+  },
+  "gx:termsAndConditions": {
+    "gx:URL": "https://ies-cierva.edu.es/eac/terms"
+  },
+  "gx:policy": [
+    "https://ies-cierva.edu.es/eac/usage-policy.json"
+  ]
+}
+```
 
 ---
 
 #### 🛒 Marketplace / Federated Catalogue
 
-**Servicio publicado (actualizado):**
+**Implementación:** CKAN + Gaia-X Federated Catalogue Extensions
+
+**Funcionalidad:**
+- Catálogo descentralizado de servicios del dataspace
+- Búsqueda y descubrimiento de servicios educativos
+- Metadatos enriquecidos (DCAT-AP + Gaia-X Self-Descriptions)
+- Gestión de solicitudes de acceso
+- Ratings y reviews de servicios
+
+**Servicios Publicados (ejemplos):**
+
+---
 
 ##### 📦 Backend EAC v1.2.3 (Servicio Centralizado)
 ```
@@ -140,13 +347,7 @@ Sandbox: https://sandbox.eac-central.vfds.org
 Support: soporte-eac@vfds.org (L-V 9:00-18:00)
 ```
 
-**Cambios clave vs. v2.0:**
-- ✅ **Publisher**: Nodo Central (no centros individuales)
-- ✅ **Endpoint único**: Todos los centros consumen el mismo servicio
-- ✅ **Capacidad compartida**: 10k eval/hora para todos los participantes
-- ✅ **Pricing**: Modelo de uso compartido
-
-**Interacción con Marketplace - Flujo Actualizado:**
+**Interacción con Marketplace:**
 
 ```
 PASO 1: Descubrimiento
@@ -214,7 +415,7 @@ Datos agregados se publican en Orion-LD Hub
 
 #### 🔗 FIWARE Dataspace Connector (IDS/EDC) - UBICACIÓN CENTRAL
 
-**🎯 CAMBIO CLAVE:** El Connector está **SOLO en el nodo central**, no en los centros FP.
+**🎯 El Connector está **SOLO en el nodo central**, no en los centros FP.
 
 **Función actualizada:**
 - **API Gateway** del servicio Backend EAC centralizado
@@ -271,7 +472,7 @@ Decisión: Permit
 ```
 Contador por API Key:
    - CIFP Carlos III: 120 requests en última hora
-   - IES Cierva: 340 requests en última hora
+   - IES Luis Simarro: 340 requests en última hora
    - Límites: 500 req/hora por centro
 
 Si excede límite:
@@ -411,8 +612,6 @@ Si todo OK: procesa
 
 #### 📋 Self-Descriptions Registry
 
-*[Actualización menor]*
-
 **Self-Description del Backend EAC Centralizado:**
 ```json
 {
@@ -479,16 +678,9 @@ Si todo OK: procesa
 }
 ```
 
-**Cambios clave:**
-- `serviceType`: "Centralized Educational Service"
-- `providedBy`: Nodo Central (no centros individuales)
-- `accessControl`: Especifica que usa Dataspace Connector como gateway
-
 ---
 
 #### ⚖️ Policy Engine (Authzforce PDP)
-
-*[Sin cambios conceptuales, actualización de ejemplo]*
 
 **Política actualizada para acceso al servicio central:**
 ```xml
@@ -536,7 +728,36 @@ Si todo OK: procesa
 
 #### 🌐 Orion-LD Hub (Context Broker)
 
-*[Sin cambios respecto a v2.0]*
+**Función:** Agregar y sincronizar entidades NGSI-LD entre nodos del dataspace.
+
+**Entidades gestionadas:**
+
+1. **VocationalSkill**
+   - Ontología compartida de habilidades FP
+   - Actualizada por todos los centros
+   - Ejemplo: `urn:ngsi-ld:VocationalSkill:s3_seguridad_visual`
+
+2. **SkillMasteryAggregate**
+   - Métricas agregadas de mastery de skills
+   - Anonimizadas por nodo antes de publicar
+   - Ejemplo: `masteryRate: 0.65 ± 0.12` (47 estudiantes)
+
+3. **LearningProblem**
+   - Problemas públicos del banco compartido
+   - Metadatos: dificultad, skills evaluados, autor
+   - Versionados y con licencia de uso
+
+**Suscripciones:**
+- Otros nodos pueden suscribirse a cambios
+- Notificaciones push cuando se actualiza una skill
+- Filtros por tipo de entidad o atributos
+
+**Ejemplo de query NGSI-LD:**
+```http
+GET /ngsi-ld/v1/entities?type=SkillMasteryAggregate&q=skillId==s3;masteryRate<0.70
+```
+
+Retorna skills con baja mastery para priorizar generación de problemas.
 
 ---
 
@@ -567,11 +788,9 @@ Si todo OK: procesa
 
 ### ZONA 4: Nodo del Centro FP (Cliente del Servicio)
 
-**🎯 CAMBIO FUNDAMENTAL:** El centro FP ya **NO tiene Backend EAC local** ni **IDS/EDC Connector local**.
+#### 📚 LMS Moodle + Aplicación LTI con frontend EAC
 
-#### 📚 LMS Moodle + Plugin EAC
-
-**Función:** Interfaz donde los estudiantes resuelven problemas. El LMS actúa como **cliente del servicio Backend EAC central**.
+**Función:** Interfaz donde los estudiantes resuelven problemas. La aplicación _LTI_ actúa como **cliente del servicio Backend EAC central**.
 
 **Integración actualizada:**
 
@@ -863,16 +1082,16 @@ CREATE TABLE submission_queue (
    [ZONA 1 → ZONA 4: LMS]
    
 4. Selecciona actividad EAC en su curso
-   [ZONA 4: LMS - muestra interfaz local o iframe del servicio central]
+   [ZONA 4: LMS - muestra aplicación LTI]
    
 5. Estudiante resuelve y envía solución
-   [ZONA 4: LMS captura submission]
+   [ZONA 4: App LTI captura submission]
    
-6. Plugin Moodle anonimiza datos (Aggregator local)
+6. Plugin Aggregator local anonimiza datos
    [ZONA 4: Aggregator elimina PII]
    [Etiqueta: "Anonimización local (RGPD)"]
-   
-7. LMS envía POST al servicio central
+
+7. App LTI envía POST al servicio central
    [ZONA 4 → ZONA 3: HTTP POST con API Key]
    [Etiqueta: "POST con submission anonimizada"]
    
@@ -887,15 +1106,15 @@ CREATE TABLE submission_queue (
     [ZONA 3: Backend EAC → Orion-LD Hub]
     [Etiqueta: "Skills federados (agregados)"]
     
-11. Backend EAC retorna resultado al LMS del centro
+11. Backend EAC retorna resultado a la app LTI del centro
     [ZONA 3 → ZONA 4: HTTP 200 + resultado JSON]
     [Etiqueta: "Resultado + feedback personalizado"]
-    
-12. LMS muestra resultado al estudiante
-    [ZONA 4: LMS → Estudiante]
-    
-13. LMS almacena resultado en BD local (vinculado a student_id real)
-    [ZONA 4: LMS → PostgreSQL local]
+
+12. App LTI muestra resultado al estudiante
+    [ZONA 4: App LTI → Estudiante]
+
+13. App LTI almacena resultado en BD local (vinculado a student_id real)
+    [ZONA 4: App LTI → PostgreSQL local]
     [Datos: vincula resultado con PII local para uso del docente]
 ```
 
@@ -1021,55 +1240,6 @@ En su lugar:
 
 ---
 
-## 📊 Comparación Arquitectónica
-
-| Aspecto | v2.0 (Distribuido) | v2.1 (Centralizado - Actual) |
-|---------|-------------------|------------------------------|
-| **Backend EAC** | Uno por centro FP | Uno centralizado en nodo central |
-| **IDS/EDC Connector** | Uno por centro + uno central | Solo en nodo central |
-| **Mantenimiento** | Cada centro actualiza su instancia | Un único deploy para todos |
-| **Escalabilidad** | Horizontal (más centros = más instancias) | Vertical (escalar servicio central) |
-| **Consistencia** | Posibles diferencias entre versiones | Misma versión para todos |
-| **Complejidad técnica** | Alta (cada centro opera infraestructura) | Baja (centros son clientes simples) |
-| **Soberanía computacional** | Alta (cada centro procesa localmente) | Baja (procesamiento centralizado) |
-| **Soberanía de datos** | Alta (datos nunca salen del centro) | Alta (PII permanece local, solo anonimizados al central) |
-| **Coste operativo** | Alto (multiplicado por N centros) | Bajo (un solo servicio compartido) |
-| **Dependencia** | Baja (cada centro independiente) | Alta (dependen del servicio central) |
-| **SLA crítico** | No (fallo afecta solo un centro) | Sí (fallo afecta a todos) |
-| **Negociación IDS** | Bilateral completa (P2P) | Unilateral (cliente-servidor) |
-| **Cumplimiento Gaia-X** | ✓ Completo | ✓ Adaptado (gateway pattern) |
-
----
-
-## ✅ Ventajas del Modelo Centralizado (v2.1)
-
-### 1. Simplicidad Operativa
-- ✅ Centros pequeños sin capacidad técnica pueden participar fácilmente
-- ✅ No requieren infraestructura compleja (solo LMS + plugin)
-- ✅ Onboarding rápido (configurar API Key en <1 hora)
-
-### 2. Consistencia del Servicio
-- ✅ Todos los estudiantes evaluados con el mismo motor PKST
-- ✅ Misma versión, mismo algoritmo, mismos criterios
-- ✅ Comparabilidad directa de métricas entre centros
-
-### 3. Eficiencia de Recursos
-- ✅ Una sola infraestructura compartida (economía de escala)
-- ✅ Optimización centralizada (caching, GPU sharing para LLMs)
-- ✅ Mantenimiento de un solo equipo técnico
-
-### 4. Actualizaciones Rápidas
-- ✅ Nuevas features disponibles inmediatamente para todos
-- ✅ Corrección de bugs con impacto inmediato
-- ✅ No necesidad de coordinar actualizaciones multi-centro
-
-### 5. Observabilidad Completa
-- ✅ Métricas centralizadas de uso y rendimiento
-- ✅ Detección temprana de anomalías
-- ✅ Optimización basada en datos globales
-
----
-
 ## ⚠️ Desafíos y Mitigaciones
 
 ### Desafío 1: Dependencia del Servicio Central
@@ -1123,8 +1293,8 @@ En su lugar:
 4. Configurar Authzforce con políticas básicas
 5. Publicar servicio en Marketplace con Self-Description
 
-**Centro Piloto 1 (IES Cierva):**
-1. Configurar plugin Moodle con API Key
+**Centro Piloto 1 (IES Carlos III):**
+1. Configurar frontend LTI con API Key
 2. Implementar Aggregator local (anonimización)
 3. Probar flujo completo con 10 estudiantes sintéticos
 4. Validar cumplimiento RGPD
@@ -1145,8 +1315,8 @@ En su lugar:
 4. Añadir generación de problemas con LLM
 
 **Centros Adicionales:**
-1. CIFP Carlos III se integra
-2. IES María Guerrero se integra
+1. IES Luis Simarro se integra
+2. IES Ribera del Tajo se integra
 3. Cada centro: 50 estudiantes reales
 
 **Métricas de éxito:**
