@@ -5,6 +5,9 @@
 ### Objetivo
 Permitir que estudiantes de centros de Formación Profesional resuelvan problemas en sus plataformas LMS locales y que sus evaluaciones automáticas se procesen mediante el sistema PKST del **Backend EAC centralizado**, federando datos anonimizados a través del VFDS para mejorar colaborativamente el sistema educativo.
 
+### 📊 Archivo
+[`diagrama-0-caso-uso.svg`](./diagrama-0-caso-uso.svg)
+
 ### Modelo Arquitectónico: Backend EAC Centralizado
 
 **Decisión de diseño:**
