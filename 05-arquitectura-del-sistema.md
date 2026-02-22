@@ -156,20 +156,21 @@ del servicio"| MARKETPLACE
 
     %% Observabilidad
     EAC & CONNECTOR_CENTRAL & ORIONLD -->|"Métricas / Logs"| MONITOR
-    OPERATOR -->|"Gestiona y supervisa"| MONITOR
+    OPERATOR -->|"Acceso a través del"| CONNECTOR_CENTRAL
+    -->|"Gestiona y supervisa"| MONITOR
 
     %% Centro FP ↔ Nodo Central
-    APP_LTI -->|"Configura API Key
-(TeacherCredential → Marketplace)"| CONNECTOR_CENTRAL
-    ANON -->|"POST /api/v2/evaluate
+    APP_LTI -->|"Configura API Key"|ANON
+     -->|"POST /api/v2/evaluate
 Bearer API Key
-datos anonimizados"| CONNECTOR_CENTRAL
-    CONNECTOR_CENTRAL -->|"Resultado evaluación
+datos anonimizados"| CONNECTOR_CFP
+    CONNECTOR_CENTRAL <-->|"acuerdo ODRL de transferencia"| CONNECTOR_CFP
+    CONNECTOR_CFP --> |"Resultado evaluación
 score · feedback · recomendación"| APP_LTI
 
     %% Investigador
-    RESEARCHER -->|"Acceso NGSI-LD
-(datos agregados)"| ORIONLD
+    RESEARCHER -->|"Acceso a través del"| CONNECTOR_CENTRAL
+    -->|"a NGSI-LD(datos agregados)"| ORIONLD
 
     %% Estilos de zona
     style Z1 fill:#e8f5e9,stroke:#4caf50,color:#1b5e20
@@ -187,7 +188,7 @@ score · feedback · recomendación"| APP_LTI
 
 ---
 
-### 5.2 Modelo Arquitectónico: Backend EAC Centralizado
+#### 5.1.1 Modelo Arquitectónico: Backend EAC Centralizado
 
 **Decisión de diseño clave:**
 
@@ -202,9 +203,9 @@ El **Backend EAC** opera como un **servicio centralizado** en el Nodo Central Co
 
 ---
 
-### 5.3 Componentes Principales
+#### 5.1.2 Componentes Principales
 
-#### **5.3.1 Knowledge Space Builder**
+##### **5.1.2.1 Knowledge Space Builder**
 
 **Responsabilidad:** Construir y mantener el grafo de habilidades y el espacio de conocimiento.
 
@@ -218,7 +219,7 @@ El **Backend EAC** opera como un **servicio centralizado** en el Nodo Central Co
 - **NetworkX** (Python): Manipulación de grafos
 - **Neo4j** (opcional): Persistencia y queries complejas
 
-#### **5.3.2 Problem Generator (LLM-based)**
+##### **5.1.2.2 Problem Generator (LLM-based)**
 
 **Responsabilidad:** Generar automáticamente problemas desde plantillas y habilidades requeridas.
 
@@ -254,7 +255,7 @@ def recommend_next_problem(student_knowledge_state):
         return random.choice(candidate_problems)
 ```
 
-#### **5.3.4 Rubric Evaluator**
+##### **5.1.2.4 Rubric Evaluator**
 
 **Responsabilidad:** Evaluar automáticamente las respuestas de estudiantes mediante rúbricas.
 
@@ -269,7 +270,7 @@ def recommend_next_problem(student_knowledge_state):
 - **Asistida por LLM:** Evaluación de respuestas abiertas (ensayos, diseños)
 - **Manual:** Profesor revisa, sistema aprende
 
-#### **5.3.5 FIWARE Dataspace Connector (API Gateway Central)**
+##### **5.1.2.5 FIWARE Dataspace Connector (API Gateway Central)**
 
 **Responsabilidad:** Punto de entrada único al servicio Backend EAC para todos los centros consumidores.
 
@@ -294,9 +295,9 @@ def recommend_next_problem(student_knowledge_state):
 
 ---
 
-### 5.4 Stack Tecnológico
+#### 5.1.3 Stack Tecnológico
 
-#### **Backend EAC (Nodo Central):**
+##### **Backend EAC (Nodo Central):**
 ```
 Python 3.11+
 ├── FastAPI 0.110+          # API REST
@@ -308,7 +309,7 @@ Python 3.11+
 └── Pytest 8.0+             # Testing
 ```
 
-#### **Base de Datos:**
+##### **Base de Datos:**
 ```
 PostgreSQL 16+  (Nodo Central)   # Datos estructurados del servicio
 ├── Tablas: problems, knowledge_states, submissions_anon, evaluations
@@ -322,7 +323,7 @@ Neo4j 5.x (opcional)             # Grafo de habilidades
 └── Queries complejas de inferencia
 ```
 
-#### **FIWARE / Dataspace:**
+##### **FIWARE / Dataspace:**
 ```
 Orion-LD 1.5+               # Context Broker (NGSI-LD v1.6.1)
                              #   Entidades: VocationalSkill,
@@ -334,7 +335,7 @@ Authzforce PDP              # Motor de políticas XACML / ODRL
 Mintaka (opcional)          # Temporal queries sobre Orion-LD
 ```
 
-#### **Frontend (Centro FP):**
+##### **Frontend (Centro FP):**
 ```
 LMS Moodle 4.x              # Plataforma educativa de los centros
 ├── Plugin EAC (PHP)        # Integración LTI 1.3 + REST API
@@ -347,7 +348,7 @@ Aplicación LTI (React 18+)  # Renderizada desde Nodo Central (Opción A)
 └── TailwindCSS             # Styling
 ```
 
-#### **DevOps:**
+##### **DevOps:**
 ```
 Docker + Docker Compose     # Containerización
 Kubernetes (producción)     # Escalado horizontal del Backend EAC
@@ -358,7 +359,7 @@ Prometheus + Grafana        # Observabilidad y alertas (SLA 99.5%)
 
 ---
 
-### 5.5 Flujo de Datos Principal
+#### 5.1.4 Flujo de Datos Principal
 
 ```
 Estudiante resuelve problema en LMS (Centro FP)
@@ -388,7 +389,7 @@ Estudiante ve feedback personalizado en su LMS
 
 ---
 
-### 5.6 Credenciales Verificables y Control de Acceso
+#### 5.1.5 Credenciales Verificables y Control de Acceso
 
 | Rol | Tipo VC | Emisor | Acceso concedido |
 |---|---|---|---|
@@ -398,3 +399,213 @@ Estudiante ve feedback personalizado en su LMS
 | Investigador | `ResearcherCredential` | Inst. acreditada | Datos agregados NGSI-LD (solo lectura) |
 
 Todas las VCs siguen el estándar **W3C Verifiable Credentials**, son compatibles con **eIDAS 2.0** y se almacenan en la wallet digital del usuario.
+
+### 5.2 Diagrama de Funcionalidad EAC
+```mermaid
+graph TB
+    subgraph Z1["ZONA 1 · Actores"]
+        STUDENT["👨‍🎓 Estudiante"]
+        TEACHER["👨‍🏫 Docente"]
+    end
+
+    subgraph Z2["Centro FP · Capa de Presentación"]
+        LMS["📚 LMS"]
+        APP_LTI["📱 Aplicación LTI / Frontend EAC
+Vista Estudiante · Vista Docente"]
+        ANON["🔒 Aggregator / Anonymizer
+Elimina PII antes de enviar"]
+    end
+
+    subgraph Z3["Backend EAC · Motor Pedagógico"]
+
+        subgraph GRAPH["🕸️ Modelado del Dominio"]
+            KSB["📐 Knowledge Space Builder
+Construye Grafo de Precedencia
+(Situaciones de Competencia · Prereqs)"]
+            SGRAPH["🕸️ Skill Graph Manager
+Gestiona estados del Ecosistema Laboral
+(Perfil de Habilitación · Politopía)"]
+            SYNTH["🔬 Synthetic Data Generator
+Genera trazas y escenarios
+para inicializar / enriquecer el grafo"]
+        end
+
+        subgraph ENGINE["⚙️ Motor de Decisión Instruccional"]
+            REC["🎯 Recommendation Engine
+(Outer Fringe / Zona de Despliegue Proximal)
+Selecciona siguiente SC óptima"]
+            PGEN["🤖 Problem Generator
+(LLM-based)
+Genera Situación de Competencia contextualizada"]
+            RUBRIC["📝 Rubric Evaluator
+Evalúa evidencia de desempeño
+Score · Gradiente de Autonomía
+Diagnóstico de Causa Raíz"]
+        end
+
+        subgraph DATA["🗄️ Persistencia"]
+            ORIONLD["🌐 Orion-LD
+VocationalSkill · LearningProblem
+SkillMasteryAggregate"]
+            POSTGRES_C["🐘 PostgreSQL
+Perfiles de Habilitación
+Historiales de navegación
+Umbrales de Maestría"]
+        end
+    end
+
+    %% ── Actores → LMS ──
+    STUDENT -->|"Solicita / Resuelve SC"| LMS
+    TEACHER -->|"Diseña / Supervisa SC"| LMS
+
+    %% ── LMS ↔ APP_LTI ──
+    LMS -->|"Lanza vista EAC"| APP_LTI
+    APP_LTI -->|"Registra calificación
+    (Gradiente de Autonomía)"| LMS
+
+    %% ── APP_LTI → ANON → EAC ──
+    APP_LTI -->|"Submission con PII
+    (evidencia de desempeño)"| ANON
+    ANON -->|"Evidencia anonimizada
+    POST /api/v2/evaluate"| RUBRIC
+
+    %% ── Docente → generación de SC ──
+    APP_LTI -->|"Solicita nueva SC
+    (parámetros pedagógicos)"| PGEN
+
+    %% ── Motor interno EAC ──
+    SYNTH --> KSB
+    KSB --> SGRAPH
+    SGRAPH -->|"Perfil de Habilitación
+    + Outer Fringe"| REC
+    REC -->|"SC seleccionada"| PGEN
+    PGEN -->|"SC contextualizada"| APP_LTI
+    RUBRIC -->|"Score · Diagnóstico
+    Actualiza Perfil de Habilitación"| SGRAPH
+    RUBRIC -->|"Actualiza SkillMasteryAggregate"| ORIONLD
+
+    %% ── APP_LTI → Estudiante (retorno) ──
+    APP_LTI -->|"Notifica resultado
+    score · feedback · Huella de Talento"| STUDENT
+
+    %% ── Docente accede a métricas ──
+    APP_LTI -->|"Panel docente
+    estado de la clase · bloqueos"| TEACHER
+
+    %% ── Persistencia ──
+    SGRAPH <-->|"Read / Write"| POSTGRES_C
+    REC <-->|"Consulta estados y franjas"| POSTGRES_C
+    KSB <-->|"Lee / Actualiza grafo"| ORIONLD
+
+    style Z1 fill:#e8f5e9,stroke:#4caf50,color:#1b5e20
+    style Z2 fill:#fff3e0,stroke:#ff9800,color:#e65100
+    style Z3 fill:#e3f2fd,stroke:#1976d2,color:#0d47a1
+    style GRAPH fill:#e8eaf6,stroke:#3f51b5
+    style ENGINE fill:#fce4ec,stroke:#e91e63
+    style DATA fill:#e0f2f1,stroke:#00897b
+```
+
+### 5.3 Diagrama detallado del flujo de recomendación
+```mermaid
+graph TB
+    subgraph Z1["ZONA 1 · Actores"]
+        STUDENT["👨‍🎓 Estudiante"]
+        TEACHER["👨‍🏫 Docente"]
+    end
+
+    subgraph Z2["Centro FP · Capa de Presentación"]
+        LMS["📚 LMS"]
+        APP_LTI["📱 Aplicación LTI / Frontend EAC
+Vista Estudiante · Vista Docente"]
+        ANON["🔒 Aggregator / Anonymizer
+Elimina PII antes de enviar"]
+    end
+
+    subgraph Z3["Backend EAC · Motor Pedagógico"]
+
+        subgraph GRAPH["🕸️ Modelado del Dominio"]
+            KSB["📐 Knowledge Space Builder
+Construye Grafo de Precedencia
+(Situaciones de Competencia · Prereqs)"]
+            SGRAPH["🕸️ Skill Graph Manager
+Gestiona estados del Ecosistema Laboral
+(Perfil de Habilitación · Politopía)"]
+            SYNTH["🔬 Synthetic Data Generator
+Genera trazas y escenarios
+para inicializar / enriquecer el grafo"]
+        end
+
+        subgraph ENGINE["⚙️ Motor de Decisión Instruccional"]
+            REC["🎯 Recommendation Engine
+(Outer Fringe / Zona de Despliegue Proximal)
+Selecciona siguiente SC óptima"]
+            PGEN["🤖 Problem Generator
+(LLM-based)
+Genera Situación de Competencia contextualizada"]
+            RUBRIC["📝 Rubric Evaluator
+Evalúa evidencia de desempeño
+Score · Gradiente de Autonomía
+Diagnóstico de Causa Raíz"]
+        end
+
+        subgraph DATA["🗄️ Persistencia"]
+            ORIONLD["🌐 Orion-LD
+VocationalSkill · LearningProblem
+SkillMasteryAggregate"]
+            POSTGRES_C["🐘 PostgreSQL
+Perfiles de Habilitación
+Historiales de navegación
+Umbrales de Maestría"]
+        end
+    end
+
+    %% ── Actores → LMS ──
+    STUDENT -->|"Solicita / Resuelve SC"| LMS
+    TEACHER -->|"Diseña / Supervisa SC"| LMS
+
+    %% ── LMS ↔ APP_LTI ──
+    LMS -->|"Lanza vista EAC"| APP_LTI
+    APP_LTI -->|"Registra calificación
+    (Gradiente de Autonomía)"| LMS
+
+    %% ── APP_LTI → ANON → EAC ──
+    APP_LTI -->|"Submission con PII
+    (evidencia de desempeño)"| ANON
+    ANON -->|"Evidencia anonimizada
+    POST /api/v2/evaluate"| RUBRIC
+
+    %% ── Docente → generación de SC ──
+    APP_LTI -->|"Solicita nueva SC
+    (parámetros pedagógicos)"| PGEN
+
+    %% ── Motor interno EAC ──
+    SYNTH --> KSB
+    KSB --> SGRAPH
+    SGRAPH -->|"Perfil de Habilitación
+    + Outer Fringe"| REC
+    REC -->|"SC seleccionada"| PGEN
+    PGEN -->|"SC contextualizada"| APP_LTI
+    RUBRIC -->|"Score · Diagnóstico
+    Actualiza Perfil de Habilitación"| SGRAPH
+    RUBRIC -->|"Actualiza SkillMasteryAggregate"| ORIONLD
+
+    %% ── APP_LTI → Estudiante (retorno) ──
+    APP_LTI -->|"Notifica resultado
+    score · feedback · Huella de Talento"| STUDENT
+
+    %% ── Docente accede a métricas ──
+    APP_LTI -->|"Panel docente
+    estado de la clase · bloqueos"| TEACHER
+
+    %% ── Persistencia ──
+    SGRAPH <-->|"Read / Write"| POSTGRES_C
+    REC <-->|"Consulta estados y franjas"| POSTGRES_C
+    KSB <-->|"Lee / Actualiza grafo"| ORIONLD
+
+    style Z1 fill:#e8f5e9,stroke:#4caf50,color:#1b5e20
+    style Z2 fill:#fff3e0,stroke:#ff9800,color:#e65100
+    style Z3 fill:#e3f2fd,stroke:#1976d2,color:#0d47a1
+    style GRAPH fill:#e8eaf6,stroke:#3f51b5
+    style ENGINE fill:#fce4ec,stroke:#e91e63
+    style DATA fill:#e0f2f1,stroke:#00897b
+```
