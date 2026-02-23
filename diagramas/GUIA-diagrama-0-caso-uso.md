@@ -3,7 +3,7 @@
 ## 🎯 Descripción del Caso de Uso
 
 ### Objetivo
-Permitir que estudiantes de centros de Formación Profesional resuelvan problemas en sus plataformas LMS locales y que sus evaluaciones automáticas se procesen mediante el sistema PKST del **Backend EAC centralizado**, federando datos anonimizados a través del VFDS para mejorar colaborativamente el sistema educativo.
+Permitir que estudiantes de centros de Formación Profesional resuelvan problemas en sus plataformas LMS locales y que sus evaluaciones automáticas se procesen mediante el sistema PKST del **Backend EAC centralizado**, federando datos seudonimizados a través del VFDS para mejorar colaborativamente el sistema educativo.
 
 ### 📊 Archivo
 [`diagrama-0-caso-uso.svg`](./diagrama-0-caso-uso.svg)
@@ -99,11 +99,11 @@ Permitir que estudiantes de centros de Formación Profesional resuelvan problema
 #### 🔍 Investigador / Auditor (Auditor / Researcher)
 **Color:** Morado
 **Permisos:**
-- ✅ Acceso a datasets anonimizados aprobados
+- ✅ Acceso a datasets seudonimizados aprobados
 - ✅ Consultar métricas agregadas (skills mastery)
 - ✅ Exportar datos para estudios longitudinales
 - ❌ Solo lectura (no puede modificar datos)
-- ❌ NO acceso a PII ni datos no anonimizados
+- ❌ NO acceso a PII ni datos no seudonimizados
 
 **Credencial Verificable:**
 - **Type:** `ResearcherCredential`
@@ -739,7 +739,7 @@ Si todo OK: procesa
 
 2. **SkillMasteryAggregate**
    - Métricas agregadas de mastery de skills
-   - Anonimizadas por nodo antes de publicar
+   - Seudonimizadas por nodo antes de publicar
    - Ejemplo: `masteryRate: 0.65 ± 0.12` (47 estudiantes)
 
 3. **LearningProblem**
@@ -882,7 +882,7 @@ Si timeout (>30s):
 
 **Función:** Preparar datos antes de enviarlos al servicio central, eliminando PII.
 
-**⚠️ Importante:** Aunque el Backend EAC es centralizado, la **anonimización se hace en el centro** antes de enviar datos.
+**⚠️ Importante:** Aunque el Backend EAC es centralizado, la **seudonimización se hace en el centro** antes de enviar datos.
 
 **Flujo:**
 ```
@@ -896,14 +896,14 @@ Aggregator local (integrado en plugin):
    3. Remueve metadata sensible (IP address, ubicación exacta)
    4. Generaliza edad (22 años → rango 21-25)
    ↓
-Submission anonimizada lista para enviar
+Submission seudonimizada lista para enviar
    ↓
 POST a Backend EAC central con datos limpios
 ```
 
 **Ejemplo de transformación:**
 ```javascript
-// Antes de anonimizar (local, nunca sale del centro)
+// Antes de seudonimizar (local, nunca sale del centro)
 {
   "student_id": "std_12345",
   "student_name": "María García López",
@@ -913,7 +913,7 @@ POST a Backend EAC central con datos limpios
   "ip_address": "192.168.1.50"
 }
 
-// Después de anonimizar (enviado al servicio central)
+// Después de seudonimizar (enviado al servicio central)
 {
   "student_id_hash": "anon_sha256_abc123xyz",
   "submission": { ... },
@@ -990,7 +990,7 @@ CREATE TABLE submission_queue (
 - ✅ Ubicación geográfica precisa
 - ✅ Datos sensibles según RGPD
 
-**Datos que SÍ se envían (anonimizados):**
+**Datos que SÍ se envían (seudonimizados):**
 - ✅ Hash irreversible del student_id
 - ✅ Submission content (respuesta al problema)
 - ✅ Context agregado (institución, rango edad, programa)
@@ -1030,7 +1030,7 @@ CREATE TABLE submission_queue (
 │                                                                       │
 │                      ↓ HTTP POST (TLS 1.3)                            │
 │            Authorization: Bearer API_KEY                              │
-│            Body: Submission anonimizada                               │
+│            Body: Submission seudonimizada                               │
 └────────────────────────┬───────────────────────────────────┘
                               │
                               │ Internet
@@ -1087,13 +1087,13 @@ CREATE TABLE submission_queue (
 5. Estudiante resuelve y envía solución
    [ZONA 4: App LTI captura submission]
    
-6. Plugin Aggregator local anonimiza datos
+6. Plugin Aggregator local seudonimiza datos
    [ZONA 4: Aggregator elimina PII]
-   [Etiqueta: "Anonimización local (RGPD)"]
+   [Etiqueta: "Seudonimización local (RGPD)"]
 
 7. App LTI envía POST al servicio central
    [ZONA 4 → ZONA 3: HTTP POST con API Key]
-   [Etiqueta: "POST con submission anonimizada"]
+   [Etiqueta: "POST con submission seudonimizada"]
    
 8. FIWARE Dataspace Connector valida request
    [ZONA 3: Connector → Authzforce → Backend EAC]
@@ -1119,7 +1119,7 @@ CREATE TABLE submission_queue (
 ```
 
 **Datos en tránsito:**
-- ➡️ **Al servicio central:** Submission anonimizada (sin PII)
+- ➡️ **Al servicio central:** Submission seudonimizada (sin PII)
 - ⬅️ **Desde servicio central:** Resultado de evaluación (sin PII)
 - 🔒 **Solo local:** PII del estudiante, vinculación resultado-estudiante
 
@@ -1265,7 +1265,7 @@ En su lugar:
 **Riesgo:** Centralizar procesamiento podría exponer datos sensibles.
 
 **Mitigación:**
-- ✅ Anonimización obligatoria en origen (antes de enviar)
+- ✅ Seudonimización obligatoria en origen (antes de enviar)
 - ✅ Backend EAC central nunca ve PII
 - ✅ Auditorías regulares de compliance RGPD
 - ✅ Datos agregados publicados con k-anonymity ≥ 5
@@ -1295,7 +1295,7 @@ En su lugar:
 
 **Centro Piloto 1 (IES Carlos III):**
 1. Configurar frontend LTI con API Key
-2. Implementar Aggregator local (anonimización)
+2. Implementar Aggregator local (seudonimización)
 3. Probar flujo completo con 10 estudiantes sintéticos
 4. Validar cumplimiento RGPD
 
@@ -1362,7 +1362,7 @@ En su lugar:
 **Respuesta:** Después de analizar las capacidades técnicas de los centros FP participantes, se decidió que un modelo centralizado reduce barreras de entrada y costes operativos. Los centros más pequeños pueden participar sin necesidad de infraestructura compleja.
 
 ### ¿Los datos de estudiantes salen del centro?
-**Respuesta:** **Solo datos anonimizados**. El PII (nombre, email, ID real) **NUNCA** sale del centro. La anonimización se hace localmente antes de enviar cualquier dato al servicio central.
+**Respuesta:** **Solo datos seudonimizados**. El PII (nombre, email, ID real) **NUNCA** sale del centro. La seudonimización se hace localmente antes de enviar cualquier dato al servicio central.
 
 ### ¿Qué pasa si el servicio central falla?
 **Respuesta:** El LMS del centro guarda las submissions en una cola local y reintenta automáticamente. En el peor caso, el docente puede evaluar manualmente hasta que el servicio se recupere. El SLA es 99.5% (máximo 3.6h downtime/mes).

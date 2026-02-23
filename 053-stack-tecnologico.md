@@ -54,7 +54,7 @@ Aplicación LTI (React 18+)  # Embebida en Moodle vía LTI 1.3
 │                            # Superficie de presentación del panel competencial
 ├── D3.js / Cytoscape.js    # Visualización del mapa de nodos competenciales
 ├── Recharts / Plotly       # Dashboards de progreso y Huella de Talento
-├── Aggregator integrado    # Anonimización local en servidor Moodle
+├── Aggregator integrado    # Seudonimización local en servidor Moodle
 └── Cola de reintentos      # SQLite / BD Moodle para submissions pendientes
 
 ```

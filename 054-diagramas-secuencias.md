@@ -86,9 +86,9 @@ sequenceDiagram
 
         APP_LTI->>ANON: POST /anonymize/submission<br/>{student_id, sc_id, evidencia_raw}
         Note over ANON: Elimina PII · Genera anon_id<br/>student_id queda retenido en el centro
-        ANON-->>APP_LTI: {anon_id, evidencia_anonimizada}
-        APP_LTI->>CONNECTOR_CFP: POST /api/v2/evaluate<br/>Bearer API Key<br/>{anon_id, sc_id, evidencia_anonimizada}
-        CONNECTOR_CFP->>CONNECTOR_CENTRAL: Transmite bajo acuerdo ODRL<br/>{anon_id, sc_id, evidencia_anonimizada}
+        ANON-->>APP_LTI: {anon_id, evidencia_seudonimizada}
+        APP_LTI->>CONNECTOR_CFP: POST /api/v2/evaluate<br/>Bearer API Key<br/>{anon_id, sc_id, evidencia_seudonimizada}
+        CONNECTOR_CFP->>CONNECTOR_CENTRAL: Transmite bajo acuerdo ODRL<br/>{anon_id, sc_id, evidencia_seudonimizada}
     end
 
     rect rgb(227, 242, 253)
@@ -96,7 +96,7 @@ sequenceDiagram
 
         Note over CONNECTOR_CENTRAL: · Valida API Key<br/>· Verifica políticas ODRL (Authzforce)<br/>· Comprueba rate limit<br/>· Registra en audit log
 
-        CONNECTOR_CENTRAL->>RUBRIC: Request validado<br/>{anon_id, sc_id, evidencia_anonimizada}
+        CONNECTOR_CENTRAL->>RUBRIC: Request validado<br/>{anon_id, sc_id, evidencia_seudonimizada}
 
         Note over RUBRIC: · Aplica rúbrica multi-criterio<br/>· Calcula Score<br/>· Calcula Gradiente de Autonomía<br/>· Diagnóstico de Causa Raíz
 
@@ -141,7 +141,7 @@ sequenceDiagram
     LMS->>APP_LTI: LTI Launch (student_id, course_id)
 
     rect rgb(255, 243, 224)
-        Note over APP_LTI,ANON: 🔒 Anonimización — PII nunca sale del centro
+        Note over APP_LTI,ANON: 🔒 Seudonimización — PII nunca sale del centro
         APP_LTI->>ANON: POST /anonymize<br/>{student_id, context_id}
         ANON-->>APP_LTI: {anon_id}
     end

@@ -161,7 +161,7 @@ del servicio"| MARKETPLACE
     APP_LTI -->|"Configura API Key"|ANON
      -->|"POST /api/v2/evaluate
 Bearer API Key
-datos anonimizados"| CONNECTOR_CFP
+datos seudonimizados"| CONNECTOR_CFP
     CONNECTOR_CENTRAL <-->|"acuerdo ODRL de transferencia"| CONNECTOR_CFP
     CONNECTOR_CFP --> |"Resultado evaluación
 score · feedback · recomendación"| APP_LTI

@@ -40,7 +40,7 @@ Este paquete contiene 5 diagramas SVG que documentan la arquitectura completa de
 **Datos FEDERADOS (NGSI-LD):**
 - ✅ Ontología de skills (vocabulario común)
 - ✅ Problemas públicos del banco compartido
-- ✅ Métricas agregadas y anonimizadas
+- ✅ Métricas agregadas y seudonimizadas
 - ✅ Metadatos de módulos FP
 
 **Datos LOCALES (protegidos RGPD):**
@@ -280,7 +280,7 @@ Ilustra el ciclo completo desde que un estudiante resuelve un problema hasta que
    - Persistencia local de: submissions, knowledge_states, evaluations, recommendations
    - 🔒 Centro local únicamente
 
-#### FASE 3: Sincronización con Nodo Central (Datos Anonimizados)
+#### FASE 3: Sincronización con Nodo Central (Datos Seudonimizados)
 
 1. **Aggregator Service**
    - Procesa datos locales
@@ -344,7 +344,7 @@ Ilustra el ciclo completo desde que un estudiante resuelve un problema hasta que
 ### 🔑 Puntos Clave del Flujo
 
 1. ✅ **Privacidad por diseño:** Datos personales nunca abandonan el nodo local
-2. ✅ **Anonimización automática:** Aggregator Service elimina PII antes de federar
+2. ✅ **Seudonimización automática:** Aggregator Service elimina PII antes de federar
 3. ✅ **Trazabilidad completa:** Cada transacción registrada en audit trail
 4. ✅ **Consentimiento explícito:** Contratos digitales IDS/EDC con propósito declarado
 5. ✅ **Mejora colaborativa:** Los datos agregados benefician a toda la red de centros
@@ -352,7 +352,7 @@ Ilustra el ciclo completo desde que un estudiante resuelve un problema hasta que
 
 ### 🎨 Leyenda de Flujos
 - **Verde continuo:** Datos locales protegidos (RGPD)
-- **Azul discontinuo:** Datos federados anonimizados (NGSI-LD)
+- **Azul discontinuo:** Datos federados seudonimizados (NGSI-LD)
 - **Negro continuo:** Interacción usuario
 - **Naranja discontinuo:** Llamada API externa (LLM)
 

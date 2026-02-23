@@ -64,7 +64,7 @@ Umbrales de Maestría"]
     %% ── APP_LTI → ANON → EAC ──
     APP_LTI -->|"Submission con PII
     (evidencia de desempeño)"| ANON
-    ANON -->|"Evidencia anonimizada
+    ANON -->|"Evidencia seudonimizada
     POST /api/v2/evaluate"| RUBRIC
 
     %% ── Docente → generación de SC ──

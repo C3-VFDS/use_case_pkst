@@ -308,7 +308,7 @@
        sodipodi:role="line"
        id="tspan151"
        x="790"
-       y="189.6582">✓ Datos anonimizados</tspan><tspan
+       y="189.6582">✓ Datos seudonimizados</tspan><tspan
        sodipodi:role="line"
        id="tspan152"
        x="790"
@@ -1561,7 +1561,7 @@
          sodipodi:role="line"
          id="tspan528"
          x="610"
-         y="870">Anonimizador</tspan><tspan
+         y="870">Seudonimizador</tspan><tspan
          sodipodi:role="line"
          id="tspan529"
          x="610"
@@ -1765,7 +1765,7 @@
      class="flow-label"
      id="text125"
      style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11px;line-height:normal;font-family:Arial, sans-serif">Resultado + feedback</text>
-  <!-- Flujo 11: Aggregator → IDS Connector (datos anonimizados) -->
+  <!-- Flujo 11: Aggregator → IDS Connector (datos seudonimizados) -->
   <path
      d="m 610,973.89163 -0.79807,42.97077 657.01117,-1.25 V 736.95534"
      class="arrow-data"
@@ -1802,7 +1802,7 @@
        sodipodi:role="line"
        x="908.13751"
        y="1011.4835"
-       id="tspan489">Datos anonimizados</tspan></text>
+       id="tspan489">Datos seudonimizados</tspan></text>
   <text
      x="810"
      y="865"

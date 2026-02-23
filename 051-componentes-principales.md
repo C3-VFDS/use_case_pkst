@@ -63,7 +63,7 @@ def recommend_next_problem(student_knowledge_state):
 **Responsabilidad:** Evaluar automáticamente las evidencias de desempeño de los estudiantes mediante rúbricas multi-criterio, actualizando el Perfil de Habilitación y el Gradiente de Autonomía.
 
 **Funcionalidades:**
-- Recibir evidencia anonimizada del estudiante (texto, imagen, código, JSON estructurado)
+- Recibir evidencia seudonimizada del estudiante (texto, imagen, código, JSON estructurado)
 - Aplicar rúbrica multi-criterio
 - Calcular Score y Gradiente de Autonomía
 - Realizar Diagnóstico de Causa Raíz ante fallos (carencia en Conocimiento vs. Habilidad)
@@ -81,7 +81,7 @@ El sistema opera con dos tipos de conector, con responsabilidades diferenciadas:
 
 **CONNECTOR_CENTRAL (Nodo Central):** Punto de entrada único al Backend EAC para todos los centros participantes. Valida la API Key de cada centro, verifica políticas ODRL mediante Authzforce PDP, aplica rate limiting (500 req/h por defecto), registra cada transacción en el audit log y garantiza la conformidad con el Gaia-X Trust Framework.
 
-**CONNECTOR_CFP (cada Centro FP):** Frontera de soberanía del dato de cada centro. Recibe las evidencias ya anonimizadas del Aggregator y las transmite al Nodo Central bajo un acuerdo ODRL de transferencia negociado con CONNECTOR_CENTRAL. En sentido inverso, recibe los resultados de evaluación (score · feedback · recomendación) y los entrega a APP_LTI. Garantiza que ningún dato identificable abandona el perímetro del centro.
+**CONNECTOR_CFP (cada Centro FP):** Frontera de soberanía del dato de cada centro. Recibe las evidencias ya seudonimizadas del Aggregator y las transmite al Nodo Central bajo un acuerdo ODRL de transferencia negociado con CONNECTOR_CENTRAL. En sentido inverso, recibe los resultados de evaluación (score · feedback · recomendación) y los entrega a APP_LTI. Garantiza que ningún dato identificable abandona el perímetro del centro.
 
 #### **5.1.6 Aggregator / Anonymizer (local en cada Centro FP)**
 
