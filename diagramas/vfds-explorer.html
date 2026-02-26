@@ -1,0 +1,1147 @@
+{% raw %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backend EAC — Nodo Central</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+	// ─── PALETTE ─────────────────────────────────────────────────────────────────
+	const C = {
+	  bg: "#0a0f1a", surface: "#111827", card: "#1a2235",
+	  border: "#1e3a5f", teal: "#00d4c8", amber: "#f59e0b",
+	  rose: "#f43f5e", violet: "#8b5cf6", green: "#22c55e",
+	  text: "#e2e8f0", muted: "#64748b",
+	};
+
+	// ─── SHARED: SVG FLOW DIAGRAM ENGINE ─────────────────────────────────────────
+	// Generic reusable engine for both diagrams (Centro FP and Backend EAC)
+
+	function calcBezier(ax, ay, bx, by, offset = 0) {
+	  const dx = bx - ax, dy = by - ay;
+	  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+	  const ux = dx / len, uy = dy / len;
+	  const ox = -uy * offset * 9, oy = ux * offset * 9;
+	  const pad = 30;
+	  const sx = ax + ux * pad + ox, sy = ay + uy * pad + oy;
+	  const ex = bx - ux * pad + ox, ey = by - uy * pad + oy;
+	  const mx = (sx + ex) / 2 + ox * 1.8, my = (sy + ey) / 2 + oy * 1.8;
+	  return { path: `M ${sx} ${sy} Q ${mx} ${my} ${ex} ${ey}`, mx, my };
+	}
+
+	function nodeCenter(node) {
+	  const w = node.w || 180, h = node.h || 52;
+	  return { x: node.x + w / 2, y: node.y + h / 2 };
+	}
+
+	function SvgArrow({ edge, idx, nodes, edgeColors, activeFlow, hovered, setHovered }) {
+	  const from = nodes[edge.from], to = nodes[edge.to];
+	  if (!from || !to) return null;
+	  const fc = nodeCenter(from), tc = nodeCenter(to);
+	  const isActive = activeFlow === "all" || edge.flow === activeFlow;
+	  const isHov = hovered === idx;
+	  const color = edgeColors[edge.flow] || "#888";
+	  const { path, mx, my } = calcBezier(fc.x, fc.y, tc.x, tc.y, idx % 3 - 1);
+	  const markId = `m-${idx}`;
+	  const isDash = edge.flow === "storage";
+	  return (
+	    <g opacity={isActive ? 1 : 0.07} style={{ cursor: "pointer" }}
+	      onMouseEnter={() => setHovered(idx)} onMouseLeave={() => setHovered(null)}>
+	      <defs>
+		<marker id={markId} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+		  <path d="M0,0 L0,6 L8,3 z" fill={color} />
+		</marker>
+	      </defs>
+	      <path d={path} fill="none" stroke="transparent" strokeWidth="14" />
+	      <path d={path} fill="none" stroke={color}
+		strokeWidth={isHov ? 3 : isActive ? 2 : 1.5}
+		strokeDasharray={isDash ? "5,3" : "none"}
+		markerEnd={`url(#${markId})`} />
+	      {(isActive || isHov) && (
+		<text x={mx} y={my - 5} textAnchor="middle" style={{
+		  fontSize: "8px", fontFamily: "monospace", fill: color, fontWeight: "700",
+		  stroke: "rgba(10,15,26,0.9)", strokeWidth: "3", paintOrder: "stroke",
+		  pointerEvents: "none",
+		}}>{edge.label}</text>
+	      )}
+	    </g>
+	  );
+	}
+
+	function SvgNode({ id, node, selectedNode, setSelectedNode, edges }) {
+	  const w = node.w || 180, h = node.h || 52;
+	  const isSel = selectedNode === id;
+	  const isConn = selectedNode && edges.some(e =>
+	    (e.from === selectedNode && e.to === id) || (e.to === selectedNode && e.from === id));
+	  const dim = selectedNode && !isSel && !isConn;
+	  return (
+	    <g transform={`translate(${node.x},${node.y})`} style={{ cursor: "pointer" }}
+	      onClick={() => setSelectedNode(isSel ? null : id)}>
+	      <rect x="2" y="3" width={w} height={h} rx="10" fill="rgba(0,0,0,0.2)" />
+	      <rect x="0" y="0" width={w} height={h} rx="10"
+		fill={isSel ? node.color : (node.kind === "external" ? "#fff8f0" : node.kind === "storage" ? "#f5f5f5" : "white")}
+		stroke={isSel || isConn ? node.color : "#ddd"}
+		strokeWidth={isSel || isConn ? 2.5 : 1}
+		opacity={dim ? 0.2 : 1} />
+	      <rect x="0" y="0" width="4" height={h} rx="2" fill={node.color} opacity={dim ? 0.1 : 0.7} />
+	      <text x="14" y="22" style={{ fontSize: "14px", pointerEvents: "none" }}>{node.icon}</text>
+	      <text x="32" y="22" style={{
+		fontSize: "10px", fontWeight: "800", fontFamily: "system-ui, sans-serif",
+		fill: isSel ? "white" : node.color, pointerEvents: "none",
+	      }}>{node.label}</text>
+	      <text x="10" y="38" style={{
+		fontSize: "8.5px", fontFamily: "monospace",
+		fill: isSel ? "rgba(255,255,255,0.75)" : "#999", pointerEvents: "none",
+	      }}>{node.sub}</text>
+	      {node.kind === "external" && (
+		<text x={w - 30} y="14" textAnchor="middle" style={{
+		  fontSize: "7px", fontFamily: "monospace", fill: node.color,
+		  fontWeight: "700", pointerEvents: "none",
+		}}>EXT</text>
+	      )}
+	      {node.kind === "actor" && (
+		<text x={w - 34} y="14" textAnchor="middle" style={{
+		  fontSize: "7px", fontFamily: "monospace", fill: node.color,
+		  fontWeight: "700", pointerEvents: "none",
+		}}>ACTOR</text>
+	      )}
+	    </g>
+	  );
+	}
+
+	function SvgFlowDiagram({ nodes, edges, flowsMeta, edgeColors, svgW, svgH, zoneLabels }) {
+	  const [activeFlow, setActiveFlow] = useState("all");
+	  const [hovered, setHovered] = useState(null);
+	  const [selectedNode, setSelectedNode] = useState(null);
+
+	  const edgesIn  = selectedNode ? edges.filter(e => e.to === selectedNode) : [];
+	  const edgesOut = selectedNode ? edges.filter(e => e.from === selectedNode) : [];
+
+	  return (
+	    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+	      {/* Flow filter pills */}
+	      <div style={{ padding: "12px 20px", borderBottom: `1px solid ${C.border}`, display: "flex", gap: "6px", flexWrap: "wrap", background: "rgba(255,255,255,0.01)", flexShrink: 0 }}>
+		{flowsMeta.map(f => (
+		  <button key={f.id} onClick={() => { setActiveFlow(f.id); setSelectedNode(null); }} style={{
+		    padding: "5px 12px", borderRadius: "20px",
+		    border: `1px solid ${activeFlow === f.id ? f.color : "rgba(255,255,255,0.12)"}`,
+		    background: activeFlow === f.id ? `${f.color}22` : "rgba(255,255,255,0.04)",
+		    color: activeFlow === f.id ? f.color : "rgba(255,255,255,0.5)",
+		    cursor: "pointer", fontSize: "11px", fontWeight: "600",
+		    fontFamily: "monospace", transition: "all 0.15s",
+		    display: "flex", alignItems: "center", gap: "5px",
+		  }}>
+		    <span>{f.icon}</span><span>{f.label}</span>
+		    {f.id !== "all" && (
+		      <span style={{ background: `${f.color}33`, color: f.color, borderRadius: "10px", padding: "0 6px", fontSize: "9px", fontWeight: "800" }}>
+			{edges.filter(e => e.flow === f.id).length}
+		      </span>
+		    )}
+		  </button>
+		))}
+	      </div>
+
+	      {/* Main area: SVG + info panel */}
+	      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+		{/* SVG canvas */}
+		<div style={{ flex: 1, overflow: "auto", padding: "20px" }}>
+		  <svg width={svgW} height={svgH} style={{
+		    background: "rgba(255,255,255,0.015)", borderRadius: "14px",
+		    border: "1px solid rgba(255,255,255,0.06)", minWidth: svgW, display: "block",
+		  }}>
+		    <defs>
+		      <pattern id="svgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+			<path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="0.5" />
+		      </pattern>
+		    </defs>
+		    <rect width={svgW} height={svgH} fill="url(#svgrid)" rx="14" />
+
+		    {/* Zone horizontal separators & labels */}
+		    {zoneLabels && zoneLabels.map((z, i) => (
+		      <text key={i} x={z.x || 12} y={z.y} style={{ fontSize: "8px", fill: "rgba(255,255,255,0.2)", fontFamily: "monospace", fontWeight: "700", letterSpacing: "0.1em" }}>{z.label}</text>
+		    ))}
+
+		    {/* Edges */}
+		    {edges.map((edge, i) => (
+		      <SvgArrow key={i} edge={edge} idx={i} nodes={nodes} edgeColors={edgeColors}
+			activeFlow={activeFlow} hovered={hovered} setHovered={setHovered} />
+		    ))}
+
+		    {/* Nodes */}
+		    {Object.entries(nodes).map(([id, node]) => (
+		      <SvgNode key={id} id={id} node={node} selectedNode={selectedNode}
+			setSelectedNode={setSelectedNode} edges={edges} />
+		    ))}
+
+		    {/* Legend */}
+		    <g transform={`translate(${svgW - 150}, ${svgH - 130})`}>
+		      <rect width="142" height={24 + Object.keys(edgeColors).length * 17} rx="8"
+			fill="rgba(0,0,0,0.6)" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+		      <text x="8" y="16" style={{ fontSize: "8px", fill: "rgba(255,255,255,0.4)", fontFamily: "monospace", fontWeight: "700", letterSpacing: "0.08em" }}>LEYENDA</text>
+		      {Object.entries(edgeColors).map(([flow, color], i) => {
+			const f = flowsMeta.find(fm => fm.id === flow);
+			return (
+			  <g key={flow} transform={`translate(8, ${24 + i * 17})`}>
+			    <line x1="0" y1="5" x2="18" y2="5" stroke={color} strokeWidth="2"
+			      strokeDasharray={flow === "storage" ? "4,2" : "none"} />
+			    <text x="24" y="9" style={{ fontSize: "8px", fill: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>{f?.label}</text>
+			  </g>
+			);
+		      })}
+		    </g>
+		    <text x={svgW / 2} y={svgH - 6} textAnchor="middle" style={{ fontSize: "9px", fill: "rgba(255,255,255,0.18)", fontFamily: "monospace" }}>
+		      Haz clic en un nodo · Pasa el cursor sobre una arista
+		    </text>
+		  </svg>
+		</div>
+
+		{/* Info panel */}
+		<div style={{
+		  width: "260px", flexShrink: 0, borderLeft: `1px solid ${C.border}`,
+		  background: "rgba(255,255,255,0.02)", overflowY: "auto",
+		  padding: "18px 14px", display: "flex", flexDirection: "column", gap: "12px",
+		}}>
+		  {selectedNode ? (() => {
+		    const n = nodes[selectedNode];
+		    return (
+		      <>
+			<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+			  <span style={{ fontSize: "22px" }}>{n.icon}</span>
+			  <div>
+			    <div style={{ fontWeight: "800", fontSize: "13px", color: n.color }}>{n.label}</div>
+			    <div style={{ fontSize: "9.5px", color: "rgba(255,255,255,0.4)", fontFamily: "monospace" }}>{n.sub}</div>
+			  </div>
+			</div>
+			<div style={{ padding: "3px 8px", borderRadius: "4px", background: `${n.color}20`, border: `1px solid ${n.color}40`, display: "inline-block" }}>
+			  <span style={{ fontSize: "9px", fontWeight: "700", color: n.color, fontFamily: "monospace", textTransform: "uppercase" }}>
+			    {n.kind === "external" ? "Entidad externa" : n.kind === "storage" ? "Infraestructura" : n.kind === "actor" ? "Actor" : "Módulo"}
+			  </span>
+			</div>
+			{edgesIn.length > 0 && (
+			  <div>
+			    <div style={{ fontSize: "9px", fontWeight: "700", color: "rgba(255,255,255,0.3)", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "6px" }}>← RECIBE DE</div>
+			    {edgesIn.map((e, i) => (
+			      <div key={i} style={{ padding: "7px 10px", marginBottom: "5px", borderRadius: "6px", background: `${edgeColors[e.flow]}15`, borderLeft: `3px solid ${edgeColors[e.flow]}` }}>
+			        <div style={{ fontSize: "10px", fontWeight: "700", color: edgeColors[e.flow] }}>{nodes[e.from]?.label}</div>
+			        <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.45)", fontFamily: "monospace", marginTop: "2px" }}>{e.label}</div>
+			      </div>
+			    ))}
+			  </div>
+			)}
+			{edgesOut.length > 0 && (
+			  <div>
+			    <div style={{ fontSize: "9px", fontWeight: "700", color: "rgba(255,255,255,0.3)", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "6px" }}>→ ENVÍA A</div>
+			    {edgesOut.map((e, i) => (
+			      <div key={i} style={{ padding: "7px 10px", marginBottom: "5px", borderRadius: "6px", background: `${edgeColors[e.flow]}15`, borderLeft: `3px solid ${edgeColors[e.flow]}` }}>
+			        <div style={{ fontSize: "10px", fontWeight: "700", color: edgeColors[e.flow] }}>{nodes[e.to]?.label}</div>
+			        <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.45)", fontFamily: "monospace", marginTop: "2px" }}>{e.label}</div>
+			      </div>
+			    ))}
+			  </div>
+			)}
+			<button onClick={() => setSelectedNode(null)} style={{ marginTop: "auto", padding: "7px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)", cursor: "pointer", fontSize: "11px", fontFamily: "monospace" }}>
+			  Limpiar ✕
+			</button>
+		      </>
+		    );
+		  })() : (
+		    <div style={{ color: "rgba(255,255,255,0.22)", fontSize: "11px", fontFamily: "monospace", lineHeight: "1.7", paddingTop: "8px" }}>
+		      <div style={{ fontSize: "24px", marginBottom: "8px", opacity: 0.4 }}>👆</div>
+		      <strong style={{ color: "rgba(255,255,255,0.38)" }}>Selecciona un nodo</strong><br />
+		      para ver sus conexiones entrantes y salientes.<br /><br />
+		      <strong style={{ color: "rgba(255,255,255,0.38)" }}>Filtra por flujo</strong><br />
+		      para aislar cada camino funcional.
+		    </div>
+		  )}
+		</div>
+	      </div>
+	    </div>
+	  );
+	}
+
+	// ─── DATA: CENTRO FP DIAGRAM ──────────────────────────────────────────────────
+
+	const CFP_NODES = {
+	  LMS:      { x: 30,  y: 240, w: 110, h: 50, icon: "📚", label: "LMS",            sub: "Moodle 4.x",            color: "#f57f17", kind: "external" },
+	  STUDENT:  { x: 30,  y: 50,  w: 110, h: 50, icon: "👨‍🎓", label: "Estudiante",    sub: "actor",                 color: "#2e7d32", kind: "actor"    },
+	  TEACHER:  { x: 30,  y: 420, w: 110, h: 50, icon: "👨‍🏫", label: "Docente",       sub: "actor",                 color: "#4527a0", kind: "actor"    },
+	  APP_LTI:  { x: 230, y: 150, w: 140, h: 50, icon: "📱", label: "APP_LTI",        sub: "React SPA + LTI server",color: "#1565c0", kind: "internal" },
+	  ANON:     { x: 450, y: 50,  w: 155, h: 50, icon: "🔒", label: "Anonymizer",     sub: "seudonimización",       color: "#00695c", kind: "internal" },
+	  RETRY:    { x: 450, y: 420, w: 155, h: 50, icon: "🔄", label: "Retry Worker",   sub: "cola de reintentos",    color: "#6a1b9a", kind: "internal" },
+	  LOCALDB:  { x: 450, y: 240, w: 155, h: 50, icon: "🐘", label: "LOCALDB",        sub: "PostgreSQL · PII",      color: "#4e342e", kind: "storage"  },
+	  CONN_CFP: { x: 680, y: 240, w: 155, h: 50, icon: "🔗", label: "CONNECTOR_CFP",  sub: "caja negra · ODRL",     color: "#c62828", kind: "external" },
+	  CONN_CEN: { x: 680, y: 430, w: 155, h: 50, icon: "🔗", label: "CONN_CENTRAL",   sub: "Nodo Central",          color: "#880e4f", kind: "external" },
+	};
+
+	const CFP_EDGES = [
+	  { from: "LMS",      to: "APP_LTI",  label: "POST /lti/launch",              flow: "lti"     },
+	  { from: "STUDENT",  to: "APP_LTI",  label: "accede al panel",               flow: "lti"     },
+	  { from: "TEACHER",  to: "APP_LTI",  label: "accede al panel docente",       flow: "lti"     },
+	  { from: "APP_LTI",  to: "ANON",     label: "POST /anonymize · /submission", flow: "anon"    },
+	  { from: "ANON",     to: "APP_LTI",  label: "{ anon_id } / evidencia_seud.", flow: "anon"    },
+	  { from: "ANON",     to: "LOCALDB",  label: "R/W mapping anon↔student",      flow: "anon"    },
+	  { from: "APP_LTI",  to: "CONN_CFP", label: "submit vía CONNECTOR_CFP",      flow: "submit"  },
+	  { from: "CONN_CFP", to: "CONN_CEN", label: "ODRL transfer (seudonimizado)", flow: "submit"  },
+	  { from: "CONN_CEN", to: "CONN_CFP", label: "resultado evaluación",          flow: "submit"  },
+	  { from: "CONN_CFP", to: "APP_LTI",  label: "POST /api/evaluation/result",   flow: "submit"  },
+	  { from: "APP_LTI",  to: "ANON",     label: "POST /retry/enqueue",           flow: "retry"   },
+	  { from: "ANON",     to: "LOCALDB",  label: "INSERT submission_queue",       flow: "retry"   },
+	  { from: "RETRY",    to: "LOCALDB",  label: "R/W submission_queue",          flow: "retry"   },
+	  { from: "RETRY",    to: "CONN_CFP", label: "reenvío con backoff",           flow: "retry"   },
+	  { from: "APP_LTI",  to: "LMS",      label: "LTI Grade Passback",            flow: "grade"   },
+	  { from: "APP_LTI",  to: "LOCALDB",  label: "sesión · mapeo local",          flow: "storage" },
+	];
+
+	const CFP_FLOWS = [
+	  { id: "all",     label: "Todos",             color: "#607d8b", icon: "⬡" },
+	  { id: "lti",     label: "Lanzamiento LTI",   color: "#f57f17", icon: "📚" },
+	  { id: "anon",    label: "Seudonimización",    color: "#00695c", icon: "🔒" },
+	  { id: "submit",  label: "Envío evidencia",    color: "#c62828", icon: "📤" },
+	  { id: "retry",   label: "Cola reintentos",    color: "#6a1b9a", icon: "🔄" },
+	  { id: "grade",   label: "Grade Passback",     color: "#f57f17", icon: "📊" },
+	  { id: "storage", label: "Persistencia local", color: "#4e342e", icon: "🗄️" },
+	];
+
+	const CFP_EDGE_COLORS = {
+	  lti: "#f57f17", anon: "#00897b", submit: "#e53935",
+	  retry: "#8e24aa", grade: "#fb8c00", storage: "#6d4c41",
+	};
+
+	const CFP_ZONE_LABELS = [
+	  { x: 30,  y: 14, label: "ACTORES" },
+	  { x: 220, y: 14, label: "APP_LTI" },
+	  { x: 440, y: 14, label: "MÓDULOS LOCALES" },
+	  { x: 670, y: 14, label: "DATASPACE" },
+	];
+
+	// ─── DATA: BACKEND EAC CENTRAL DIAGRAM ────────────────────────────────────────
+
+	const EAC_NODES = {
+	  OPERATOR: { x: 20,  y: 40,  icon: "🔧", label: "Operador",               sub: "externo al EAC",              color: "#546e7a", kind: "external"  },
+	  CONN:     { x: 400, y: 30,  icon: "🔗", label: "CONNECTOR_CENTRAL",       sub: "API Gateway · ODRL",          color: "#c62828", kind: "external"  },
+	  LLM:      { x: 800, y: 40,  icon: "🤖", label: "LLM API",                 sub: "Claude · GPT-4",              color: "#e65100", kind: "external"  },
+	  SYNTH:    { x: 20,  y: 300, icon: "🔬", label: "Synthetic Data Gen.",     sub: "bootstrap · trazas",          color: "#558b2f", kind: "internal"  },
+	  KSB:      { x: 215, y: 220, icon: "📐", label: "Knowledge Space Builder", sub: "DAG de habilidades",          color: "#00695c", kind: "internal"  },
+	  SGRAPH:   { x: 430, y: 300, icon: "🕸️", label: "Skill Graph Manager",    sub: "Perfil Habilitación · ZDP",   color: "#283593", kind: "internal"  },
+	  RUBRIC:   { x: 645, y: 220, icon: "📝", label: "Rubric Evaluator",        sub: "score · Gradiente Autonomía", color: "#bf360c", kind: "internal"  },
+	  PGEN:     { x: 860, y: 300, icon: "📋", label: "Problem Generator",       sub: "genera SC · rúbricas",        color: "#6a1b9a", kind: "internal"  },
+	  REC:      { x: 453, y: 420, icon: "🎯", label: "Recommendation Engine",   sub: "Outer Fringe · ZDP",          color: "#1565c0", kind: "internal"  },
+	  POSTGRES: { x: 150, y: 530, icon: "🐘", label: "PostgreSQL",              sub: "habilitacion · SC · history", color: "#4e342e", kind: "storage"   },
+	  ORIONLD:  { x: 700, y: 530, icon: "🌐", label: "Orion-LD",               sub: "NGSI-LD · SkillMastery",      color: "#00838f", kind: "storage"   },
+	};
+
+	const EAC_EDGES = [
+	  { from: "OPERATOR", to: "SYNTH",    label: "dispara bootstrap",            flow: "init"    },
+	  { from: "OPERATOR", to: "KSB",      label: "POST /graph/build",            flow: "init"    },
+	  { from: "SYNTH",    to: "KSB",      label: "POST /graph/enrich",           flow: "init"    },
+	  { from: "KSB",      to: "SGRAPH",   label: "GET /graph/curriculum",        flow: "init"    },
+	  { from: "CONN",     to: "RUBRIC",   label: "POST /api/v2/evaluate",        flow: "eval"    },
+	  { from: "RUBRIC",   to: "SGRAPH",   label: "PUT /students/{id}/profile",   flow: "eval"    },
+	  { from: "RUBRIC",   to: "ORIONLD",  label: "PATCH SkillMasteryAggregate",  flow: "eval"    },
+	  { from: "RUBRIC",   to: "LLM",      label: "prompt evaluación",            flow: "eval"    },
+	  { from: "RUBRIC",   to: "PGEN",     label: "GET /sc/{id} (rúbrica)",       flow: "eval"    },
+	  { from: "CONN",     to: "REC",      label: "GET /recommendation · /panel", flow: "rec"     },
+	  { from: "CONN",     to: "SGRAPH",   label: "GET /profile · /history",      flow: "rec"     },
+	  { from: "SGRAPH",   to: "REC",      label: "outer-fringe · perfil",        flow: "rec"     },
+	  { from: "REC",      to: "POSTGRES", label: "consulta estados",             flow: "rec"     },
+	  { from: "CONN",     to: "PGEN",     label: "POST /sc/generate · GET /sc",  flow: "gen"     },
+	  { from: "REC",      to: "PGEN",     label: "sc_id seleccionada",           flow: "gen"     },
+	  { from: "PGEN",     to: "LLM",      label: "prompt SC · rúbrica",          flow: "gen"     },
+	  { from: "SGRAPH",   to: "POSTGRES", label: "R/W habilitacion · history",   flow: "storage" },
+	  { from: "SGRAPH",   to: "ORIONLD",  label: "R/W SkillMasteryAggregate",    flow: "storage" },
+	  { from: "KSB",      to: "ORIONLD",  label: "Lee/Actualiza VocationalSkill",flow: "storage" },
+	  { from: "PGEN",     to: "POSTGRES", label: "almacena SC · rúbricas",       flow: "storage" },
+	];
+
+	const EAC_FLOWS = [
+	  { id: "all",     label: "Todas",                  color: "#555",    icon: "⬡" },
+	  { id: "init",    label: "Init grafo",              color: "#558b2f", icon: "🔬" },
+	  { id: "eval",    label: "Evaluación",              color: "#bf360c", icon: "📝" },
+	  { id: "rec",     label: "Recomendación",           color: "#1565c0", icon: "🎯" },
+	  { id: "gen",     label: "Generación SC",           color: "#6a1b9a", icon: "🤖" },
+	  { id: "storage", label: "Persistencia",            color: "#4e342e", icon: "🗄️" },
+	];
+
+	const EAC_EDGE_COLORS = {
+	  init: "#4caf50", eval: "#f44336", rec: "#2196f3",
+	  gen: "#9c27b0", storage: "#795548",
+	};
+
+	const EAC_ZONE_LABELS = [
+	  { x: 12, y: 15,  label: "ENTIDADES EXTERNAS" },
+	  { x: 12, y: 180, label: "MÓDULOS EAC" },
+	  { x: 12, y: 390, label: "MOTOR DE DECISIÓN" },
+	  { x: 12, y: 515, label: "PERSISTENCIA" },
+	];
+
+	// ─── DATA: MODULES & ENDPOINTS ───────────────────────────────────────────────
+
+	const CFP_MODULES = [
+	  {
+	    id: "APP_LTI", icon: "📱", title: "APP_LTI", color: "#1565c0", border: "#90caf9", bg: "#e3f2fd",
+	    subtitle: "Frontend EAC embebido en Moodle vía LTI 1.3",
+	    description: "SPA React servida dentro del LMS mediante LTI 1.3. Gestiona la vista del estudiante (panel de nodos, envío de evidencias) y la vista del docente. Contiene la lógica de mapeo anon_id ↔ student_id, que nunca abandona el perímetro del centro.",
+	    tech: "React 18+ · D3.js / Cytoscape.js · Recharts · LTI 1.3",
+	    endpoints: [
+	      { method: "POST", path: "/lti/launch", desc: "Punto de entrada LTI 1.3. Recibe el JWT de lanzamiento firmado por el LMS.", consumes: ["LMS"], produces: "Sesión autenticada + SPA React renderizada" },
+	      { method: "GET",  path: "/api/student/panel", desc: "Solicita el panel competencial del estudiante al Nodo Central vía CONNECTOR_CFP.", consumes: ["STUDENT"], produces: "perfil_habilitacion[] + SC_recomendada" },
+	      { method: "POST", path: "/api/student/submit", desc: "El estudiante envía la resolución de una SC. Invoca al Anonymizer antes de hacer forwarding.", consumes: ["STUDENT"], produces: "Inicia: APP_LTI → ANON → CONNECTOR_CFP → CONNECTOR_CENTRAL" },
+	      { method: "POST", path: "/api/evaluation/result", desc: "Callback interno. Recibe resultado de evaluación desde CONNECTOR_CFP.", consumes: ["CONNECTOR_CFP"], produces: "Actualiza UI + llama a LMS Grade Passback" },
+	      { method: "GET",  path: "/api/teacher/class", desc: "Panel docente: estado competencial agregado del grupo, SCs en curso, bloqueos.", consumes: ["TEACHER"], produces: "class_summary[] con perfil_habilitacion por anon_id" },
+	      { method: "POST", path: "/lti/grade-passback", desc: "Devuelve la calificación (Gradiente de Autonomía) al libro de calificaciones del LMS.", consumes: ["APP_LTI"], produces: "Grade registrado en Moodle Gradebook" },
+	    ],
+	    reads: ["LOCALDB"], writes: ["LOCALDB"],
+	  },
+	  {
+	    id: "ANON", icon: "🔒", title: "Aggregator / Anonymizer", color: "#00695c", border: "#80cbc4", bg: "#e0f2f1",
+	    subtitle: "Frontera estricta de PII antes de salir del perímetro",
+	    description: "Módulo independiente con API REST propia. Elimina PII (nombre, email, ID real, IP) y genera un hash irreversible. Gestiona el mapeo bidireccional y mantiene la tabla de correspondencias en LOCALDB.",
+	    tech: "Python / Node.js · HMAC-SHA256 · PostgreSQL",
+	    endpoints: [
+	      { method: "POST", path: "/api/v1/anonymize", desc: "Seudonimiza la identidad del estudiante para una sesión.", consumes: ["APP_LTI"], produces: "{ anon_id } — hash irreversible" },
+	      { method: "POST", path: "/api/v1/anonymize/submission", desc: "Seudonimiza una evidencia completa antes de enviarla al Nodo Central.", consumes: ["APP_LTI"], produces: "{ anon_id, evidencia_seudonimizada }" },
+	      { method: "GET",  path: "/api/v1/deanonymize/{anon_id}", desc: "Mapeo inverso: recupera el student_id original. Solo accesible desde APP_LTI dentro del perímetro.", consumes: ["APP_LTI"], produces: "{ student_id } — nunca expuesto fuera" },
+	      { method: "POST", path: "/api/v1/retry/enqueue", desc: "Encola una submission fallida para reintento posterior.", consumes: ["APP_LTI"], produces: "{ queue_id, retry_after }" },
+	      { method: "GET",  path: "/api/v1/health", desc: "Health check: estado de la BD local, tamaño de la cola de reintentos.", consumes: ["OPERATOR"], produces: "{ status, queue_size, db_ok }" },
+	    ],
+	    reads: ["LOCALDB"], writes: ["LOCALDB"],
+	  },
+	  {
+	    id: "RETRY", icon: "🔄", title: "Retry Worker", color: "#6a1b9a", border: "#ce93d8", bg: "#f3e5f5",
+	    subtitle: "Daemon de reintentos para submissions fallidas",
+	    description: "Proceso daemon (Celery Beat o cron) que monitoriza la tabla submission_queue en LOCALDB. Reintenta periódicamente el envío de evidencias fallidas. Implementa backoff exponencial y marca como fallido definitivo tras N intentos.",
+	    tech: "Celery Beat / cron · Python · SQLAlchemy",
+	    note: "No expone una API REST pública. Sus interfaces son: lectura/escritura en LOCALDB y llamadas salientes a CONNECTOR_CFP.",
+	    endpoints: [
+	      { method: "GET",    path: "/api/v1/retry/queue", desc: "Lista submissions pendientes en cola. Solo accesible internamente.", consumes: ["OPERATOR"], produces: "submission_queue[] con estado y timestamps" },
+	      { method: "POST",   path: "/api/v1/retry/process", desc: "Disparo manual del ciclo de reintentos.", consumes: ["OPERATOR"], produces: "{ processed, succeeded, failed, pending }" },
+	      { method: "DELETE", path: "/api/v1/retry/queue/{queue_id}", desc: "Elimina una entrada de la cola (docente descarta submission fallida).", consumes: ["TEACHER"], produces: "{ deleted: true }" },
+	    ],
+	    reads: ["LOCALDB"], writes: ["LOCALDB", "CONNECTOR_CFP"],
+	  },
+	  {
+	    id: "CONNECTOR_CFP", icon: "🔗", title: "CONNECTOR_CFP", color: "#c62828", border: "#ef9a9a", bg: "#ffebee",
+	    subtitle: "Frontera de soberanía del dato — caja negra",
+	    description: "Instancia local del FIWARE Dataspace Connector (Eclipse EDC). Todo tráfico hacia el Nodo Central pasa por aquí. Negocia acuerdos ODRL con CONNECTOR_CENTRAL, autentica mediante API Key y garantiza que los datos seudonimizados viajan bajo contrato.",
+	    tech: "Eclipse EDC (FIWARE fork) · ODRL · HTTPS/TLS",
+	    note: "Modelado como caja negra. Se muestran únicamente sus interfaces visibles desde el software del centro.",
+	    endpoints: [
+	      { method: "POST", path: "→ [salida] /negotiate", desc: "Negocia acuerdo ODRL con CONNECTOR_CENTRAL presentando la API Key del centro.", consumes: ["APP_LTI", "RETRY"], produces: "Acuerdo ODRL activo + token de transferencia" },
+	      { method: "POST", path: "→ [salida] /transfer", desc: "Transmite datos seudonimizados al Nodo Central bajo el acuerdo ODRL negociado.", consumes: ["APP_LTI", "RETRY"], produces: "{ transfer_id } — respuesta asíncrona" },
+	      { method: "POST", path: "← [entrada] /callback/result", desc: "Recibe desde CONNECTOR_CENTRAL el resultado de la evaluación y lo enruta a APP_LTI.", consumes: ["CONNECTOR_CENTRAL"], produces: "{ score, gradiente_autonomia, diagnostico, nueva_SC_recomendada }" },
+	    ],
+	    reads: [], writes: [],
+	  },
+	];
+
+	const EAC_MODULES = [
+	  {
+	    id: "KSB", icon: "📐", title: "Knowledge Space Builder", color: "#00695c", border: "#80cbc4", bg: "#e0f2f1",
+	    subtitle: "Construcción del Grafo de Precedencia",
+	    description: "Parsea la estructura curricular (Ciclos → Módulos → RA → CE → SC) y construye el DAG de habilidades. Detecta ciclos y habilidades huérfanas. Integra trazas del Synthetic Data Generator.",
+	    tech: "NetworkX · Neo4j (opt.)",
+	    endpoints: [
+	      { method: "POST", path: "/api/v2/graph/build",      desc: "Construye el grafo completo desde datos curriculares",              consumes: ["OPERATOR"],      produces: "DAG de SC + Nodos de Requisito" },
+	      { method: "PUT",  path: "/api/v2/graph/enrich",     desc: "Enriquece el grafo con trazas sintéticas del SYNTH",               consumes: ["SYNTH"],         produces: "Grafo actualizado" },
+	      { method: "GET",  path: "/api/v2/graph/curriculum", desc: "Devuelve la estructura completa del grafo serializada",             consumes: ["PGEN","SGRAPH"], produces: "DAG serializado (JSON)" },
+	      { method: "GET",  path: "/api/v2/graph/validate",   desc: "Valida coherencia del grafo (ciclos, orfandades)",                  consumes: ["OPERATOR"],      produces: "Informe de validación" },
+	      { method: "POST", path: "/api/v2/graph/nodes",      desc: "Añade/actualiza nodos individuales del grafo",                     consumes: ["OPERATOR"],      produces: "Nodo actualizado" },
+	    ],
+	    reads: ["ORIONLD","POSTGRES"], writes: ["ORIONLD","POSTGRES"],
+	  },
+	  {
+	    id: "SGRAPH", icon: "🕸️", title: "Skill Graph Manager", color: "#283593", border: "#9fa8da", bg: "#e8eaf6",
+	    subtitle: "Gestión del estado de habilitación de cada estudiante",
+	    description: "Mantiene el Perfil de Habilitación individual (nodos completados, Gradiente de Autonomía). Calcula la Outer Fringe del grafo para cada estudiante. Gestiona la Politopía del Ecosistema Laboral.",
+	    tech: "NetworkX · PostgreSQL · Orion-LD",
+	    endpoints: [
+	      { method: "GET", path: "/api/v2/students/{anon_id}/profile",  desc: "Perfil de habilitación completo del estudiante", consumes: ["REC","CONNECTOR_CENTRAL"], produces: "nodos_completados[], gradiente_autonomia" },
+	      { method: "PUT", path: "/api/v2/students/{anon_id}/profile",  desc: "Actualiza perfil tras evaluación de una SC",     consumes: ["RUBRIC"],                  produces: "Perfil actualizado" },
+	      { method: "GET", path: "/api/v2/graph/outer-fringe",          desc: "Calcula la Outer Fringe (Zona de Despliegue Proximal)", consumes: ["REC"],             produces: "outer_fringe[] — SCs candidatas" },
+	      { method: "GET", path: "/api/v2/graph/politopia",             desc: "Devuelve estado global del Ecosistema Laboral",  consumes: ["PGEN","REC"],              produces: "Politopía serializada" },
+	      { method: "GET", path: "/api/v2/students/{anon_id}/history",  desc: "Historial de navegación del estudiante",         consumes: ["CONNECTOR_CENTRAL"],       produces: "history[] de SCs resueltas" },
+	    ],
+	    reads: ["POSTGRES","ORIONLD"], writes: ["POSTGRES","ORIONLD"],
+	  },
+	  {
+	    id: "REC", icon: "🎯", title: "Recommendation Engine", color: "#1565c0", border: "#90caf9", bg: "#e3f2fd",
+	    subtitle: "Selección de la siguiente SC óptima",
+	    description: "Operacionaliza la Zona de Despliegue Proximal. Selecciona la SC óptima según el Gradiente de Autonomía: score > 0.85 → dificultad máxima; score < 0.50 → refuerzo de prerequisitos; intermedio → candidata aleatoria.",
+	    tech: "Python · NetworkX",
+	    endpoints: [
+	      { method: "GET",  path: "/api/v2/students/{anon_id}/recommendation", desc: "Devuelve la SC recomendada para el próximo reto",                    consumes: ["CONNECTOR_CENTRAL"], produces: "sc_id, titulo, nivel_dificultad, prerequisitos_cumplidos[]" },
+	      { method: "GET",  path: "/api/v2/students/{anon_id}/panel",           desc: "Panel completo: perfil + SC recomendada + métricas",                 consumes: ["CONNECTOR_CENTRAL"], produces: "perfil_habilitacion[] + SC_recomendada" },
+	      { method: "POST", path: "/api/v2/recommendation/batch",               desc: "Recomendaciones para un grupo (panel docente)",                      consumes: ["CONNECTOR_CENTRAL"], produces: "[ {anon_id, SC_recomendada} ]" },
+	    ],
+	    reads: ["SGRAPH","POSTGRES"], writes: [],
+	  },
+	  {
+	    id: "PGEN", icon: "🤖", title: "Problem Generator", color: "#6a1b9a", border: "#ce93d8", bg: "#f3e5f5",
+	    subtitle: "Generación LLM de Situaciones de Competencia",
+	    description: "Genera enunciados de SC con Claude/GPT-4. Crea rúbricas de evaluación multi-criterio. Valida coherencia SC-habilidades. Versiona SCs por dificultad y variantes.",
+	    tech: "Anthropic SDK · OpenAI · Pydantic",
+	    endpoints: [
+	      { method: "POST", path: "/api/v2/sc/generate",         desc: "Genera una nueva SC dado un anon_id o parámetros pedagógicos", consumes: ["CONNECTOR_CENTRAL","REC"],    produces: "sc_id, enunciado, rúbrica multi-criterio" },
+	      { method: "GET",  path: "/api/v2/sc/{sc_id}",          desc: "Recupera una SC por ID (enunciado + rúbrica)",                  consumes: ["CONNECTOR_CENTRAL","RUBRIC"], produces: "SC completa con rúbrica" },
+	      { method: "PUT",  path: "/api/v2/sc/{sc_id}/rubric",   desc: "Actualiza/versiona la rúbrica de una SC",                       consumes: ["RUBRIC","OPERATOR"],          produces: "Rúbrica actualizada" },
+	      { method: "POST", path: "/api/v2/sc/{sc_id}/validate", desc: "Valida coherencia SC ↔ habilidades del grafo",                  consumes: ["KSB","OPERATOR"],             produces: "Informe de coherencia" },
+	      { method: "GET",  path: "/api/v2/sc",                   desc: "Lista SCs disponibles con filtros (módulo, nivel, habilidades)",consumes: ["CONNECTOR_CENTRAL"],         produces: "SC[] paginadas" },
+	    ],
+	    reads: ["POSTGRES","KSB","LLM"], writes: ["POSTGRES","ORIONLD"],
+	  },
+	  {
+	    id: "RUBRIC", icon: "📝", title: "Rubric Evaluator", color: "#bf360c", border: "#ffcc80", bg: "#fff3e0",
+	    subtitle: "Evaluación de evidencias y Gradiente de Autonomía",
+	    description: "Evalúa evidencias seudonimizadas (texto, imagen, código, JSON). Aplica rúbricas multi-criterio. Calcula Score y Gradiente de Autonomía. Realiza Diagnóstico de Causa Raíz. Actualiza SkillMasteryAggregate en Orion-LD.",
+	    tech: "Anthropic SDK · OpenAI · Python",
+	    endpoints: [
+	      { method: "POST", path: "/api/v2/evaluate",                      desc: "Evalúa una evidencia de desempeño para una SC", consumes: ["CONNECTOR_CENTRAL"],          produces: "score, gradiente_autonomia, diagnostico_causa_raiz, nueva_SC_recomendada", highlight: true },
+	      { method: "GET",  path: "/api/v2/evaluations/{anon_id}",         desc: "Historial de evaluaciones del estudiante",       consumes: ["CONNECTOR_CENTRAL","SGRAPH"], produces: "evaluations[] con score y feedback" },
+	      { method: "GET",  path: "/api/v2/evaluations/{anon_id}/{sc_id}", desc: "Evaluación específica de un estudiante para una SC", consumes: ["CONNECTOR_CENTRAL"],      produces: "Evaluación detallada con diagnóstico" },
+	      { method: "POST", path: "/api/v2/rubrics",                       desc: "Registra una nueva rúbrica en el sistema",       consumes: ["PGEN","OPERATOR"],            produces: "rubric_id" },
+	    ],
+	    reads: ["POSTGRES","PGEN","LLM"], writes: ["POSTGRES","ORIONLD","SGRAPH"],
+	  },
+	  {
+	    id: "SYNTH", icon: "🔬", title: "Synthetic Data Generator", color: "#33691e", border: "#aed581", bg: "#f1f8e9",
+	    subtitle: "Perfiles sintéticos para bootstrapping del grafo",
+	    description: "Genera estudiantes sintéticos con trazas de aprendizaje para poblar el grafo y validar el motor de recomendación. Útil para bootstrapping del sistema en nuevos centros o nuevos ciclos formativos.",
+	    tech: "Python · Faker · NumPy",
+	    endpoints: [
+	      { method: "POST", path: "/api/v2/synth/students",  desc: "Genera N perfiles de estudiantes sintéticos",                       consumes: ["OPERATOR"],       produces: "synthetic_students.json" },
+	      { method: "POST", path: "/api/v2/synth/traces",    desc: "Genera trazas de navegación sintéticas sobre el grafo",             consumes: ["KSB","OPERATOR"], produces: "traces[] para enriquecimiento del grafo" },
+	      { method: "POST", path: "/api/v2/synth/bootstrap", desc: "Inicializa un ciclo formativo completo con datos sintéticos",       consumes: ["OPERATOR"],       produces: "Estado inicial completo del grafo" },
+	    ],
+	    reads: ["POSTGRES","KSB"], writes: ["KSB"],
+	  },
+	];
+
+	// ─── SHARED: MODULE CARD ──────────────────────────────────────────────────────
+
+	const METHOD_COLORS = {
+	  GET:    { bg: "#e3f2fd", text: "#1565c0", border: "#1565c0" },
+	  POST:   { bg: "#e8f5e9", text: "#2e7d32", border: "#2e7d32" },
+	  PUT:    { bg: "#fff8e1", text: "#f57f17", border: "#f57f17" },
+	  PATCH:  { bg: "#f3e5f5", text: "#6a1b9a", border: "#6a1b9a" },
+	  DELETE: { bg: "#ffebee", text: "#c62828", border: "#c62828" },
+	};
+
+	function MethodBadge({ method }) {
+	  const c = METHOD_COLORS[method] || METHOD_COLORS.GET;
+	  return (
+	    <span style={{
+	      display: "inline-block", padding: "1px 7px", borderRadius: "3px",
+	      fontSize: "10px", fontWeight: "800",
+	      background: c.bg, color: c.text, border: `1.5px solid ${c.border}`,
+	      fontFamily: "monospace", letterSpacing: "0.05em", flexShrink: 0,
+	    }}>{method}</span>
+	  );
+	}
+
+	function ModulesPanel({ modules }) {
+	  const [activeId, setActiveId] = useState(null);
+	  return (
+	    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 16, alignItems: "start", height: "100%", overflow: "hidden" }}>
+	      {/* Sidebar */}
+	      <div style={{ overflowY: "auto", paddingRight: 4 }}>
+		{modules.map(m => (
+		  <div key={m.id}
+		    onClick={() => setActiveId(activeId === m.id ? null : m.id)}
+		    style={{
+		      background: activeId === m.id ? m.bg : C.card,
+		      border: `2px solid ${activeId === m.id ? m.color : C.border}`,
+		      borderRadius: 10, padding: "12px 14px", marginBottom: 8,
+		      cursor: "pointer", transition: "all 0.2s",
+		      boxShadow: activeId === m.id ? `0 4px 16px ${m.color}30` : "none",
+		    }}>
+		    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+		      <span style={{ fontSize: 20 }}>{m.icon}</span>
+		      <div>
+			<div style={{ color: activeId === m.id ? m.color : C.text, fontWeight: 700, fontSize: 13 }}>{m.title}</div>
+			<div style={{ color: C.muted, fontSize: 10 }}>{m.endpoints.length} endpoints · {m.tech}</div>
+		      </div>
+		    </div>
+		  </div>
+		))}
+	      </div>
+
+	      {/* Detail */}
+	      <div style={{ overflowY: "auto" }}>
+		{(() => {
+		  const m = modules.find(x => x.id === activeId);
+		  if (!m) return (
+		    <div style={{ background: C.card, border: `1.5px dashed ${C.border}`, borderRadius: 12, padding: 40, textAlign: "center" }}>
+		      <div style={{ fontSize: 40, marginBottom: 10, opacity: 0.4 }}>📦</div>
+		      <div style={{ color: C.muted, fontSize: 14 }}>Selecciona un módulo para ver sus endpoints y detalles</div>
+		    </div>
+		  );
+		  return (
+		    <div style={{ background: C.card, border: `1.5px solid ${m.color}60`, borderRadius: 12, padding: 20 }}>
+		      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+			<span style={{ fontSize: 32 }}>{m.icon}</span>
+			<div>
+			  <h3 style={{ color: m.color, margin: 0, fontSize: 17 }}>{m.title}</h3>
+			  <div style={{ color: C.muted, fontSize: 12 }}>{m.tech}</div>
+			</div>
+		      </div>
+		      <div style={{ background: `${m.color}12`, borderRadius: 8, padding: "10px 14px", marginBottom: 14 }}>
+			<p style={{ color: C.text, fontSize: 13, margin: 0, lineHeight: 1.6 }}>{m.description}</p>
+		      </div>
+		      {m.note && (
+			<div style={{ background: "#fffde7", border: "1px solid #f9a825", borderRadius: 6, padding: "7px 10px", marginBottom: 14, fontSize: 12, color: "#e65100" }}>⚠️ {m.note}</div>
+		      )}
+		      <div style={{ fontSize: "10px", fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>ENDPOINTS</div>
+		      {m.endpoints.map((ep, i) => (
+			<div key={i} style={{
+			  background: ep.highlight ? "rgba(0,212,200,0.06)" : "#fafafa",
+			  border: `1px solid ${ep.highlight ? C.teal : "#eee"}`,
+			  borderLeft: `3px solid ${m.color}`,
+			  borderRadius: 8, padding: "10px 12px", marginBottom: 8,
+			}}>
+			  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+			    <MethodBadge method={ep.method} />
+			    <code style={{ fontSize: 12, fontFamily: "monospace", color: "#1a1a2e", fontWeight: 600, background: "#f0f0f0", padding: "1px 6px", borderRadius: 3 }}>{ep.path}</code>
+			    {ep.highlight && <span style={{ fontSize: 10, color: C.teal, marginLeft: "auto" }}>⭐ Principal</span>}
+			  </div>
+			  <p style={{ margin: "0 0 5px", fontSize: 12, color: "#555", lineHeight: 1.45 }}>{ep.desc}</p>
+			  <div style={{ marginBottom: 3 }}>
+			    <span style={{ fontSize: 10, color: "#aaa", fontWeight: 600, fontFamily: "monospace", textTransform: "uppercase", marginRight: 6 }}>CONSUME:</span>
+			    {ep.consumes.map(c => (
+			      <span key={c} style={{ fontSize: 10, fontFamily: "monospace", background: "#f0f0f0", color: "#333", padding: "1px 6px", borderRadius: 3, marginRight: 4 }}>{c}</span>
+			    ))}
+			  </div>
+			  <div>
+			    <span style={{ fontSize: 10, color: "#aaa", fontWeight: 600, fontFamily: "monospace", textTransform: "uppercase", marginRight: 6 }}>PRODUCE:</span>
+			    <span style={{ fontSize: 11, color: "#555", fontFamily: "monospace", fontStyle: "italic" }}>{ep.produces}</span>
+			  </div>
+			</div>
+		      ))}
+		      {(m.reads?.length > 0 || m.writes?.length > 0) && (
+			<div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 12 }}>
+			  {m.reads?.length > 0 && (
+			    <div>
+			      <span style={{ fontSize: 10, color: "#1565c0", fontWeight: 700, fontFamily: "monospace", textTransform: "uppercase", marginRight: 6 }}>READ ↗</span>
+			      {m.reads.map(r => <span key={r} style={{ fontSize: 10, fontFamily: "monospace", background: "#e3f2fd", color: "#1565c0", padding: "2px 6px", borderRadius: 4, marginRight: 4 }}>{r}</span>)}
+			    </div>
+			  )}
+			  {m.writes?.length > 0 && (
+			    <div>
+			      <span style={{ fontSize: 10, color: "#c62828", fontWeight: 700, fontFamily: "monospace", textTransform: "uppercase", marginRight: 6 }}>WRITE ↙</span>
+			      {m.writes.map(w => <span key={w} style={{ fontSize: 10, fontFamily: "monospace", background: "#ffebee", color: "#c62828", padding: "2px 6px", borderRadius: 4, marginRight: 4 }}>{w}</span>)}
+			    </div>
+			  )}
+			</div>
+		      )}
+		    </div>
+		  );
+		})()}
+	      </div>
+	    </div>
+	  );
+	}
+
+	// ─── TOPOLOGY VIEW ───────────────────────────────────────────────────────────
+
+	const centers = [
+	  { id: "carlos3", name: "CIFP Carlos III", city: "Cartagena", region: "Murcia", did: "did:web:cifpcarlos3.edu.es", color: C.teal, angle: 210, desc: "Centro Integrado de Formación Profesional. Familia profesional de Fabricación Mecánica y Electricidad." },
+	  { id: "simarro", name: "IES Simarro", city: "Xàtiva", region: "Valencia", did: "did:web:iessimarro.edu.es", color: C.amber, angle: 330, desc: "Instituto de Educación Secundaria con ciclos formativos de grado medio y superior." },
+	  { id: "ribera",  name: "IES Ribera del Tajo", city: "Talavera de la Reina", region: "Castilla-La Mancha", did: "did:web:iesriberadeltajo.edu.es", color: C.rose, angle: 90, desc: "Instituto de Educación Secundaria centrado en ciclos de la familia de Servicios Socioculturales." },
+	];
+
+	function TopologyView({ onDrillDown }) {
+	  const [hovered, setHovered] = useState(null);
+	  const [pulse, setPulse] = useState(0);
+	  useEffect(() => { const t = setInterval(() => setPulse(p => (p + 1) % 100), 40); return () => clearInterval(t); }, []);
+
+	  const cx = 380, cy = 270, r = 180;
+	  const getPos = (a) => ({ x: cx + r * Math.cos((a - 90) * Math.PI / 180), y: cy + r * Math.sin((a - 90) * Math.PI / 180) });
+	  const flowDots = centers.map((c, i) => {
+	    const pos = getPos(c.angle);
+	    const t = ((pulse + i * 33) % 100) / 100;
+	    return { x: cx + (pos.x - cx) * t, y: cy + (pos.y - cy) * t, color: c.color };
+	  });
+
+	  return (
+	    <div style={{ display: "flex", gap: 28, alignItems: "flex-start", flexWrap: "wrap" }}>
+	      <svg width={760} height={540} style={{ display: "block", flexShrink: 0 }}>
+		<defs>
+		  <radialGradient id="cg" cx="50%" cy="50%" r="50%">
+		    <stop offset="0%" stopColor="rgba(0,212,200,0.3)" /><stop offset="100%" stopColor="rgba(0,212,200,0)" />
+		  </radialGradient>
+		  <filter id="glow"><feGaussianBlur stdDeviation="4" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+		</defs>
+		{[230, 190, 150].map((rr, i) => <circle key={i} cx={cx} cy={cy} r={rr} fill="none" stroke="rgba(0,212,200,0.04)" strokeWidth={1} strokeDasharray="4 6" />)}
+		{centers.map(c => {
+		  const pos = getPos(c.angle);
+		  const isHov = hovered === c.id || hovered === "central";
+		  return <line key={c.id} x1={cx} y1={cy} x2={pos.x} y2={pos.y} stroke={isHov ? c.color : "rgba(255,255,255,0.1)"} strokeWidth={isHov ? 2 : 1} strokeDasharray={isHov ? "none" : "6 4"} style={{ transition: "all 0.3s" }} />;
+		})}
+		{flowDots.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={4} fill={d.color} filter="url(#glow)" opacity={0.9} />)}
+
+		{/* Central node */}
+		<g style={{ cursor: "pointer" }} onMouseEnter={() => setHovered("central")} onMouseLeave={() => setHovered(null)} onClick={() => onDrillDown("arch")}>
+		  <circle cx={cx} cy={cy} r={66} fill="url(#cg)" />
+		  <circle cx={cx} cy={cy} r={54} fill={hovered === "central" ? "#1a3a5c" : "#0f1f35"} stroke={C.teal} strokeWidth={hovered === "central" ? 3 : 2} filter="url(#glow)" style={{ transition: "all 0.3s" }} />
+		  <text x={cx} y={cy - 12} textAnchor="middle" fill={C.teal} fontSize={22}>🌐</text>
+		  <text x={cx} y={cy + 6} textAnchor="middle" fill={C.text} fontSize={12} fontWeight={700}>Nodo Central</text>
+		  <text x={cx} y={cy + 22} textAnchor="middle" fill={C.muted} fontSize={10}>VFDS Coordinator</text>
+		  <text x={cx} y={cy + 35} textAnchor="middle" fill={C.teal} fontSize={9}>Backend EAC · Orion-LD</text>
+		</g>
+
+		{/* Center nodes */}
+		{centers.map(c => {
+		  const pos = getPos(c.angle);
+		  const isHov = hovered === c.id;
+		  return (
+		    <g key={c.id} style={{ cursor: "pointer" }} onMouseEnter={() => setHovered(c.id)} onMouseLeave={() => setHovered(null)} onClick={() => onDrillDown("node", c)}>
+		      <circle cx={pos.x} cy={pos.y} r={isHov ? 50 : 46} fill={`${c.color}14`} stroke={isHov ? c.color : `${c.color}55`} strokeWidth={isHov ? 3 : 2} style={{ transition: "all 0.3s" }} filter={isHov ? "url(#glow)" : "none"} />
+		      <text x={pos.x} y={pos.y - 10} textAnchor="middle" fill={c.color} fontSize={20}>🏫</text>
+		      <text x={pos.x} y={pos.y + 8} textAnchor="middle" fill={C.text} fontSize={11} fontWeight={700}>{c.name.length > 14 ? c.name.slice(0, 14) + "…" : c.name}</text>
+		      <text x={pos.x} y={pos.y + 22} textAnchor="middle" fill={c.color} fontSize={10}>{c.city}</text>
+		      <text x={pos.x} y={pos.y + 34} textAnchor="middle" fill={C.muted} fontSize={9}>{c.region}</text>
+		    </g>
+		  );
+		})}
+
+		{/* Legend */}
+		<g transform="translate(20, 510)">
+		  {[{ color: "#f97316", label: "Centro FP (perímetro dato)" }, { color: "#8b5cf6", label: "Conectores FIWARE (soberanía)" }, { color: "#00d4c8", label: "Nodo Central (Backend EAC)" }].map((l, i) => (
+		    <g key={i} transform={`translate(${i * 230}, 0)`}>
+		      <rect x={0} y={-8} width={12} height={12} rx={3} fill={l.color} opacity={0.7} />
+		      <text x={17} y={2} fill={C.muted} fontSize={11}>{l.label}</text>
+		    </g>
+		  ))}
+		</g>
+	      </svg>
+
+	      <div style={{ flex: 1, minWidth: 260 }}>
+		<div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 18, marginBottom: 14 }}>
+		  <h3 style={{ color: C.teal, margin: "0 0 10px", fontSize: 14, fontWeight: 700 }}>🏗️ Vocational Federated Dataspace</h3>
+		  <p style={{ color: C.muted, fontSize: 13, margin: 0, lineHeight: 1.6 }}>Espacio de datos federado para la FP. Cada centro mantiene la <strong style={{ color: C.text }}>soberanía de sus datos</strong> (PII nunca sale del perímetro) mientras consume el servicio EAC centralizado.</p>
+		</div>
+		{centers.map(c => (
+		  <div key={c.id}
+		    style={{ background: hovered === c.id ? `${c.color}12` : C.card, border: `1px solid ${hovered === c.id ? c.color : C.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 10, cursor: "pointer", transition: "all 0.25s" }}
+		    onMouseEnter={() => setHovered(c.id)} onMouseLeave={() => setHovered(null)} onClick={() => onDrillDown("node", c)}>
+		    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+		      <span style={{ fontSize: 18 }}>🏫</span>
+		      <div>
+			<div style={{ color: c.color, fontWeight: 700, fontSize: 13 }}>{c.name}</div>
+			<div style={{ color: C.muted, fontSize: 11 }}>{c.city} · {c.region}</div>
+		      </div>
+		    </div>
+		    <p style={{ color: C.muted, fontSize: 12, margin: 0 }}>{c.desc}</p>
+		    <code style={{ color: `${c.color}90`, fontSize: 10, display: "block", marginTop: 5 }}>{c.did}</code>
+		  </div>
+		))}
+	      </div>
+	    </div>
+	  );
+	}
+
+	// ─── ARCHITECTURE VIEW ───────────────────────────────────────────────────────
+
+	function ArchView({ onDrillDown }) {
+	  const zoneStyle = (color) => ({ border: `1.5px solid ${color}40`, borderRadius: 12, padding: 14, marginBottom: 14, background: `${color}06` });
+	  const itemCard = (item, accent) => (
+	    <div key={item.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: "10px 12px", textAlign: "center", minWidth: 130 }}>
+	      <div style={{ fontSize: 20, marginBottom: 4 }}>{item.icon}</div>
+	      <div style={{ color: accent || C.text, fontWeight: 600, fontSize: 12 }}>{item.label}</div>
+	      <div style={{ color: C.muted, fontSize: 10 }}>{item.sub}</div>
+	    </div>
+	  );
+	  return (
+	    <div>
+	      <div style={{ background: "rgba(0,212,200,0.07)", borderLeft: `3px solid ${C.teal}`, borderRadius: "0 8px 8px 0", padding: "10px 14px", marginBottom: 16 }}>
+		<p style={{ color: C.text, margin: 0, fontSize: 13, lineHeight: 1.6 }}>
+		  <strong style={{ color: C.teal }}>Decisión clave:</strong> El Backend EAC opera como <strong>servicio centralizado</strong>. Los centros FP son <strong>consumidores</strong>: mantienen la soberanía del dato mediante su propio CONNECTOR_CFP. PII nunca abandona el centro.
+		</p>
+	      </div>
+
+	      {/* Actors */}
+	      <div style={zoneStyle("#22c55e")}>
+		<div style={{ color: "#22c55e", fontWeight: 700, fontSize: 13, marginBottom: 10 }}>ZONA 1 · Actores y Roles</div>
+		<div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+		  {[{ icon: "👨‍🎓", label: "Estudiante", sub: "StudentCredential" }, { icon: "👨‍🏫", label: "Docente", sub: "TeacherCredential" }, { icon: "🔧", label: "Operador", sub: "OperatorCredential" }, { icon: "🔍", label: "Investigador", sub: "ResearcherCredential" }].map(i => itemCard(i, "#22c55e"))}
+		</div>
+	      </div>
+
+	      {/* Centro FP */}
+	      <div style={zoneStyle("#f97316")}>
+		<div style={{ color: "#f97316", fontWeight: 700, fontSize: 13, marginBottom: 10 }}>ZONA 2 · Centro FP (Nodo participante)</div>
+		<div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+		  {[{ icon: "🏫", label: "VC Issuer", sub: "did:web:...edu.es" }, { icon: "💼", label: "Wallet Digital", sub: "W3C VC · eIDAS 2.0" }, { icon: "📚", label: "LMS Moodle 4.x", sub: "Plugin LTI 1.3" }, { icon: "📱", label: "APP LTI / Frontend EAC", sub: "React 18 · D3.js" }, { icon: "🔒", label: "Aggregator / Anonymizer", sub: "Elimina PII local" }, { icon: "💾", label: "PostgreSQL Local", sub: "PII — nunca sale" }, { icon: "🔗", label: "CONNECTOR_CFP", sub: "FIWARE EDC · ODRL" }].map(i => itemCard(i, "#f97316"))}
+		</div>
+	      </div>
+
+	      {/* Nodo Central */}
+	      <div style={zoneStyle("#3b82f6")}>
+		<div style={{ color: "#3b82f6", fontWeight: 700, fontSize: 13, marginBottom: 12 }}>ZONA 3 · Nodo Central VFDS</div>
+		<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: 10 }}>
+		  {[
+		    { title: "🔐 Confianza e Identidad", color: "#06b6d4", items: [{ icon: "🔑", label: "VC Verifier", sub: "Keycloak + OIDC4VC" }, { icon: "⭐", label: "Gaia-X Trust Framework", sub: "Compliance · Self-Descriptions" }] },
+		    { title: "📋 Gobernanza y Acceso", color: "#ec4899", items: [{ icon: "🛒", label: "Marketplace / Catálogo", sub: "CKAN · DCAT-AP" }, { icon: "🔗", label: "CONNECTOR_CENTRAL", sub: "API Gateway · Authzforce" }] },
+		    { title: "⚙️ Backend EAC", color: "#6366f1", clickable: true, items: [{ icon: "📐", label: "Knowledge Space Builder", sub: "NetworkX / Neo4j" }, { icon: "🤖", label: "Problem Generator", sub: "LLM-based" }, { icon: "🎯", label: "Recommendation Engine", sub: "Outer Fringe" }, { icon: "📝", label: "Rubric Evaluator", sub: "Auto-score" }, { icon: "🕸️", label: "Skill Graph Manager", sub: "Perfil Habilitación" }, { icon: "🔬", label: "Synthetic Data Generator", sub: "Cold start" }] },
+		    { title: "🗄️ Datos Federados", color: "#14b8a6", items: [{ icon: "🌐", label: "Orion-LD Hub", sub: "NGSI-LD v1.6.1" }, { icon: "🐘", label: "PostgreSQL Central", sub: "Perfiles anon" }] },
+		    { title: "📊 Observabilidad", color: "#f59e0b", items: [{ icon: "📈", label: "Prometheus + Grafana", sub: "SLA 99.5%" }, { icon: "📋", label: "ELK Stack", sub: "Audit logs" }] },
+		  ].map((sz, si) => (
+		    <div key={si}
+		      style={{ border: `1.5px solid ${sz.color}50`, borderRadius: 10, padding: 12, background: `${sz.color}08`, cursor: sz.clickable ? "pointer" : "default" }}
+		      onClick={sz.clickable ? () => onDrillDown("eac") : undefined}>
+		      <div style={{ color: sz.color, fontWeight: 700, fontSize: 12, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+			{sz.title}
+			{sz.clickable && <span style={{ fontSize: 10, color: C.teal, background: "rgba(0,212,200,0.15)", padding: "2px 8px", borderRadius: 20 }}>Ver detalle →</span>}
+		      </div>
+		      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+			{sz.items.map((item, ii) => (
+			  <div key={ii} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 10px", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+			    <span>{item.icon}</span>
+			    <div><div style={{ color: C.text, fontWeight: 600 }}>{item.label}</div><div style={{ color: C.muted, fontSize: 10 }}>{item.sub}</div></div>
+			  </div>
+			))}
+		      </div>
+		    </div>
+		  ))}
+		</div>
+	      </div>
+	    </div>
+	  );
+	}
+
+	// ─── NODE VIEW (Centro FP) ────────────────────────────────────────────────────
+
+	function NodeView({ center }) {
+	  const [tab, setTab] = useState("componentes");
+	  const tabs = [
+	    { id: "componentes", label: "🏗️ Componentes" },
+	    { id: "modulos", label: "📦 Módulos y Endpoints" },
+	    { id: "diagrama", label: "🔀 Diagrama de Dependencias" },
+	  ];
+	  return (
+	    <div>
+	      <div style={{ background: `${center.color}12`, border: `1.5px solid ${center.color}60`, borderRadius: 12, padding: 18, marginBottom: 20, display: "flex", alignItems: "center", gap: 16 }}>
+		<span style={{ fontSize: 44 }}>🏫</span>
+		<div>
+		  <h2 style={{ color: center.color, margin: "0 0 4px", fontSize: 20 }}>{center.name}</h2>
+		  <div style={{ color: C.muted, fontSize: 13 }}>{center.city} · {center.region}</div>
+		  <code style={{ color: `${center.color}90`, fontSize: 11 }}>{center.did}</code>
+		  <p style={{ color: C.text, fontSize: 13, margin: "8px 0 0" }}>{center.desc}</p>
+		</div>
+	      </div>
+
+	      <div style={{ display: "flex", gap: 6, marginBottom: 18, borderBottom: `1px solid ${C.border}`, paddingBottom: 0 }}>
+		{tabs.map(t => (
+		  <button key={t.id} onClick={() => setTab(t.id)} style={{
+		    padding: "9px 18px", border: "none", borderBottom: `3px solid ${tab === t.id ? center.color : "transparent"}`,
+		    background: "transparent", color: tab === t.id ? center.color : C.muted,
+		    fontWeight: tab === t.id ? 700 : 400, fontSize: 13, cursor: "pointer", transition: "all 0.2s",
+		  }}>{t.label}</button>
+		))}
+	      </div>
+
+	      {tab === "componentes" && (
+		<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+		  {[
+		    { icon: "🏫", title: "VC Issuer", color: center.color, desc: `Emite StudentCredential y TeacherCredential firmadas con Ed25519. DID: ${center.did}` },
+		    { icon: "💼", title: "Wallet Digital", color: center.color, desc: "Almacena las VCs de estudiantes y docentes. Compatible W3C Verifiable Credentials y eIDAS 2.0." },
+		    { icon: "📚", title: "LMS Moodle 4.x", color: center.color, desc: "Plataforma educativa del centro. Integra el Plugin LTI 1.3 para lanzar la App EAC." },
+		    { icon: "📱", title: "Aplicación LTI / Frontend EAC", color: center.color, desc: "React 18 embebida en Moodle vía LTI 1.3. Panel competencial, mapa de nodos conquistados y SC recomendada." },
+		    { icon: "🔒", title: "Aggregator / Anonymizer", color: "#f43f5e", desc: "Elimina PII antes de que cualquier dato salga del centro. Genera hash irreversible: std_12345 → anon_abc123xyz." },
+		    { icon: "💾", title: "PostgreSQL Local", color: "#f43f5e", desc: "Almacena datos sensibles (PII): students, submissions_raw, evaluation_results, submission_queue. NUNCA sincronizado al exterior." },
+		    { icon: "🔗", title: "CONNECTOR_CFP", color: "#8b5cf6", desc: "FIWARE Dataspace Connector (Eclipse EDC). Frontera de soberanía del dato. Negocia acuerdos ODRL. Rate limit: 500 req/h." },
+		  ].map((c, i) => (
+		    <div key={i} style={{ background: C.card, border: `1.5px solid ${c.color}40`, borderRadius: 10, padding: 14 }}>
+		      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+			<span style={{ fontSize: 22 }}>{c.icon}</span>
+			<div style={{ color: c.color, fontWeight: 700, fontSize: 13 }}>{c.title}</div>
+		      </div>
+		      <p style={{ color: C.muted, fontSize: 12, margin: 0, lineHeight: 1.6 }}>{c.desc}</p>
+		    </div>
+		  ))}
+		</div>
+	      )}
+
+	      {tab === "modulos" && (
+		<div style={{ height: "60vh" }}>
+		  <ModulesPanel modules={CFP_MODULES} />
+		</div>
+	      )}
+
+	      {tab === "diagrama" && (
+		<div style={{ height: "60vh", border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden" }}>
+		  <div style={{ padding: "8px 14px", borderBottom: `1px solid ${C.border}`, background: "rgba(249,115,22,0.08)" }}>
+		    <span style={{ color: "#f97316", fontSize: 12, fontWeight: 700 }}>🏫 Diagrama de dependencias — software del Centro FP</span>
+		    <span style={{ color: C.muted, fontSize: 11, marginLeft: 10 }}>Perímetro del centro: PII nunca sale</span>
+		  </div>
+		  <SvgFlowDiagram
+		    nodes={CFP_NODES} edges={CFP_EDGES}
+		    flowsMeta={CFP_FLOWS} edgeColors={CFP_EDGE_COLORS}
+		    svgW={860} svgH={550} zoneLabels={CFP_ZONE_LABELS}
+		  />
+		</div>
+	      )}
+	    </div>
+	  );
+	}
+
+	// ─── EAC VIEW ────────────────────────────────────────────────────────────────
+
+	const ngsiEntities = [
+	  {
+	    name: "VocationalSkill", color: "#6366f1", icon: "🧩",
+	    desc: "Representa una habilidad profesional del Ecosistema Laboral. Nodo del Grafo de Precedencia.",
+	    attrs: [
+	      { name: "id", type: "string", example: "urn:ngsi-ld:VocationalSkill:TBM-S1-042" },
+	      { name: "skillCode", type: "Property<string>", example: "TBM-S1-042" },
+	      { name: "description", type: "Property<string>", example: "Interpretar planos de fabricación mecánica" },
+	      { name: "masteryThreshold", type: "Property<float>", example: "0.75" },
+	      { name: "prerequisites", type: "Relationship[]", example: "[VocationalSkill:TBM-S1-040]" },
+	    ],
+	  },
+	  {
+	    name: "LearningProblem", color: "#ec4899", icon: "📋",
+	    desc: "Situación de Competencia (SC) concreta: enunciado, rúbrica y metadatos pedagógicos.",
+	    attrs: [
+	      { name: "id", type: "string", example: "urn:ngsi-ld:LearningProblem:SC-TBM-042-v2" },
+	      { name: "title", type: "Property<string>", example: "Verificación dimensional de pieza fresada" },
+	      { name: "difficulty", type: "Property<float>", example: "0.6" },
+	      { name: "targetSkills", type: "Relationship[]", example: "[VocationalSkill:TBM-S1-042]" },
+	      { name: "rubricCriteria", type: "Property<JSON>", example: "{ precision: 0.4, procedure: 0.3, safety: 0.3 }" },
+	      { name: "generatedBy", type: "Property<string>", example: "claude-3-5-sonnet" },
+	    ],
+	  },
+	  {
+	    name: "SkillMasteryAggregate", color: "#14b8a6", icon: "📊",
+	    desc: "Agregado anónimo del nivel de dominio de un estudiante. Publicado por Rubric Evaluator tras cada evaluación.",
+	    attrs: [
+	      { name: "id", type: "string", example: "urn:ngsi-ld:SkillMasteryAggregate:anon_abc123" },
+	      { name: "studentId", type: "Property<string>", example: "anon_abc123xyz (hash irreversible)" },
+	      { name: "institutionCode", type: "Property<string>", example: "cifp_carlos_iii" },
+	      { name: "skillScores", type: "Property<JSON>", example: "{ TBM-S1-042: 0.85, TBM-S1-040: 0.92 }" },
+	      { name: "gradienteAutonomia", type: "Property<float>", example: "0.78" },
+	      { name: "lastEvaluatedAt", type: "Property<DateTime>", example: "2025-03-15T10:23:00Z" },
+	    ],
+	  },
+	];
+
+	function EACView() {
+	  const [tab, setTab] = useState("modulos");
+	  const tabs = [
+	    { id: "modulos", label: "📦 Módulos y Endpoints" },
+	    { id: "diagrama", label: "🔀 Diagrama de Dependencias" },
+	    { id: "ngsi", label: "🗄️ Modelo NGSI-LD" },
+	    { id: "tech", label: "🛠️ Stack Tecnológico" },
+	  ];
+
+	  return (
+	    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+	      <div style={{ display: "flex", gap: 6, marginBottom: 18, flexWrap: "wrap", borderBottom: `1px solid ${C.border}`, paddingBottom: 0 }}>
+		{tabs.map(t => (
+		  <button key={t.id} onClick={() => setTab(t.id)} style={{
+		    padding: "9px 18px", borderRadius: "8px 8px 0 0", border: "none",
+		    background: tab === t.id ? C.teal : "transparent",
+		    color: tab === t.id ? "#0a0f1a" : C.muted,
+		    fontWeight: tab === t.id ? 700 : 500, fontSize: 13,
+		    cursor: "pointer", transition: "all 0.2s",
+		  }}>{t.label}</button>
+		))}
+	      </div>
+
+	      {tab === "modulos" && (
+		<div style={{ flex: 1, overflow: "hidden" }}>
+		  <ModulesPanel modules={EAC_MODULES} />
+		</div>
+	      )}
+
+	      {tab === "diagrama" && (
+		<div style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+		  <div style={{ padding: "8px 14px", borderBottom: `1px solid ${C.border}`, background: "rgba(99,102,241,0.08)", flexShrink: 0 }}>
+		    <span style={{ color: "#6366f1", fontSize: 12, fontWeight: 700 }}>⚙️ Diagrama de dependencias — Backend EAC · Nodo Central</span>
+		    <span style={{ color: C.muted, fontSize: 11, marginLeft: 10 }}>Solo datos anonimizados (anon_id) llegan al nodo central</span>
+		  </div>
+		  <div style={{ flex: 1, overflow: "hidden" }}>
+		    <SvgFlowDiagram
+		      nodes={EAC_NODES} edges={EAC_EDGES}
+		      flowsMeta={EAC_FLOWS} edgeColors={EAC_EDGE_COLORS}
+		      svgW={1060} svgH={600} zoneLabels={EAC_ZONE_LABELS}
+		    />
+		  </div>
+		</div>
+	      )}
+
+	      {tab === "ngsi" && (
+		<div>
+		  <div style={{ background: "rgba(20,184,166,0.08)", borderLeft: "3px solid #14b8a6", borderRadius: "0 8px 8px 0", padding: "10px 14px", marginBottom: 14 }}>
+		    <p style={{ color: C.text, margin: 0, fontSize: 13, lineHeight: 1.6 }}>
+		      <strong style={{ color: "#14b8a6" }}>Orion-LD</strong> gestiona las entidades NGSI-LD v1.6.1. Contienen únicamente datos <strong>anonimizados</strong> (anon_id) y sirven como capa de interoperabilidad federada.
+		    </p>
+		  </div>
+		  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))", gap: 14 }}>
+		    {ngsiEntities.map(e => (
+		      <div key={e.name} style={{ background: C.card, border: `1.5px solid ${e.color}50`, borderRadius: 12, padding: 18 }}>
+			<div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+			  <span style={{ fontSize: 26 }}>{e.icon}</span>
+			  <div><div style={{ color: e.color, fontWeight: 700, fontSize: 14 }}>{e.name}</div><div style={{ color: C.muted, fontSize: 11 }}>NGSI-LD Entity Type</div></div>
+			</div>
+			<p style={{ color: C.muted, fontSize: 12, marginBottom: 12 }}>{e.desc}</p>
+			<div style={{ background: C.surface, borderRadius: 8, overflow: "hidden" }}>
+			  <div style={{ padding: "6px 10px", background: `${e.color}15`, borderBottom: `1px solid ${e.color}30` }}>
+			    <span style={{ color: e.color, fontSize: 10, fontWeight: 700 }}>Atributos</span>
+			  </div>
+			  {e.attrs.map((a, i) => (
+			    <div key={i} style={{ display: "grid", gridTemplateColumns: "130px 1fr", padding: "7px 10px", borderBottom: i < e.attrs.length - 1 ? `1px solid ${C.border}` : "none", gap: 8 }}>
+			      <div><div style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{a.name}</div><div style={{ color: C.muted, fontSize: 10 }}>{a.type}</div></div>
+			      <code style={{ color: "#86efac", fontSize: 11, fontFamily: "monospace", wordBreak: "break-all" }}>{a.example}</code>
+			    </div>
+			  ))}
+			</div>
+		      </div>
+		    ))}
+		  </div>
+		</div>
+	      )}
+
+	      {tab === "tech" && (
+		<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 14 }}>
+		  {[
+		    { title: "Backend EAC (Nodo Central)", icon: "⚙️", color: "#6366f1", items: ["Python 3.11+ · FastAPI 0.110+", "NetworkX 3.2+ (grafos de conocimiento)", "Pydantic 2.5+ · SQLAlchemy 2.0+", "Anthropic SDK / OpenAI (generación SC)", "Celery 5.3+ (tareas asíncronas)", "Pytest 8.0+ (testing)"] },
+		    { title: "Bases de Datos", icon: "🗄️", color: "#14b8a6", items: ["PostgreSQL 16+ (Nodo Central) — datos anon", "PostgreSQL 16+ (Centro FP) — PII local", "Neo4j 5.x (opcional) — grafo de precedencia", "pg_vector (embeddings futuros)"] },
+		    { title: "FIWARE / Dataspace", icon: "🌐", color: "#3b82f6", items: ["Orion-LD 1.5+ (NGSI-LD v1.6.1)", "Eclipse EDC / FIWARE fork (conectores)", "Keycloak 23+ + plugin VC Verifier", "Authzforce PDP (XACML / ODRL)", "CKAN + Federated Catalogue"] },
+		    { title: "Frontend (Centro FP)", icon: "📱", color: "#f97316", items: ["LMS Moodle 4.x + Plugin LTI 1.3", "React 18+ (App LTI embebida)", "D3.js / Cytoscape.js (mapa de nodos)", "Recharts / Plotly (dashboards)"] },
+		    { title: "Observabilidad", icon: "📊", color: "#f59e0b", items: ["Prometheus + Grafana (SLA 99.5%)", "ELK Stack (audit logs)", "Rate limit: 500 req/h por centro"] },
+		    { title: "DevOps & Identidad", icon: "🔐", color: "#22c55e", items: ["Docker + Docker Compose", "Kubernetes (escalado Backend EAC)", "W3C Verifiable Credentials · eIDAS 2.0", "ODRL (políticas de uso)", "Gaia-X Trust Framework"] },
+		  ].map((stack, i) => (
+		    <div key={i} style={{ background: C.card, border: `1.5px solid ${stack.color}40`, borderRadius: 12, padding: 16 }}>
+		      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+			<span style={{ fontSize: 22 }}>{stack.icon}</span>
+			<div style={{ color: stack.color, fontWeight: 700, fontSize: 13 }}>{stack.title}</div>
+		      </div>
+		      {stack.items.map((item, j) => (
+			<div key={j} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+			  <span style={{ color: stack.color, fontSize: 10, marginTop: 2 }}>◆</span>
+			  <span style={{ color: C.text, fontSize: 12 }}>{item}</span>
+			</div>
+		      ))}
+		    </div>
+		  ))}
+		</div>
+	      )}
+	    </div>
+	  );
+	}
+
+	// ─── APP ROOT ─────────────────────────────────────────────────────────────────
+
+	function App() {
+	  const [level, setLevel] = useState("topology");
+	  const [selectedCenter, setSelectedCenter] = useState(null);
+
+	  const handleDrillDown = (target, data) => {
+	    if (target === "arch") { setLevel("arch"); setSelectedCenter(null); }
+	    if (target === "node") { setLevel("node"); setSelectedCenter(data); }
+	    if (target === "eac") { setLevel("eac"); setSelectedCenter(null); }
+	  };
+
+	  const navItems = [
+	    { id: "topology", label: "Topología", icon: "🌐" },
+	    { id: "arch", label: "Arquitectura", icon: "🏗️" },
+	    { id: "eac", label: "Backend EAC", icon: "⚙️" },
+	  ];
+
+	  const levelTitles = {
+	    topology: { icon: "🌐", title: "Vocational Federated Dataspace", sub: "Topología de la red — 3 centros FP + Nodo Central" },
+	    arch:     { icon: "🏗️", title: "Arquitectura del Sistema", sub: "Componentes FIWARE, capas de datos y flujos principales" },
+	    node:     { icon: "🏫", title: selectedCenter?.name || "", sub: `${selectedCenter?.city} · ${selectedCenter?.region} · Nodo participante del VFDS` },
+	    eac:      { icon: "⚙️", title: "Backend EAC — Espacio de Aprendizaje Competencial", sub: "Módulos, endpoints, diagrama de dependencias, NGSI-LD y stack tecnológico" },
+	  };
+	  const lt = levelTitles[level];
+
+	  const breadcrumbs = [
+	    { id: "topology", label: "Red VFDS" },
+	    ...(["arch","node","eac"].includes(level) ? [{ id: "arch", label: "Arquitectura" }] : []),
+	    ...(level === "node" && selectedCenter ? [{ id: "node", label: selectedCenter.name }] : []),
+	    ...(level === "eac" ? [{ id: "eac", label: "Backend EAC" }] : []),
+	  ];
+
+	  return (
+	    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "'Segoe UI', system-ui, sans-serif", color: C.text, display: "flex", flexDirection: "column" }}>
+	      {/* Header */}
+	      <div style={{ borderBottom: `1px solid ${C.border}`, padding: "0 28px", background: C.surface, position: "sticky", top: 0, zIndex: 100, flexShrink: 0 }}>
+		<div style={{ display: "flex", alignItems: "center", gap: 14, height: 54 }}>
+		  <div style={{ background: "linear-gradient(135deg, #00d4c8, #3b82f6)", borderRadius: 8, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+		    <span style={{ fontSize: 16 }}>🏭</span>
+		  </div>
+		  <div>
+		    <span style={{ color: C.teal, fontWeight: 700, fontSize: 13, letterSpacing: "0.05em" }}>VFDS</span>
+		    <span style={{ color: C.muted, fontSize: 11, marginLeft: 8 }}>Vocational Federated Dataspace · Caso de uso EAC</span>
+		  </div>
+		  <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
+		    {navItems.map(nav => (
+		      <button key={nav.id} onClick={() => { setLevel(nav.id); setSelectedCenter(null); }} style={{
+			padding: "6px 14px", borderRadius: 6, border: "none",
+			background: level === nav.id ? `${C.teal}20` : "transparent",
+			color: level === nav.id ? C.teal : C.muted,
+			fontWeight: level === nav.id ? 700 : 400,
+			fontSize: 13, cursor: "pointer", transition: "all 0.2s",
+		      }}>{nav.icon} {nav.label}</button>
+		    ))}
+		  </div>
+		</div>
+	      </div>
+
+	      {/* Content */}
+	      <div style={{ padding: "20px 28px", maxWidth: 1280, margin: "0 auto", width: "100%", flex: 1, display: "flex", flexDirection: "column" }}>
+		{/* Breadcrumb */}
+		<div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 16, fontSize: 12 }}>
+		  {breadcrumbs.map((bc, i) => (
+		    <span key={bc.id} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+		      {i > 0 && <span style={{ color: C.muted }}>›</span>}
+		      <button onClick={() => { setLevel(bc.id); if (bc.id !== "node") setSelectedCenter(null); }}
+			style={{ background: "none", border: "none", cursor: "pointer", color: i === breadcrumbs.length - 1 ? C.text : C.muted, fontWeight: i === breadcrumbs.length - 1 ? 600 : 400, fontSize: 12, padding: 0 }}>
+			{bc.label}
+		      </button>
+		    </span>
+		  ))}
+		</div>
+
+		{/* Page header */}
+		<div style={{ marginBottom: 20 }}>
+		  <h1 style={{ margin: "0 0 5px", fontSize: 22, fontWeight: 700 }}><span style={{ marginRight: 8 }}>{lt.icon}</span>{lt.title}</h1>
+		  <p style={{ color: C.muted, margin: 0, fontSize: 13 }}>{lt.sub}</p>
+		</div>
+
+		{/* Views */}
+		<div style={{ flex: 1 }}>
+		  {level === "topology" && <TopologyView onDrillDown={handleDrillDown} />}
+		  {level === "arch" && <ArchView onDrillDown={handleDrillDown} />}
+		  {level === "node" && selectedCenter && <NodeView center={selectedCenter} />}
+		  {level === "eac" && <EACView />}
+		</div>
+	      </div>
+	    </div>
+	  );
+	}
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
+{% endraw %}
