@@ -19,6 +19,7 @@ Habilidades target → Prompt Engineering → LLM (Claude/GPT-4)
 #### **7.2.1 Prompt Principal (Few-Shot)**
 
 ```python
+{% raw %}
 PROBLEM_GENERATION_PROMPT_TEMPLATE = """
 Eres un experto en diseño de problemas educativos para Formación Profesional en la especialidad de Comercio y Marketing.
 
@@ -86,11 +87,13 @@ FEW_SHOT_EXAMPLES = """
 **Problema:**
 "Una marca de cosmética natural quiere transmitir valores de sostenibilidad y frescura. Propón una paleta cromática principal y secundaria justificando tu elección según principios de psicología del color..."
 """
+{% endraw %}
 ```
 
 #### **7.2.2 Prompt de Validación**
 
 ```python
+{% raw %}
 PROBLEM_VALIDATION_PROMPT = """
 Evalúa si el siguiente problema cumple con los criterios de calidad:
 
@@ -115,6 +118,7 @@ Evalúa si el siguiente problema cumple con los criterios de calidad:
   "suggestions": ["Sugerencia de mejora 1", ...]
 }}
 """
+{% endraw %}
 ```
 
 ### 7.3 Implementación del Generador

@@ -167,6 +167,7 @@ class Rubric(BaseModel):
 ### 8.2 Motor de Evaluación Automática
 
 ```python
+{% raw %}
 import re
 from typing import Dict, Tuple
 
@@ -351,4 +352,5 @@ Evalúa la siguiente respuesta de un estudiante según este criterio:
         
         # Persistir
         save_knowledge_state(knowledge_state)  # Función auxiliar
+{% endraw %}
 ```
