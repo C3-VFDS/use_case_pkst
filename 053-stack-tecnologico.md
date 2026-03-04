@@ -35,20 +35,48 @@ Neo4j 5.x (opcional)             # Grafo de Precedencia (SCs y prereqs)
 Orion-LD 1.5+               # Context Broker (NGSI-LD v1.6.1)
                              #   Entidades: VocationalSkill,
                              #   LearningProblem, SkillMasteryAggregate
-Eclipse EDC (FIWARE fork)   # CONNECTOR_CENTRAL — API Gateway del Nodo Central
-Eclipse EDC (FIWARE fork)   # CONNECTOR_CFP — uno por Centro FP
-                             #   (frontera de soberanía del dato)
-Keycloak 23+                # Identity & Access Management
-                             #   + plugin VC Verifier (OIDC4VC)
-Authzforce PDP              # Motor de políticas XACML / ODRL
 Mintaka (opcional)          # Temporal queries sobre Orion-LD
+
+## FIWARE Dataspace Connector — desplegado en Nodo Central y en cada Centro FP
+
+Eclipse EDC (FIWARE fork)   # Base del conector (CONNECTOR_CENTRAL y CONNECTOR_CFP)
+
+  ## Authentication Service (por conector)
+  Keycloak 23+              # VC Issuer — emite VCs firmadas (Ed25519)
+                             #   CONNECTOR_CENTRAL: OperatorCredential, ResearcherCredential
+                             #   CONNECTOR_CFP:     StudentCredential, TeacherCredential
+  Verifier                  # Verificación de VCs presentadas (OIDC4VP / DIDComm)
+  Auth Portal               # Orquesta flujo OIDC4VP entre cliente y Verifier
+  Credentials Config Service# Define qué tipos de VC acepta cada recurso
+  Local Trusted Issuers List# Registro local de emisores de confianza del conector
+                             #   El Marketplace escribe en él al aprovisionar acceso
+
+  ## Policy Management / Authorization Service (por conector)
+  APISIX                    # API Gateway — PEP (Policy Enforcement Point)
+  Open Policy Agent         # PDP (Policy Decision Point)
+                             #   Evalúa políticas ODRL en tiempo de ejecución
+  PRP / PAP                 # Policy Repository / Policy Administration Point
+                             #   El Marketplace escribe la política ODRL al registrar producto
+  PIP                       # Policy Information Point
+                             #   Proporciona contexto al PDP para evaluar políticas
+
+## Servicios Globales del Dataspace (Nodo Central)
+
+  Data Space Participants Registry  # Registro de organizaciones participantes
+                                    #   Consultado por el Verifier de cada conector
+  Global Trusted Issuers List       # Catálogo global de emisores VC de confianza
+  Revocation List                   # Credenciales revocadas — consultada en cada verificación
 ```
+
+---
 
 ### 5.3.4 **Frontend (Centro FP):**
 
 ```
 LMS Moodle 4.x              # Plataforma educativa de los centros
-└── Plugin LTI        # Integración LTI 1.3 + REST API
+├── Plugin LTI              # Integración LTI 1.3 + REST API
+├── Aggregator              # Seudonimización local en servidor Moodle
+└── Cola de reintentos      # SQLite / BD Moodle para submissions pendientes
 
 Aplicación LTI (React 18+)  # Embebida en Moodle vía LTI 1.3
 │                            # Superficie de presentación del panel competencial

@@ -1,4 +1,5 @@
 ### 5.2 Diagrama de Funcionalidad EAC
+
 ```mermaid
 graph TB
     subgraph Z1["ZONA 1 · Actores"]
@@ -12,6 +13,8 @@ graph TB
 Vista Estudiante · Vista Docente"]
         ANON["🔒 Aggregator / Anonymizer
 Elimina PII antes de enviar"]
+        DSC["🔗 Dataspace Connectors
+(CFP ↔ Central)"]
     end
 
     subgraph Z3["Backend EAC · Motor Pedagógico"]
@@ -59,36 +62,37 @@ Umbrales de Maestría"]
     %% ── LMS ↔ APP_LTI ──
     LMS -->|"Lanza vista EAC"| APP_LTI
     APP_LTI -->|"Registra calificación
-    (Gradiente de Autonomía)"| LMS
+(Gradiente de Autonomía)"| LMS
 
-    %% ── APP_LTI → ANON → EAC ──
+    %% ── APP_LTI → ANON → DSC → EAC ──
     APP_LTI -->|"Submission con PII
-    (evidencia de desempeño)"| ANON
+(evidencia de desempeño)"| ANON
     ANON -->|"Evidencia seudonimizada
-    POST /api/v2/evaluate"| RUBRIC
+POST /api/v2/evaluate"| DSC
+    DSC -->|"Request validado"| RUBRIC
 
     %% ── Docente → generación de SC ──
     APP_LTI -->|"Solicita nueva SC
-    (parámetros pedagógicos)"| PGEN
+(parámetros pedagógicos)"| PGEN
 
     %% ── Motor interno EAC ──
     SYNTH --> KSB
     KSB --> SGRAPH
     SGRAPH -->|"Perfil de Habilitación
-    + Outer Fringe"| REC
++ Outer Fringe"| REC
     REC -->|"SC seleccionada"| PGEN
-    PGEN -->|"SC contextualizada"| APP_LTI
+    PGEN -->|"SC contextualizada"| DSC
+    DSC -->|"SC · resultado · recomendación"| APP_LTI
     RUBRIC -->|"Score · Diagnóstico
-    Actualiza Perfil de Habilitación"| SGRAPH
+Actualiza Perfil de Habilitación"| SGRAPH
     RUBRIC -->|"Actualiza SkillMasteryAggregate"| ORIONLD
 
-    %% ── APP_LTI → Estudiante (retorno) ──
-    APP_LTI -->|"Notifica resultado
-    score · feedback · Huella de Talento"| STUDENT
-
-    %% ── Docente accede a métricas ──
-    APP_LTI -->|"Panel docente
-    estado de la clase · bloqueos"| TEACHER
+    %% ── Retorno al estudiante y docente vía LMS ──
+    LMS -->|"Panel competencial
+score · feedback · Huella de Talento
++ siguiente SC sugerida"| STUDENT
+    LMS -->|"Panel docente
+estado de la clase · bloqueos"| TEACHER
 
     %% ── Persistencia ──
     SGRAPH <-->|"Read / Write"| POSTGRES_C
@@ -101,4 +105,5 @@ Umbrales de Maestría"]
     style GRAPH fill:#e8eaf6,stroke:#3f51b5
     style ENGINE fill:#fce4ec,stroke:#e91e63
     style DATA fill:#e0f2f1,stroke:#00897b
+    style DSC fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
 ```
