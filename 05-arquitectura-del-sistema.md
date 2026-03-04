@@ -30,6 +30,9 @@ W3C VC — eIDAS 2.0"]
     %% ─────────────────────────────────────────────
     subgraph Z2["Centro FP
 (did:web:cifpcarlos3.edu.es)"]
+        VCISSUER_CFP["🏫 VC Issuer (Keycloak)
+Emite StudentCredential
+y TeacherCredential"]
         LMS["📚 LMS"]
         APP_LTI["Aplicación LTI / Frontend EAC
 Vista Estudiante · Vista Docente"]
@@ -45,21 +48,33 @@ NUNCA sale del centro"]
         ANON -->|"Datos locales PII"| LOCALDB
 
         subgraph GOVERNANCE_CFP["📋 Gobernanza y Acceso"]
-            subgraph CONNECTOR_CFP["🔗 FIWARE Dataspace Connector"]
-                VCISSUER_CFP["🏫 VC Issuer
-Emite StudentCredential
-y TeacherCredential"]
-                VCVERIFIER_CFP["🔍 VC Verifier
-OIDC4VC / DIDComm"]
-                TIR_CFP["📋 Trusted Issuers
-Registry"]
-                DSPR_CFP["🌐 Data Space
-Participants Registry"]
-                subgraph ODRL_CFP["⚖️ ODRL Authorization"]
-                    APISIX_CFP["APISIX"]
-                    OPA_CFP["Open Policy Agent"]
-                    PAP_CFP["ODRL PAP"]
+            subgraph CONNECTOR_CFP["🔗 FIWARE Dataspace Connector · Centro FP"]
+                subgraph AUTH_CFP["🔵 Authentication Service"]
+                    AUTHPORTAL_CFP["Auth Portal"]
+                    VERIFIER_CFP["Verifier"]
+                    CCS_CFP["Credentials Config
+Service"]
+                    LTIL_CFP["Local Trusted
+Issuers List"]
                 end
+                subgraph POLICY_CFP["🟢 Policy Management · Authorization Service"]
+                    PEP_CFP["APISIX · PEP
+(API Gateway)"]
+                    PDP_CFP["PDP"]
+                    PIP_CFP["PIP"]
+                    PAP_CFP["PRP / PAP
+(authorization)"]
+                end
+                AUTHPORTAL_CFP -->|"4) Qué credenciales
+acepta"| CCS_CFP
+                AUTHPORTAL_CFP <-->|"OIDC4VP
+(pasos 5 · 6 · 10)"| VERIFIER_CFP
+                VERIFIER_CFP -->|"9) Verifica
+emisor local"| LTIL_CFP
+                PEP_CFP -->|"13)"| PDP_CFP
+                PDP_CFP -->|"14a)"| PIP_CFP
+                PDP_CFP -->|"14b)"| PAP_CFP
+                PDP_CFP -->|"15) Decisión"| PEP_CFP
             end
         end
     end
@@ -76,21 +91,37 @@ Compliance Service
             MARKETPLACE["🛒 Marketplace
 CKAN + Federated Catalogue
 DCAT-AP + Self-Descriptions"]
-            subgraph CONNECTOR_CENTRAL["🔗 FIWARE Dataspace Connector"]
-                VCISSUER_C["🏫 VC Issuer
+            VCISSUER_C["🏫 VC Issuer (Keycloak)
 Emite OperatorCredential
 y ResearcherCredential"]
-                VCVERIFIER_C["🔍 VC Verifier
-OIDC4VC / DIDComm"]
-                TIR_C["📋 Trusted Issuers
-Registry"]
-                DSPR_C["🌐 Data Space
-Participants Registry"]
-                subgraph ODRL_C["⚖️ ODRL Authorization"]
-                    APISIX_C["APISIX"]
-                    OPA_C["Open Policy Agent"]
-                    PAP_C["ODRL PAP"]
+
+            subgraph CONNECTOR_CENTRAL["🔗 FIWARE Dataspace Connector · Nodo Central"]
+                subgraph AUTH_C["🔵 Authentication Service"]
+                    AUTHPORTAL_C["Auth Portal"]
+                    VERIFIER_C["Verifier"]
+                    CCS_C["Credentials Config
+Service"]
+                    LTIL_C["Local Trusted
+Issuers List"]
                 end
+                subgraph POLICY_C["🟢 Policy Management · Authorization Service"]
+                    PEP_C["APISIX · PEP
+(API Gateway)"]
+                    PDP_C["PDP"]
+                    PIP_C["PIP"]
+                    PAP_C["PRP / PAP
+(authorization)"]
+                end
+                AUTHPORTAL_C -->|"4) Qué credenciales
+acepta"| CCS_C
+                AUTHPORTAL_C <-->|"OIDC4VP
+(pasos 5 · 6 · 10)"| VERIFIER_C
+                VERIFIER_C -->|"9) Verifica
+emisor local"| LTIL_C
+                PEP_C -->|"13)"| PDP_C
+                PDP_C -->|"14a)"| PIP_C
+                PDP_C -->|"14b)"| PAP_C
+                PDP_C -->|"15) Decisión"| PEP_C
             end
         end
 
@@ -126,44 +157,88 @@ SkillMasteryAggregate"]
             MONITOR["Prometheus + Grafana
 Alerts · SLA 99.5%"]
         end
+
+    %% ─────────────────────────────────────────────
+    %% SERVICIOS GLOBALES DEL DATASPACE
+    %% ─────────────────────────────────────────────
+        subgraph GLOBAL["🌍 Servicios Globales del Dataspace"]
+            DSPR["🌐 Data Space
+        Participants Registry"]
+            GTIL["📋 Global Trusted
+        Issuers List"]
+            REVOCATION["🚫 Revocation List"]
+        end
     end
 
     %% ─────────────────────────────────────────────
     %% FLUJOS PRINCIPALES
     %% ─────────────────────────────────────────────
 
-    %% Matrícula / Emisión de credenciales
-    STUDENT & TEACHER -->|"Matrícula / Verificación"| VCISSUER_CFP
-
-    %% Wallets → VC Verifiers
-    WALLET_T -->|"Presenta VC"| VCVERIFIER_CFP
-    WALLET_O & WALLET_R -->|"Presenta VC"| VCVERIFIER_C
-
-    %% VC Verifier → Data Space Participants Registry
-    VCVERIFIER_CFP -->|"Verifica participante"| DSPR_CFP
-    VCVERIFIER_C -->|"Verifica participante"| DSPR_C
-
-    %% Docente → Marketplace
-    WALLET_T -->|"Descubre y solicita
-Backend EAC"| MARKETPLACE
+    %% 0) Emisión de credenciales
+    STUDENT & TEACHER -->|"0) Matrícula"| VCISSUER_CFP
+    VCISSUER_CFP -->|"0) Entrega VC firmada
+(Ed25519)"| WALLET_T
+    OPERATOR & RESEARCHER -->|"0) Registro"| VCISSUER_C
+    VCISSUER_C -->|"0) Entrega VC firmada
+(Ed25519)"| WALLET_O & WALLET_R
 
     %% Actores → LMS
-    STUDENT -->|"Solicita / Resuelve ejercicio"| LMS
+    STUDENT -->|"Solicita / Resuelve SC"| LMS
     TEACHER -->|"Crea ejercicio"| LMS
 
-    %% Marketplace → Connectors (dos acciones)
-    MARKETPLACE -->|"① Aprovisiona ODRL en PAP
-② Registra organización"| TIR_C
-    MARKETPLACE -->|"Política ODRL"| PAP_C
-    MARKETPLACE -->|"① Aprovisiona ODRL en PAP
-② Registra organización"| TIR_CFP
-    MARKETPLACE -->|"Política ODRL"| PAP_CFP
+    %% Docente → Marketplace
+    TEACHER -->|"Descubre y solicita
+Backend EAC"| MARKETPLACE
 
-    %% ODRL Authorization → servicios
-    ODRL_CFP -->|"Request validado
-(autenticación · políticas · rate limit)"| APP_LTI
-    ODRL_C -->|"Request validado
-(autenticación · políticas · rate limit)"| EAC
+    %% 1-2) Docente inicia acceso via Auth Portal CFP
+    WALLET_T -->|"1) Petición acceso"| AUTHPORTAL_CFP
+    AUTHPORTAL_CFP -->|"2) Solicita
+presentación VC"| WALLET_T
+    WALLET_T -->|"3) 5) 6)
+OIDC4VP flows"| VERIFIER_CFP
+    AUTHPORTAL_CFP -->|"11) Token JWT"| APP_LTI
+
+    %% 1-2) Operador e Investigador via Auth Portal Central
+    WALLET_O & WALLET_R -->|"1) Petición acceso"| AUTHPORTAL_C
+    AUTHPORTAL_C -->|"2) Solicita
+presentación VC"| WALLET_O & WALLET_R
+    WALLET_O & WALLET_R -->|"3) 5) 6)
+OIDC4VP flows"| VERIFIER_C
+
+    %% 8) Verifiers → Servicios globales
+    VERIFIER_CFP -->|"8) Verifica
+participante · emisor · revocación"| DSPR & GTIL & REVOCATION
+    VERIFIER_C -->|"8) Verifica
+participante · emisor · revocación"| DSPR & GTIL & REVOCATION
+
+    %% Marketplace → Connectors (dos acciones)
+    MARKETPLACE -->|"① Aprovisiona
+política ODRL"| PAP_CFP
+    MARKETPLACE -->|"② Registra
+organización"| LTIL_CFP
+    MARKETPLACE -->|"① Aprovisiona
+política ODRL"| PAP_C
+    MARKETPLACE -->|"② Registra
+organización"| LTIL_C
+
+    %% 16) PEP → Aplicaciones
+    PEP_CFP -->|"16) Request validado"| APP_LTI
+    PEP_C -->|"16) Request validado"| EAC
+
+    %% Centro FP ↔ Nodo Central
+    APP_LTI -->|"Configura API Key"| ANON
+    ANON -->|"12) POST /api/v2/evaluate
+Bearer Token
+datos seudonimizados"| PEP_CFP
+    PEP_CFP <-->|"Intercambio de datos
+anonimizados"| PEP_C
+    PEP_CFP -->|"Resultado evaluación
+score · feedback · recomendación"| APP_LTI
+
+    %% APP_LTI ↔ LMS
+    APP_LTI -->|"Registra calificación
+(Gradiente de Autonomía)"| LMS
+    LMS -->|"Panel competencial"| STUDENT
 
     %% EAC interno
     KSB --> SGRAPH
@@ -178,39 +253,37 @@ Backend EAC"| MARKETPLACE
     EAC <-->|"NGSI-LD"| ORIONLD
 
     %% Observabilidad
-    EAC & CONNECTOR_CENTRAL & ORIONLD -->|"Métricas / Logs"| MONITOR
-    CONNECTOR_CENTRAL -->|"Operador gestiona y supervisa"| MONITOR
-
-    %% Centro FP ↔ Nodo Central
-    APP_LTI -->|"Configura API Key"| ANON
-    ANON -->|"POST /api/v2/evaluate
-Bearer API Key
-datos seudonimizados"| CONNECTOR_CFP
-    CONNECTOR_CENTRAL <-->|"Intercambio de datos
-anonimizados"| CONNECTOR_CFP
-    CONNECTOR_CFP -->|"Resultado evaluación
-score · feedback · recomendación"| APP_LTI
+    EAC & PEP_C & ORIONLD -->|"Métricas / Logs"| MONITOR
+    WALLET_O -->|"Gestiona y supervisa"| AUTHPORTAL_C
+    PEP_C -->|"Acceso autorizado"| MONITOR
 
     %% Investigador
-    CONNECTOR_CENTRAL -->|"Investigador a NGSI-LD
+    WALLET_R -->|"Acceso a datos
+agregados"| AUTHPORTAL_C
+    PEP_C -->|"NGSI-LD
 (datos agregados)"| ORIONLD
 
     %% Gaia-X (futura integración)
     GAIAX -.->|"futura integración"| MARKETPLACE
 
-    %% Estilos de zona
+    %% ─────────────────────────────────────────────
+    %% ESTILOS
+    %% ─────────────────────────────────────────────
     style Z1 fill:#e8f5e9,stroke:#4caf50,color:#1b5e20
     style Z2 fill:#fff3e0,stroke:#ff9800,color:#e65100
     style Z3 fill:#e3f2fd,stroke:#1976d2,color:#0d47a1
+    style GLOBAL fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     style GOVERNANCE fill:#fce4ec,stroke:#e91e63
     style GOVERNANCE_CFP fill:#fce4ec,stroke:#e91e63
     style EAC fill:#e8eaf6,stroke:#3f51b5
     style DATA fill:#e0f2f1,stroke:#00897b
     style OBS fill:#fff8e1,stroke:#ffc107
-    style CONNECTOR_CFP fill:#f3e5f5,stroke:#7b1fa2
-    style CONNECTOR_CENTRAL fill:#f3e5f5,stroke:#7b1fa2
-    style ODRL_CFP fill:#ede7f6,stroke:#512da8
-    style ODRL_C fill:#ede7f6,stroke:#512da8
+    style CONNECTOR_CFP fill:#ede7f6,stroke:#7b1fa2
+    style CONNECTOR_CENTRAL fill:#ede7f6,stroke:#7b1fa2
+    style AUTH_CFP fill:#e3f2fd,stroke:#1976d2
+    style AUTH_C fill:#e3f2fd,stroke:#1976d2
+    style POLICY_CFP fill:#e8f5e9,stroke:#388e3c
+    style POLICY_C fill:#e8f5e9,stroke:#388e3c
     style GAIAX fill:#f5f5f5,stroke:#bdbdbd,color:#9e9e9e
 ```
 

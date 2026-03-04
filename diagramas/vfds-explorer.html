@@ -438,10 +438,10 @@
 	  },
 	  {
 	    id: "CONNECTOR_CFP", icon: "🔗", title: "CONNECTOR_CFP", color: "#c62828", border: "#ef9a9a", bg: "#ffebee",
-	    subtitle: "Frontera de soberanía del dato — FIWARE Dataspace Connector completo",
-	    description: "FIWARE Dataspace Connector (Eclipse EDC) desplegado en el centro. Actúa como frontera de soberanía: todo tráfico hacia el Nodo Central pasa por aquí. Incorpora su propio stack de identidad (VC Issuer, VC Verifier, TIR, DSPR) y la capa de autorización ODRL (APISIX + Open Policy Agent + PAP). Los datos seudonimizados viajan bajo contrato ODRL negociado con CONNECTOR_CENTRAL.",
-	    tech: "Eclipse EDC (FIWARE fork) · APISIX · Open Policy Agent · ODRL PAP · OIDC4VC",
-	    note: "Modelado como caja negra en el diagrama de dependencias. Se muestran únicamente las interfaces visibles desde el software del centro. Internamente: VC Issuer emite StudentCredential y TeacherCredential; ODRL Authorization valida cada request antes de entregarlo a APP_LTI.",
+	    subtitle: "Frontera de soberanía del dato — Authentication + Policy Management",
+	    description: "FIWARE Dataspace Connector (Eclipse EDC) desplegado en el centro. Actúa como frontera de soberanía: todo tráfico hacia el Nodo Central pasa por aquí. Contiene dos servicios internos: Authentication Service (Auth Portal, Verifier OIDC4VP, Credentials Config Service, Local Trusted Issuers List) y Policy Management / Authorization Service (APISIX·PEP, PDP, PIP, PRP/PAP). El flujo de autenticación sigue pasos numerados: 1) petición acceso → 2) solicita VC → 3-6) OIDC4VP → 8) verifica en servicios globales → 9) verifica emisor local → 11) emite JWT → 12) request con Bearer Token → 13-15) PEP→PDP→decisión → 16) request validado a APP_LTI.",
+	    tech: "Eclipse EDC (FIWARE fork) · APISIX · PDP · PIP · PRP/PAP · OIDC4VP · Auth Portal · Verifier",
+	    note: "El VC Issuer (Keycloak) que emite StudentCredential y TeacherCredential es un componente separado fuera del Connector, en el perímetro del centro.",
 	    endpoints: [
 	      { method: "POST", path: "→ [salida] /negotiate", desc: "Negocia acuerdo ODRL con CONNECTOR_CENTRAL presentando la API Key del centro.", consumes: ["APP_LTI", "RETRY"], produces: "Acuerdo ODRL activo + token de transferencia" },
 	      { method: "POST", path: "→ [salida] /transfer", desc: "Transmite datos seudonimizados al Nodo Central bajo el acuerdo ODRL negociado.", consumes: ["APP_LTI", "RETRY"], produces: "{ transfer_id } — respuesta asíncrona" },
@@ -807,34 +807,45 @@
 		<div style={{ color: "#f97316", fontWeight: 700, fontSize: 13, marginBottom: 10 }}>ZONA 2 · Centro FP (Nodo participante)</div>
 		<div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-start" }}>
 		  {[
+		    { icon: "🏫", label: "VC Issuer (Keycloak)", sub: "StudentCredential · TeacherCredential" },
 		    { icon: "📚", label: "LMS Moodle 4.x", sub: "Plugin LTI 1.3" },
 		    { icon: "📱", label: "APP LTI / Frontend EAC", sub: "React 18 · D3.js" },
 		    { icon: "🔒", label: "Aggregator / Anonymizer", sub: "Elimina PII local" },
 		    { icon: "💾", label: "PostgreSQL Local", sub: "PII — nunca sale" },
 		  ].map(i => itemCard(i, "#f97316"))}
-		  {/* CONNECTOR_CFP — expandido con subcomponentes */}
-		  <div style={{ border: "1.5px solid #7b1fa250", borderRadius: 10, padding: 12, background: "#f3e5f508", minWidth: 220 }}>
-		    <div style={{ color: "#7b1fa2", fontWeight: 700, fontSize: 12, marginBottom: 8 }}>🔗 CONNECTOR_CFP</div>
-		    <div style={{ fontSize: 10, color: C.muted, marginBottom: 8 }}>FIWARE Dataspace Connector</div>
-		    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-		      {[
-			{ icon: "🏫", label: "VC Issuer", sub: "StudentCredential · TeacherCredential" },
-			{ icon: "🔍", label: "VC Verifier", sub: "OIDC4VC / DIDComm" },
-			{ icon: "📋", label: "Trusted Issuers Registry", sub: "TIR" },
-			{ icon: "🌐", label: "Data Space Participants Registry", sub: "DSPR" },
-		      ].map((sub, i) => (
-			<div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 8px", fontSize: 11, display: "flex", alignItems: "center", gap: 6 }}>
-			  <span style={{ fontSize: 13 }}>{sub.icon}</span>
-			  <div><div style={{ color: C.text, fontWeight: 600 }}>{sub.label}</div><div style={{ color: C.muted, fontSize: 9 }}>{sub.sub}</div></div>
-			</div>
-		      ))}
-		      <div style={{ border: "1.5px solid #512da850", borderRadius: 8, padding: 8, background: "#ede7f608", marginTop: 2 }}>
-			<div style={{ color: "#7c3aed", fontWeight: 700, fontSize: 10, marginBottom: 5 }}>⚖️ ODRL Authorization</div>
-			<div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-			  {["APISIX", "Open Policy Agent", "ODRL PAP"].map(s => (
-			    <span key={s} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 6px", fontSize: 10, color: C.text }}>{s}</span>
-			  ))}
-			</div>
+		  {/* CONNECTOR_CFP — AUTH + POLICY */}
+		  <div style={{ border: "1.5px solid #7b1fa260", borderRadius: 10, padding: 12, background: "#ede7f608", minWidth: 260 }}>
+		    <div style={{ color: "#7b1fa2", fontWeight: 700, fontSize: 12, marginBottom: 10 }}>🔗 CONNECTOR_CFP · Centro FP</div>
+		    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+		      {/* Authentication Service */}
+		      <div style={{ border: "1.5px solid #1976d250", borderRadius: 8, padding: 8, background: "#e3f2fd08", flex: 1, minWidth: 140 }}>
+			<div style={{ color: "#1976d2", fontWeight: 700, fontSize: 10, marginBottom: 6 }}>🔵 Authentication Service</div>
+			{[
+			  { label: "Auth Portal", sub: "pasos 1·2·4·11" },
+			  { label: "Verifier", sub: "OIDC4VP · pasos 5·6·10" },
+			  { label: "Credentials Config Service", sub: "paso 4" },
+			  { label: "Local Trusted Issuers List", sub: "paso 9" },
+			].map((s, i) => (
+			  <div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 5, padding: "4px 7px", marginBottom: 3, fontSize: 10 }}>
+			    <div style={{ color: C.text, fontWeight: 600 }}>{s.label}</div>
+			    <div style={{ color: C.muted, fontSize: 9 }}>{s.sub}</div>
+			  </div>
+			))}
+		      </div>
+		      {/* Policy Management */}
+		      <div style={{ border: "1.5px solid #388e3c50", borderRadius: 8, padding: 8, background: "#e8f5e908", flex: 1, minWidth: 140 }}>
+			<div style={{ color: "#388e3c", fontWeight: 700, fontSize: 10, marginBottom: 6 }}>🟢 Policy Management</div>
+			{[
+			  { label: "APISIX · PEP", sub: "API Gateway · paso 12/16" },
+			  { label: "PDP", sub: "pasos 13·14·15" },
+			  { label: "PIP", sub: "paso 14a" },
+			  { label: "PRP / PAP", sub: "paso 14b · autorización" },
+			].map((s, i) => (
+			  <div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 5, padding: "4px 7px", marginBottom: 3, fontSize: 10 }}>
+			    <div style={{ color: C.text, fontWeight: 600 }}>{s.label}</div>
+			    <div style={{ color: C.muted, fontSize: 9 }}>{s.sub}</div>
+			  </div>
+			))}
 		      </div>
 		    </div>
 		  </div>
@@ -854,19 +865,40 @@
 		  <span style={{ marginLeft: "auto", fontSize: 10, color: "#bdbdbd", fontStyle: "italic", border: "1px dashed #bdbdbd", borderRadius: 10, padding: "2px 8px" }}>pendiente</span>
 		</div>
 		<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))", gap: 10 }}>
+		  {/* Gobernanza: Marketplace + VC Issuer standalone */}
+		  <div style={{ border: "1.5px solid #ec489950", borderRadius: 10, padding: 12, background: "#ec489908" }}>
+		    <div style={{ color: "#ec4899", fontWeight: 700, fontSize: 12, marginBottom: 8 }}>📋 Gobernanza y Acceso</div>
+		    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+		      <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 10px", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+			<span>🛒</span><div><div style={{ color: C.text, fontWeight: 600 }}>Marketplace / Catálogo</div><div style={{ color: C.muted, fontSize: 10 }}>CKAN · DCAT-AP · aprovisiona ODRL</div></div>
+		      </div>
+		      <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 10px", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+			<span>🏫</span><div><div style={{ color: C.text, fontWeight: 600 }}>VC Issuer (Keycloak)</div><div style={{ color: C.muted, fontSize: 10 }}>OperatorCredential · ResearcherCredential</div></div>
+		      </div>
+		    </div>
+		  </div>
+		  {/* Backend EAC */}
+		  <div style={{ border: "1.5px solid #6366f150", borderRadius: 10, padding: 12, background: "#6366f108", cursor: "pointer" }} onClick={() => onDrillDown("eac")}>
+		    <div style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+		      ⚙️ Backend EAC
+		      <span style={{ fontSize: 10, color: C.teal, background: "rgba(0,212,200,0.15)", padding: "2px 8px", borderRadius: 20 }}>Ver detalle →</span>
+		    </div>
+		    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+		      {[{ icon: "📐", label: "Knowledge Space Builder", sub: "NetworkX / Neo4j" }, { icon: "🤖", label: "Problem Generator", sub: "LLM-based" }, { icon: "🎯", label: "Recommendation Engine", sub: "Outer Fringe" }, { icon: "📝", label: "Rubric Evaluator", sub: "Auto-score" }, { icon: "🕸️", label: "Skill Graph Manager", sub: "Perfil Habilitación" }, { icon: "🔬", label: "Synthetic Data Generator", sub: "Cold start" }].map((item, ii) => (
+			<div key={ii} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 10px", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
+			  <span>{item.icon}</span>
+			  <div><div style={{ color: C.text, fontWeight: 600 }}>{item.label}</div><div style={{ color: C.muted, fontSize: 10 }}>{item.sub}</div></div>
+			</div>
+		      ))}
+		    </div>
+		  </div>
+		  {/* Datos Federados + Observabilidad */}
 		  {[
-		    { title: "📋 Gobernanza y Acceso", color: "#ec4899", items: [{ icon: "🛒", label: "Marketplace / Catálogo", sub: "CKAN · DCAT-AP" }] },
-		    { title: "⚙️ Backend EAC", color: "#6366f1", clickable: true, items: [{ icon: "📐", label: "Knowledge Space Builder", sub: "NetworkX / Neo4j" }, { icon: "🤖", label: "Problem Generator", sub: "LLM-based" }, { icon: "🎯", label: "Recommendation Engine", sub: "Outer Fringe" }, { icon: "📝", label: "Rubric Evaluator", sub: "Auto-score" }, { icon: "🕸️", label: "Skill Graph Manager", sub: "Perfil Habilitación" }, { icon: "🔬", label: "Synthetic Data Generator", sub: "Cold start" }] },
 		    { title: "🗄️ Datos Federados", color: "#14b8a6", items: [{ icon: "🌐", label: "Orion-LD Hub", sub: "NGSI-LD v1.6.1" }, { icon: "🐘", label: "PostgreSQL Central", sub: "Perfiles anon" }] },
 		    { title: "📊 Observabilidad", color: "#f59e0b", items: [{ icon: "📈", label: "Prometheus + Grafana", sub: "SLA 99.5%" }, { icon: "📋", label: "ELK Stack", sub: "Audit logs" }] },
 		  ].map((sz, si) => (
-		    <div key={si}
-		      style={{ border: `1.5px solid ${sz.color}50`, borderRadius: 10, padding: 12, background: `${sz.color}08`, cursor: sz.clickable ? "pointer" : "default" }}
-		      onClick={sz.clickable ? () => onDrillDown("eac") : undefined}>
-		      <div style={{ color: sz.color, fontWeight: 700, fontSize: 12, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-			{sz.title}
-			{sz.clickable && <span style={{ fontSize: 10, color: C.teal, background: "rgba(0,212,200,0.15)", padding: "2px 8px", borderRadius: 20 }}>Ver detalle →</span>}
-		      </div>
+		    <div key={si} style={{ border: `1.5px solid ${sz.color}50`, borderRadius: 10, padding: 12, background: `${sz.color}08` }}>
+		      <div style={{ color: sz.color, fontWeight: 700, fontSize: 12, marginBottom: 8 }}>{sz.title}</div>
 		      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
 			{sz.items.map((item, ii) => (
 			  <div key={ii} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 10px", fontSize: 12, display: "flex", alignItems: "center", gap: 6 }}>
@@ -877,31 +909,54 @@
 		      </div>
 		    </div>
 		  ))}
-		  {/* CONNECTOR_CENTRAL — expandido con subcomponentes */}
+		  {/* CONNECTOR_CENTRAL — AUTH + POLICY */}
+		  <div style={{ border: "1.5px solid #7b1fa260", borderRadius: 10, padding: 12, background: "#ede7f608" }}>
+		    <div style={{ color: "#7b1fa2", fontWeight: 700, fontSize: 12, marginBottom: 10 }}>🔗 CONNECTOR_CENTRAL · Nodo Central</div>
+		    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+		      <div style={{ border: "1.5px solid #1976d250", borderRadius: 8, padding: 8, background: "#e3f2fd08", flex: 1, minWidth: 140 }}>
+			<div style={{ color: "#1976d2", fontWeight: 700, fontSize: 10, marginBottom: 6 }}>🔵 Authentication Service</div>
+			{[
+			  { label: "Auth Portal", sub: "pasos 1·2·4·11" },
+			  { label: "Verifier", sub: "OIDC4VP · pasos 5·6·10" },
+			  { label: "Credentials Config Service", sub: "paso 4" },
+			  { label: "Local Trusted Issuers List", sub: "paso 9" },
+			].map((s, i) => (
+			  <div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 5, padding: "4px 7px", marginBottom: 3, fontSize: 10 }}>
+			    <div style={{ color: C.text, fontWeight: 600 }}>{s.label}</div>
+			    <div style={{ color: C.muted, fontSize: 9 }}>{s.sub}</div>
+			  </div>
+			))}
+		      </div>
+		      <div style={{ border: "1.5px solid #388e3c50", borderRadius: 8, padding: 8, background: "#e8f5e908", flex: 1, minWidth: 140 }}>
+			<div style={{ color: "#388e3c", fontWeight: 700, fontSize: 10, marginBottom: 6 }}>🟢 Policy Management</div>
+			{[
+			  { label: "APISIX · PEP", sub: "API Gateway · paso 12/16" },
+			  { label: "PDP", sub: "pasos 13·14·15" },
+			  { label: "PIP", sub: "paso 14a" },
+			  { label: "PRP / PAP", sub: "paso 14b · autorización" },
+			].map((s, i) => (
+			  <div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 5, padding: "4px 7px", marginBottom: 3, fontSize: 10 }}>
+			    <div style={{ color: C.text, fontWeight: 600 }}>{s.label}</div>
+			    <div style={{ color: C.muted, fontSize: 9 }}>{s.sub}</div>
+			  </div>
+			))}
+		      </div>
+		    </div>
+		  </div>
+		  {/* GLOBAL — Servicios globales del Dataspace */}
 		  <div style={{ border: "1.5px solid #7b1fa250", borderRadius: 10, padding: 12, background: "#f3e5f508" }}>
-		    <div style={{ color: "#ec4899", fontWeight: 700, fontSize: 12, marginBottom: 2 }}>📋 Gobernanza y Acceso</div>
-		    <div style={{ color: "#7b1fa2", fontWeight: 700, fontSize: 12, marginBottom: 8 }}>🔗 CONNECTOR_CENTRAL</div>
-		    <div style={{ fontSize: 10, color: C.muted, marginBottom: 8 }}>FIWARE Dataspace Connector</div>
+		    <div style={{ color: "#7b1fa2", fontWeight: 700, fontSize: 12, marginBottom: 8 }}>🌍 Servicios Globales del Dataspace</div>
 		    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
 		      {[
-			{ icon: "🏫", label: "VC Issuer", sub: "OperatorCredential · ResearcherCredential" },
-			{ icon: "🔍", label: "VC Verifier", sub: "OIDC4VC / DIDComm" },
-			{ icon: "📋", label: "Trusted Issuers Registry", sub: "TIR" },
-			{ icon: "🌐", label: "Data Space Participants Registry", sub: "DSPR" },
-		      ].map((sub, i) => (
+			{ icon: "🌐", label: "Data Space Participants Registry", sub: "DSPR — verificación participantes" },
+			{ icon: "📋", label: "Global Trusted Issuers List", sub: "GTIL — paso 8" },
+			{ icon: "🚫", label: "Revocation List", sub: "revocación de credenciales — paso 8" },
+		      ].map((s, i) => (
 			<div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 8px", fontSize: 11, display: "flex", alignItems: "center", gap: 6 }}>
-			  <span style={{ fontSize: 13 }}>{sub.icon}</span>
-			  <div><div style={{ color: C.text, fontWeight: 600 }}>{sub.label}</div><div style={{ color: C.muted, fontSize: 9 }}>{sub.sub}</div></div>
+			  <span style={{ fontSize: 13 }}>{s.icon}</span>
+			  <div><div style={{ color: C.text, fontWeight: 600 }}>{s.label}</div><div style={{ color: C.muted, fontSize: 9 }}>{s.sub}</div></div>
 			</div>
 		      ))}
-		      <div style={{ border: "1.5px solid #512da850", borderRadius: 8, padding: 8, background: "#ede7f608", marginTop: 2 }}>
-			<div style={{ color: "#7c3aed", fontWeight: 700, fontSize: 10, marginBottom: 5 }}>⚖️ ODRL Authorization</div>
-			<div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-			  {["APISIX", "Open Policy Agent", "ODRL PAP"].map(s => (
-			    <span key={s} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 6px", fontSize: 10, color: C.text }}>{s}</span>
-			  ))}
-			</div>
-		      </div>
 		    </div>
 		  </div>
 		</div>
@@ -944,11 +999,12 @@
 	      {tab === "componentes" && (
 		<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
 		  {[
+		    { icon: "🏫", title: "VC Issuer (Keycloak)", color: center.color, desc: `Emite StudentCredential y TeacherCredential firmadas con Ed25519. Externo al Connector CFP. DID: ${center.did}` },
 		    { icon: "📚", title: "LMS Moodle 4.x", color: center.color, desc: "Plataforma educativa del centro. Integra el Plugin LTI 1.3 para lanzar la App EAC." },
 		    { icon: "📱", title: "Aplicación LTI / Frontend EAC", color: center.color, desc: "React 18 embebida en Moodle vía LTI 1.3. Panel competencial, mapa de nodos conquistados y SC recomendada." },
 		    { icon: "🔒", title: "Aggregator / Anonymizer", color: "#f43f5e", desc: "Elimina PII antes de que cualquier dato salga del centro. Genera hash irreversible: std_12345 → anon_abc123xyz." },
 		    { icon: "💾", title: "PostgreSQL Local", color: "#f43f5e", desc: "Almacena datos sensibles (PII): students, submissions_raw, evaluation_results, submission_queue. NUNCA sincronizado al exterior." },
-		    { icon: "🔗", title: "CONNECTOR_CFP", color: "#8b5cf6", desc: "FIWARE Dataspace Connector. Frontera de soberanía del dato. Incluye: VC Issuer (StudentCredential · TeacherCredential), VC Verifier (OIDC4VC/DIDComm), Trusted Issuers Registry, Data Space Participants Registry y pila ODRL (APISIX + Open Policy Agent + PAP)." },
+		    { icon: "🔗", title: "CONNECTOR_CFP", color: "#8b5cf6", desc: "FIWARE Dataspace Connector. Frontera de soberanía del dato. Contiene: Authentication Service (Auth Portal, Verifier OIDC4VP, Credentials Config Service, Local Trusted Issuers List) y Policy Management / Authorization Service (APISIX·PEP, PDP, PIP, PRP/PAP). El flujo de autenticación sigue pasos numerados 1→16." },
 		  ].map((c, i) => (
 		    <div key={i} style={{ background: C.card, border: `1.5px solid ${c.color}40`, borderRadius: 10, padding: 14 }}>
 		      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
@@ -1106,7 +1162,7 @@
 		  {[
 		    { title: "Backend EAC (Nodo Central)", icon: "⚙️", color: "#6366f1", items: ["Python 3.11+ · FastAPI 0.110+", "NetworkX 3.2+ (grafos de conocimiento)", "Pydantic 2.5+ · SQLAlchemy 2.0+", "Anthropic SDK / OpenAI (generación SC)", "Celery 5.3+ (tareas asíncronas)", "Pytest 8.0+ (testing)"] },
 		    { title: "Bases de Datos", icon: "🗄️", color: "#14b8a6", items: ["PostgreSQL 16+ (Nodo Central) — datos anon", "PostgreSQL 16+ (Centro FP) — PII local", "Neo4j 5.x (opcional) — grafo de precedencia", "pg_vector (embeddings futuros)"] },
-		    { title: "FIWARE / Dataspace", icon: "🌐", color: "#3b82f6", items: ["Orion-LD 1.5+ (NGSI-LD v1.6.1)", "Eclipse EDC / FIWARE fork (conectores)", "APISIX (API Gateway en conectores)", "Open Policy Agent (autorización ODRL)", "ODRL PAP (Policy Administration Point)", "CKAN + Federated Catalogue"] },
+		    { title: "FIWARE / Dataspace", icon: "🌐", color: "#3b82f6", items: ["Orion-LD 1.5+ (NGSI-LD v1.6.1)", "Eclipse EDC / FIWARE fork (conectores)", "APISIX · PEP (API Gateway en conectores)", "PDP · PIP · PRP/PAP (autorización ODRL)", "Auth Portal + Verifier (OIDC4VP)", "Credentials Config Service · Local TIL", "DSPR · Global TIL · Revocation List", "CKAN + Federated Catalogue"] },
 		    { title: "Frontend (Centro FP)", icon: "📱", color: "#f97316", items: ["LMS Moodle 4.x + Plugin LTI 1.3", "React 18+ (App LTI embebida)", "D3.js / Cytoscape.js (mapa de nodos)", "Recharts / Plotly (dashboards)"] },
 		    { title: "Observabilidad", icon: "📊", color: "#f59e0b", items: ["Prometheus + Grafana (SLA 99.5%)", "ELK Stack (audit logs)", "Rate limit: 500 req/h por centro"] },
 		    { title: "DevOps & Identidad", icon: "🔐", color: "#22c55e", items: ["Docker + Docker Compose", "Kubernetes (escalado Backend EAC)", "W3C Verifiable Credentials · eIDAS 2.0", "ODRL (políticas de uso)", "Gaia-X Trust Framework"] },
