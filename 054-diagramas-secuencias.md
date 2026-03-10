@@ -21,21 +21,12 @@ sequenceDiagram
 
         LMS->>APP_LTI: LTI Launch<br/>{student_id, course_id}
         APP_LTI->>ANON: POST /anonymize<br/>{student_id, context_id}
-        ANON-->>APP_LTI: {anon_id}
-        Note over ANON: student_id queda retenido<br/>en el centro
-    end
-
-    rect rgb(252, 228, 236)
-        Note over APP_LTI,CONNECTOR_CFP: 🔗 Autenticación en CONNECTOR_CFP — flujo OIDC4VP
-
-        APP_LTI->>CONNECTOR_CFP: GET /api/v2/students/{anon_id}/panel<br/>Bearer Token (VC presentada vía Auth Portal)
-        Note over CONNECTOR_CFP: · Auth Portal orquesta OIDC4VP<br/>· Verifier valida VC contra<br/>  Local Trusted Issuers List<br/>  + Data Space Participants Registry<br/>· PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL<br/>· Registra en audit log
     end
 
     rect rgb(227, 242, 253)
         Note over CONNECTOR_CENTRAL,ORIONLD: 🧠 Nodo Central — solo opera con anon_id
 
-        CONNECTOR_CFP->>CONNECTOR_CENTRAL: GET /api/v2/students/{anon_id}/panel<br/>Bearer Token del centro
+        ANON->>CONNECTOR_CENTRAL: GET /api/v2/students/{anon_id}/panel<br/>Bearer Token del centro
         Note over CONNECTOR_CENTRAL: · PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL<br/>· Comprueba rate limit<br/>· Registra en audit log
         CONNECTOR_CENTRAL->>EAC: Request validado<br/>{anon_id}
 
@@ -54,7 +45,7 @@ sequenceDiagram
     rect rgb(232, 245, 233)
         Note over CONNECTOR_CFP,STUDENT: 🏫 Centro FP — reidentificación local
 
-        CONNECTOR_CFP-->>APP_LTI: {perfil_habilitacion[], SC_recomendada}
+        CONNECTOR_CENTRAL-->>APP_LTI: {perfil_habilitacion[], SC_recomendada}
         APP_LTI->>APP_LTI: Mapea anon_id → student_id (local)
         APP_LTI->>LMS: Registra calificación<br/>(Gradiente de Autonomía)
         APP_LTI-->>LMS: Panel competencial<br/>{nodos_conquistados[], SC_recomendada}
@@ -87,15 +78,12 @@ sequenceDiagram
 
         APP_LTI->>ANON: POST /anonymize/submission<br/>{student_id, sc_id, evidencia_raw}
         Note over ANON: Elimina PII · Genera anon_id<br/>student_id queda retenido en el centro
-        ANON-->>APP_LTI: {anon_id, evidencia_seudonimizada}
-        APP_LTI->>CONNECTOR_CFP: POST /api/v2/evaluate<br/>Bearer Token (VC presentada vía Auth Portal)<br/>{anon_id, sc_id, evidencia_seudonimizada}
-        Note over CONNECTOR_CFP: · Auth Portal orquesta OIDC4VP<br/>· Verifier valida VC<br/>· PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL<br/>· Registra en audit log
     end
 
     rect rgb(227, 242, 253)
         Note over CONNECTOR_CENTRAL,ORIONLD: 🧠 Nodo Central — solo opera con anon_id
 
-        CONNECTOR_CFP->>CONNECTOR_CENTRAL: POST /api/v2/evaluate<br/>Bearer Token del centro<br/>{anon_id, sc_id, evidencia_seudonimizada}
+        ANON->>CONNECTOR_CENTRAL: POST /api/v2/evaluate<br/>Bearer Token del centro<br/>{anon_id, sc_id, evidencia_seudonimizada}
         Note over CONNECTOR_CENTRAL: · PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL<br/>· Comprueba rate limit<br/>· Registra en audit log
 
         CONNECTOR_CENTRAL->>RUBRIC: Request validado<br/>{anon_id, sc_id, evidencia_seudonimizada}
@@ -116,7 +104,7 @@ sequenceDiagram
     rect rgb(232, 245, 233)
         Note over CONNECTOR_CFP,STUDENT: 🏫 Centro FP — reidentificación local y presentación
 
-        CONNECTOR_CFP-->>APP_LTI: {score, gradiente_autonomia<br/>diagnostico_causa_raiz, nueva_SC_recomendada}
+        CONNECTOR_CENTRAL-->>APP_LTI: {score, gradiente_autonomia<br/>diagnostico_causa_raiz, nueva_SC_recomendada}
         APP_LTI->>APP_LTI: Mapea anon_id → student_id (local)
         APP_LTI->>LMS: Registra calificación<br/>(Gradiente de Autonomía · score)
         APP_LTI-->>LMS: Resultado + Panel actualizado<br/>{nodos_conquistados[], nueva_SC_recomendada}
@@ -147,15 +135,12 @@ sequenceDiagram
     rect rgb(255, 243, 224)
         Note over APP_LTI,ANON: 🔒 Seudonimización — PII nunca sale del centro
         APP_LTI->>ANON: POST /anonymize<br/>{student_id, context_id}
-        ANON-->>APP_LTI: {anon_id}
     end
 
     rect rgb(252, 228, 236)
-        Note over APP_LTI,CONNECTOR_CFP: 🔗 Autenticación en CONNECTOR_CFP
+        Note over APP_LTI,CONNECTOR_CENTRAL: 🔗 Autenticación en CONNECTOR_CFP
 
-        APP_LTI->>CONNECTOR_CFP: GET /api/v2/students/{anon_id}/profile<br/>Bearer Token (VC presentada vía Auth Portal)
-        Note over CONNECTOR_CFP: · Auth Portal orquesta OIDC4VP<br/>· Verifier valida VC<br/>· PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL
-        CONNECTOR_CFP->>CONNECTOR_CENTRAL: GET /api/v2/students/{anon_id}/profile<br/>Bearer Token del centro
+        APP_LTI->>CONNECTOR_CENTRAL: GET /api/v2/students/{anon_id}/profile<br/>Bearer Token del centro
         Note over CONNECTOR_CENTRAL: · PEP (APISIX) intercepta request<br/>· PDP (OPA) evalúa política ODRL<br/>· Registra en audit log
     end
 
@@ -179,7 +164,7 @@ sequenceDiagram
     rect rgb(232, 245, 233)
         Note over CONNECTOR_CFP,STUDENT: 🏫 Centro FP — reidentificación local y presentación
 
-        CONNECTOR_CFP-->>APP_LTI: {nodos_completados[], SC_recomendada}
+        CONNECTOR_CENTRAL-->>APP_LTI: {nodos_completados[], SC_recomendada}
         APP_LTI->>APP_LTI: Mapea anon_id → student_id (local)
         APP_LTI-->>LMS: Panel competencial<br/>{nodos_completados[], SC_recomendada}
         LMS-->>STUDENT: 🖥️ Panel de nodos conquistados<br/>+ Siguiente SC sugerida
