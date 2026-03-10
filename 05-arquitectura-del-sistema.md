@@ -229,9 +229,7 @@ organización"| LTIL_C
     APP_LTI -->|"Configura API Key"| ANON
     ANON -->|"12) POST /api/v2/evaluate
 Bearer Token
-datos seudonimizados"| PEP_CFP
-    PEP_CFP <-->|"Intercambio de datos
-anonimizados"| PEP_C
+datos seudonimizados"| PEP_C
     PEP_CFP -->|"Resultado evaluación
 score · feedback · recomendación"| APP_LTI
 
