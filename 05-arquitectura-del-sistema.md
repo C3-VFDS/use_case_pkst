@@ -292,3 +292,4 @@ agregados"| AUTHPORTAL_C
 3. [Stack Tecnológico](053-stack-tecnologico.md)
 4. [Diagramas de Secuencias](054-diagramas-secuencias.md)
 5. [Credenciales Verificables y Control de Acceso](055-control-acceso.md)
+6. [Visualización interactiva de la arquitectura del Dataspace](./diagramas/vfds-explorer.html)
